@@ -164,7 +164,7 @@ export function LoginPage() {
                             className="h-24 w-24 object-contain transition-all hover:scale-110 duration-500"
                         />
                     </div>
-                    <h1 className="text-3xl font-bold tracking-tight">AIOManager</h1>
+                    <h1 className="text-3xl font-bold tracking-tight">Runk's Stremio Manager</h1>
                     <p className="text-muted-foreground">One manager to rule them all.</p>
                 </div>
 
