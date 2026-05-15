@@ -160,7 +160,7 @@ export function LoginPage() {
                     <div className="flex justify-center mb-6">
                         <img
                             src="/logo.png"
-                            alt="AIOManager"
+                            alt="Runk's Stremio Manager"
                             className="h-24 w-24 object-contain transition-all hover:scale-110 duration-500"
                         />
                     </div>
