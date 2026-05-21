@@ -121,11 +121,12 @@ const HTML = /* html */`<!DOCTYPE html>
   <div class="abar" id="abar"></div>
   <div class="ai-banner" id="ai-banner" style="display:none">🤖 AI refining suggestions...</div>
   <div class="list" id="tlist"></div>
+  <div id="dupe-panel" style="display:none;padding-bottom:40px"></div>
 </div>
 
 <script>
-const STEPS = ['Fetching library','Creating snapshot','Downloading backup','Deriving titles','AI analysis']
-let apiKey='', torrents=[], backup=null, edits={}, statuses={}, expandedId=null, editingId=null
+const STEPS = ['Fetching library','Creating snapshot','Downloading backup','Almost done...']
+let apiKey='', torrents=[], backup=null, edits={}, statuses={}, expandedId=null, editingId=null, dupesView=false, dupeGroups=[], cleanupRunning=false
 
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
 
@@ -231,12 +232,14 @@ async function runAI(){
 
 function renderAll(){
   document.getElementById('count').textContent=torrents.length
-  renderActionBar();renderList()
+  renderActionBar();renderList();renderDupes()
 }
 
 function renderActionBar(){
   const needs=torrents.filter(t=>edits[t.id]&&edits[t.id]!==t.name)
   let h='<button class="achip" onclick="refreshLibrary()">↻ Refresh</button>'
+  h+='<button class="achip'+(cleanupRunning?' primary':'')+'" onclick="runTitleCleanup()">✨ Title Cleanup</button>'
+  h+='<button class="achip'+(dupesView?' primary':'')+'" onclick="toggleDupes()">🔍 Duplicates</button>'
   if(backup)h+='<button class="achip" onclick="reDownload()">⬇ Backup</button>'
   if(backup)h+='<button class="achip" onclick="revertAll()">↩ Revert All</button>'
   if(needs.length)h+='<button class="achip primary" onclick="applyAll()">Apply '+needs.length+'</button>'
@@ -313,6 +316,96 @@ async function revertAll(){
 
 function reDownload(){if(backup)downloadBackup(backup)}
 
+// ── TITLE CLEANUP ────────────────────────────────────────────────────────────
+
+async function runTitleCleanup(){
+  if(cleanupRunning) return
+  cleanupRunning=true
+  renderActionBar()
+  document.getElementById('ai-banner').style.display='block'
+  document.getElementById('ai-banner').textContent='✨ Deriving titles from file names...'
+  document.getElementById('ai-dot').style.display='inline'
+
+  // Step 1: local derivation from filenames
+  torrents.forEach(t=>{ edits[t.id]=deriveTitle(t.files)||t.name })
+  renderList()
+
+  // Step 2: AI refinement
+  document.getElementById('ai-banner').textContent='🤖 AI refining suggestions...'
+  await runAI()
+
+  cleanupRunning=false
+  renderAll()
+}
+
+// ── DUPLICATE DETECTION ──────────────────────────────────────────────────────
+
+function normalizeTitle(raw){
+  // Use the derived edit title if available, else the raw torrent name
+  let s = raw.toLowerCase()
+  // Strip episode markers — keep base show name
+  s = s.replace(/\bs\d{1,2}e\d{1,2}\b.*/i,'')
+  // Strip quality/codec/source junk
+  s = s.replace(/\b(4k|2160p|1080p|720p|480p|bluray|bdrip|webrip|web-dl|webdl|hdtv|x264|x265|hevc|avc|h264|h265|hdr|sdr|dv|dolby|atmos|aac|ac3|dd5|dts|remux|proper|repack|extended|theatrical|unrated|limited|yify|rarbg|ettv|eztv|prt|nf|amzn|hmax|dsnp|pcok)\b/gi,'')
+  // Strip release group suffixes (dash + word at end)
+  s = s.replace(/-[a-z0-9]+$/i,'')
+  // Strip file size markers like "303 mb" "350 mib"
+  s = s.replace(/\b\d+\s*(mb|mib|gb|gib)\b/gi,'')
+  // Normalize spaces/dots/underscores
+  s = s.replace(/[._\-]+/g,' ').replace(/\s{2,}/g,' ').trim()
+  return s
+}
+
+function scanDupes(){
+  const groups = {}
+  torrents.forEach(t => {
+    // Use AI-derived/edited title if available, else torrent name
+    const title = edits[t.id] || t.name
+    const key = normalizeTitle(title)
+    if(!key || key.length < 3) return
+    if(!groups[key]) groups[key] = []
+    groups[key].push(t)
+  })
+  // Only keep groups with 2+ entries
+  dupeGroups = Object.entries(groups)
+    .filter(([,arr]) => arr.length > 1)
+    .sort((a,b) => b[1].length - a[1].length)
+  dupesView = true
+  renderAll()
+}
+
+function toggleDupes(){
+  if(dupesView){ dupesView=false; renderAll(); return }
+  scanDupes()
+}
+
+function renderDupes(){
+  const el = document.getElementById('dupe-panel')
+  if(!el) return
+  if(!dupesView){ el.style.display='none'; return }
+  el.style.display='block'
+  if(dupeGroups.length===0){
+    el.innerHTML='<div style="padding:20px 16px;color:#4a7a5a;font-size:14px">✓ No duplicates found in your library.</div>'
+    return
+  }
+  el.innerHTML = '<div style="padding:12px 16px 4px;font-size:13px;color:#666">'+dupeGroups.length+' potential duplicate group'+(dupeGroups.length!==1?'s':'')+' found</div>' +
+    dupeGroups.map(([key, group]) => {
+      const rows = group.map(t => {
+        const title = edits[t.id] || t.name
+        const files = (t.files||[]).length
+        const quality = extractQuality(t.name) || extractQuality((t.files||[]).map(f=>f.name||'').join(' ')) || '?'
+        return '<div style="display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-top:1px solid #1e1e24">' +
+          '<div style="flex:1;min-width:0">' +
+          '<div style="font-size:14px;color:#ccc;word-break:break-word">'+esc(title)+'</div>' +
+          '<div style="font-size:11px;color:#444;margin-top:3px">'+files+' file'+(files!==1?'s':'')+' · '+quality+' · id:'+t.id+'</div>' +
+          '</div></div>'
+      }).join('')
+      return '<div style="background:#151518;border:1px solid #2a1a1a;border-radius:12px;margin:0 12px 10px;padding:4px 14px 6px">' +
+        '<div style="font-size:12px;color:#ff8866;padding:10px 0 2px;font-weight:bold">'+esc(key)+'</div>' +
+        rows + '</div>'
+    }).join('')
+}
+
 async function refreshLibrary(){
   document.getElementById('abar').innerHTML='<span style="color:#00e5a0;padding:10px 4px;font-size:13px">↻ Refreshing...</span>'
   try{
@@ -320,11 +413,8 @@ async function refreshLibrary(){
     const d=await r.json()
     if(!d.success)throw new Error(d.detail||'Failed')
     torrents=Array.isArray(d.data)?d.data:[]
-    // Re-derive for any new entries not already in edits
-    torrents.forEach(t=>{if(!edits[t.id])edits[t.id]=deriveTitle(t.files)||t.name})
     statuses={}
     renderAll()
-    await runAI()
   }catch(e){
     renderActionBar()
     alert('Refresh failed: '+e.message)
