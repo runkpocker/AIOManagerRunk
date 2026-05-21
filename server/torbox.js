@@ -131,7 +131,8 @@ function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').repl
 
 function extractQuality(n){const m=n.match(/\\b(4k|2160p|1080p|720p|480p)\\b/i);return m?m[1].toUpperCase().replace('2160P','4K').replace(/P$/,'p'):null}
 
-function cleanFile(n){
+function cleanFile(n){n=n.split('/').pop().split('\\').pop()
+  
   const q=extractQuality(n)
   let s=n.replace(/\\.[^/.]+$/,'').replace(/[._]/g,' ')
     .replace(/\\b(bluray|bdrip|webrip|web-dl|hdtv|x264|x265|hevc|aac|mkv|mp4|avi|h264|h265|yify|rarbg|ettv|eztv|proper|repack|extended|theatrical|unrated|720p|1080p|4k|2160p|480p)\\b/gi,'')
