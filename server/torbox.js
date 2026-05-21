@@ -54,11 +54,11 @@ const HTML = /* html */`<!DOCTYPE html>
   .top-l{display:flex;align-items:center;gap:10px}
   .top-logo{font-size:22px}.top-title{font-size:16px;font-weight:bold;color:#00e5a0}
   .top-r{display:flex;align-items:center;gap:10px}
-  .badge{background:#1e1e24;color:#666;padding:4px 12px;border-radius:20px;font-size:13px}
+  .badge{background:#1e1e24;color:#aaa;padding:4px 12px;border-radius:20px;font-size:13px}
   .abar{display:flex;gap:8px;padding:12px 16px;border-bottom:1px solid #1a1a1e;flex-wrap:wrap}
-  .achip{background:#1e1e24;color:#aaa;border:1px solid #2a2a30;border-radius:20px;padding:10px 16px;font-size:14px;cursor:pointer;white-space:nowrap}
+  .achip{background:#1e1e24;color:#ddd;border:1px solid #333;border-radius:20px;padding:11px 18px;font-size:15px;cursor:pointer;white-space:nowrap}
   .achip.primary{background:#00e5a0;color:#0d0d0f;font-weight:bold;border-color:transparent}
-  .ai-banner{background:#1a1a28;border-bottom:1px solid #2a2a50;color:#8888ff;padding:10px 18px;font-size:13px}
+  .ai-banner{background:#1a1a28;border-bottom:1px solid #2a2a50;color:#aaaaff;padding:12px 18px;font-size:14px}
   .list{padding:12px;display:flex;flex-direction:column;gap:10px;padding-bottom:40px}
 
   /* Cards */
@@ -66,15 +66,23 @@ const HTML = /* html */`<!DOCTYPE html>
   .tcard.changed{border-color:#00e5a030}.tcard.done{border-color:#1e3020}.tcard.reverted{border-color:#2a2a30}
   .cmain{display:flex;align-items:center;padding:16px;gap:12px;cursor:pointer;user-select:none}
   .cmeta{flex:1;min-width:0}
-  .ctitle{font-size:15px;color:#ccc;line-height:1.4;word-break:break-word}
-  .csugg{font-size:13px;color:#00e5a0;margin-top:5px;word-break:break-word;line-height:1.4}
-  .csub{font-size:12px;color:#444;margin-top:4px}
-  .tag-ok{color:#00e5a0}.tag-rev{color:#888}.tag-err{color:#ff6b6b}.tag-ren{color:#4a7a5a}
-  .chev{font-size:12px;color:#444;flex-shrink:0}
+  .ctitle{font-size:17px;color:#e8e8e8;line-height:1.4;word-break:break-word}
+  .csugg{font-size:15px;color:#00e5a0;margin-top:5px;word-break:break-word;line-height:1.4}
+  .csub{font-size:13px;color:#777;margin-top:4px}
+  .tag-ok{color:#00e5a0}.tag-rev{color:#aaa}.tag-err{color:#ff6b6b}.tag-ren{color:#4a7a5a}
+  .dupe-exact{background:#3a1a1a;border:1px solid #ff4444!important}
+  .dupe-badge-exact{background:#ff4444;color:#fff;font-size:11px;padding:2px 8px;border-radius:10px;font-weight:bold}
+  .dupe-badge-possible{background:#ff8844;color:#fff;font-size:11px;padding:2px 8px;border-radius:10px;font-weight:bold}
+  .dupe-row{display:flex;align-items:flex-start;gap:10px;padding:12px 0;border-top:1px solid #222}
+  .dupe-title{font-size:15px;color:#e8e8e8;word-break:break-word;line-height:1.4}
+  .dupe-meta{font-size:13px;color:#888;margin-top:4px}
+  .btn-delete{background:#3a1515;color:#ff6b6b;border:1px solid #5a2020;border-radius:8px;padding:10px 16px;font-size:14px;cursor:pointer;white-space:nowrap;flex-shrink:0}
+  .btn-delete:disabled{opacity:.5}
+  .chev{font-size:14px;color:#666;flex-shrink:0}
   .ebody{border-top:1px solid #1e1e24;padding:14px 16px;display:flex;flex-direction:column;gap:14px}
   .flist{display:flex;flex-direction:column;gap:6px;max-height:160px;overflow-y:auto}
   .frow{display:flex;align-items:flex-start;gap:8px}
-  .fname{font-size:12px;color:#666;line-height:1.5;word-break:break-all}
+  .fname{font-size:13px;color:#888;line-height:1.5;word-break:break-all}
   .cactions{display:flex;flex-direction:column;gap:8px}
   .btn-p{background:#00e5a0;color:#0d0d0f;border:none;border-radius:10px;padding:15px 16px;font-weight:bold;font-size:15px;cursor:pointer;text-align:left;line-height:1.4;word-break:break-word;width:100%}
   .btn-s{background:#1e1e24;color:#aaa;border:1px solid #2a2a30;border-radius:10px;padding:14px 16px;font-size:15px;cursor:pointer;width:100%}
@@ -379,29 +387,67 @@ function toggleDupes(){
   scanDupes()
 }
 
+function isExactDupe(group){
+  // Exact = same normalized title AND same quality
+  const qualities = group.map(t => extractQuality(edits[t.id]||t.name)||extractQuality((t.files||[]).map(f=>f.name||'').join(' '))||'unknown')
+  return qualities.some((q,i) => qualities.indexOf(q) !== i)
+}
+
+async function deleteTorrent(id, btnEl){
+  if(!confirm('Delete this torrent from TorBox permanently?')) return
+  btnEl.disabled=true; btnEl.textContent='Deleting...'
+  try{
+    const r=await fetch('/api/torbox/delete',{
+      method:'POST',headers:{'Content-Type':'application/json','x-torbox-key':apiKey},
+      body:JSON.stringify({torrent_id:id})
+    })
+    const d=await r.json()
+    if(d.success){
+      torrents=torrents.filter(t=>t.id!==id)
+      delete edits[id]; delete statuses[id]
+      scanDupes()
+    } else {
+      btnEl.disabled=false; btnEl.textContent='Delete'
+      alert('Delete failed: '+(d.detail||'Unknown error'))
+    }
+  }catch(e){ btnEl.disabled=false; btnEl.textContent='Delete'; alert(e.message) }
+}
+
 function renderDupes(){
   const el = document.getElementById('dupe-panel')
   if(!el) return
   if(!dupesView){ el.style.display='none'; return }
   el.style.display='block'
   if(dupeGroups.length===0){
-    el.innerHTML='<div style="padding:20px 16px;color:#4a7a5a;font-size:14px">✓ No duplicates found in your library.</div>'
+    el.innerHTML='<div style="padding:20px 16px;color:#4a7a5a;font-size:15px">✓ No duplicates found in your library.</div>'
     return
   }
-  el.innerHTML = '<div style="padding:12px 16px 4px;font-size:13px;color:#666">'+dupeGroups.length+' potential duplicate group'+(dupeGroups.length!==1?'s':'')+' found</div>' +
+  const exactCount = dupeGroups.filter(([,g])=>isExactDupe(g)).length
+  el.innerHTML =
+    '<div style="padding:14px 16px 6px;font-size:14px;color:#aaa">'+
+      dupeGroups.length+' group'+(dupeGroups.length!==1?'s':'')+
+      (exactCount?' &nbsp;<span class="dupe-badge-exact">'+exactCount+' EXACT</span>':'')+
+    '</div>' +
     dupeGroups.map(([key, group]) => {
+      const exact = isExactDupe(group)
       const rows = group.map(t => {
         const title = edits[t.id] || t.name
         const files = (t.files||[]).length
-        const quality = extractQuality(t.name) || extractQuality((t.files||[]).map(f=>f.name||'').join(' ')) || '?'
-        return '<div style="display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-top:1px solid #1e1e24">' +
+        const quality = extractQuality(edits[t.id]||t.name) || extractQuality((t.files||[]).map(f=>f.name||'').join(' ')) || 'unknown'
+        const sizeLabel = t.size ? (t.size>1073741824?(t.size/1073741824).toFixed(1)+' GB':(t.size/1048576).toFixed(0)+' MB') : ''
+        return '<div class="dupe-row">' +
           '<div style="flex:1;min-width:0">' +
-          '<div style="font-size:14px;color:#ccc;word-break:break-word">'+esc(title)+'</div>' +
-          '<div style="font-size:11px;color:#444;margin-top:3px">'+files+' file'+(files!==1?'s':'')+' · '+quality+' · id:'+t.id+'</div>' +
-          '</div></div>'
+            '<div class="dupe-title">'+esc(title)+'</div>' +
+            '<div class="dupe-meta">'+files+' file'+(files!==1?'s':'')+(quality!=='unknown'?' · <b style="color:#e8e8e8">'+quality+'</b>':'')+(sizeLabel?' · '+sizeLabel:'')+'</div>' +
+          '</div>' +
+          '<button class="btn-delete" onclick="deleteTorrent('+t.id+',this)">Delete</button>' +
+        '</div>'
       }).join('')
-      return '<div style="background:#151518;border:1px solid #2a1a1a;border-radius:12px;margin:0 12px 10px;padding:4px 14px 6px">' +
-        '<div style="font-size:12px;color:#ff8866;padding:10px 0 2px;font-weight:bold">'+esc(key)+'</div>' +
+      return '<div class="tcard'+(exact?' dupe-exact':'')+'" style="margin-bottom:10px;padding:4px 14px 2px">' +
+        '<div style="display:flex;align-items:center;gap:8px;padding:10px 0 4px">' +
+          '<span style="font-size:14px;color:'+(exact?'#ff6666':'#ff9966')+';font-weight:bold;flex:1;word-break:break-word">'+esc(key)+'</span>' +
+          '<span class="'+(exact?'dupe-badge-exact':'dupe-badge-possible')+'">'+(exact?'EXACT':'POSSIBLE')+'</span>' +
+        '</div>' +
         rows + '</div>'
     }).join('')
 }
@@ -471,6 +517,22 @@ async function plugin(fastify) {
     } catch (e) {
       const detail = e.response?.data?.detail || e.response?.data?.error || e.message
       return reply.status(e.response?.status || 502).send({ success: false, detail, raw: e.response?.data })
+    }
+  })
+
+  // Proxy: delete a torrent
+  fastify.post('/api/torbox/delete', async (request, reply) => {
+    const key = request.headers['x-torbox-key'] || process.env.TORBOX_API_KEY
+    if (!key) return reply.status(401).send({ success: false, detail: 'No API key provided' })
+    try {
+      const { torrent_id } = request.body
+      const res = await axios.post(`${TORBOX}/torrents/controltorrent`, { torrent_id, operation: 'delete' }, {
+        headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' }
+      })
+      return res.data
+    } catch (e) {
+      const detail = e.response?.data?.detail || e.message
+      return reply.status(e.response?.status || 502).send({ success: false, detail })
     }
   })
 
