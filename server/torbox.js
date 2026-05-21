@@ -250,7 +250,7 @@ function renderList(){
     let sub=files.length+' file'+(files.length!==1?'s':'')
     if(st==='done')sub+=' <span class="tag-ok">· ✓ saved</span>'
     else if(st==='reverted')sub+=' <span class="tag-rev">· ↩ reverted</span>'
-    else if(st==='error')sub+=' <span class="tag-err">· ✗ error</span>'
+    else if(st&&st.startsWith('err:'))sub+=' <span class="tag-err">· ✗ '+esc(st.slice(4))+'</span>'
     else if(wasRenamed)sub+=' <span class="tag-ren">· renamed</span>'
     let exp=''
     if(isExp){
@@ -286,8 +286,8 @@ async function applyOne(id,nameOverride){
       body:JSON.stringify({torrent_id:id,name:newName})
     })
     const d=await r.json()
-    if(d.success){t.name=newName;statuses[id]='done'}else statuses[id]='error'
-  }catch{statuses[id]='error'}
+    if(d.success){t.name=newName;statuses[id]='done'}else statuses[id]='err:'+( d.detail||'Unknown error')
+  }catch(e){statuses[id]='err:'+e.message}
   renderAll()
 }
 
@@ -346,17 +346,22 @@ async function plugin(fastify) {
     }
   })
 
-  // Proxy: rename a torrent
+  // Proxy: rename a torrent — sends as form-data (TorBox edit endpoints require it)
   fastify.post('/api/torbox/rename', async (request, reply) => {
     const key = request.headers['x-torbox-key'] || process.env.TORBOX_API_KEY
     if (!key) return reply.status(401).send({ success: false, detail: 'No API key provided' })
     try {
-      const res = await axios.post(`${TORBOX}/torrents/edittorrent`, request.body, {
-        headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' }
+      const { torrent_id, name } = request.body
+      const params = new URLSearchParams()
+      params.append('torrent_id', String(torrent_id))
+      params.append('name', name)
+      const res = await axios.post(`${TORBOX}/torrents/edittorrent`, params.toString(), {
+        headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/x-www-form-urlencoded' }
       })
       return res.data
     } catch (e) {
-      return reply.status(502).send({ success: false, detail: e.message })
+      const detail = e.response?.data?.detail || e.response?.data?.error || e.message
+      return reply.status(e.response?.status || 502).send({ success: false, detail, raw: e.response?.data })
     }
   })
 
