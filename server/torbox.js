@@ -131,7 +131,7 @@ function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').repl
 
 function extractQuality(n){const m=n.match(/\\b(4k|2160p|1080p|720p|480p)\\b/i);return m?m[1].toUpperCase().replace('2160P','4K').replace(/P$/,'p'):null}
 
-function cleanFile(n){n=n.split('/').pop().split('\\').pop()
+function cleanFile(n){n=n.split('/').pop()
   
   const q=extractQuality(n)
   let s=n.replace(/\\.[^/.]+$/,'').replace(/[._]/g,' ')
