@@ -355,7 +355,7 @@ async function plugin(fastify) {
       const params = new URLSearchParams()
       params.append('torrent_id', String(torrent_id))
       params.append('name', name)
-      const res = await axios.post(`${TORBOX}/torrents/edittorrent`, params.toString(), {
+      const res = await axios.put(`${TORBOX}/torrents/edittorrent`, params.toString(), {
         headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/x-www-form-urlencoded' }
       })
       return res.data
