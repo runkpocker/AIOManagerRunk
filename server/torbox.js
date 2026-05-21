@@ -286,7 +286,7 @@ async function applyOne(id,nameOverride){
       body:JSON.stringify({torrent_id:id,name:newName})
     })
     const d=await r.json()
-    if(d.success){t.name=newName;statuses[id]='done'}else statuses[id]='err:'+( d.detail||'Unknown error')
+    if(d.success){t.name=newName;statuses[id]='done'}else statuses[id]='err:'+(typeof d.detail==='string'?d.detail:JSON.stringify(d.detail||d.raw||d))
   }catch(e){statuses[id]='err:'+e.message}
   renderAll()
 }
