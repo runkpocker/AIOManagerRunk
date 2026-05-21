@@ -352,11 +352,8 @@ async function plugin(fastify) {
     if (!key) return reply.status(401).send({ success: false, detail: 'No API key provided' })
     try {
       const { torrent_id, name } = request.body
-      const params = new URLSearchParams()
-      params.append('torrent_id', String(torrent_id))
-      params.append('name', name)
-      const res = await axios.put(`${TORBOX}/torrents/edittorrent`, params.toString(), {
-        headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/x-www-form-urlencoded' }
+      const res = await axios.put(`${TORBOX}/torrents/edittorrent`, { torrent_id, name }, {
+        headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' }
       })
       return res.data
     } catch (e) {
