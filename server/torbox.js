@@ -139,10 +139,13 @@ function cleanFile(n){
   return q?s+' '+q:s
 }
 
+const MEDIA_EXT=/\.(mkv|mp4|avi|mov|wmv|m4v|ts|mpg|mpeg|m2ts|vob|flv|webm|divx|xvid)$/i
+function mediaFiles(files){return(files||[]).filter(f=>{const n=f.name||f.short_name||'';return MEDIA_EXT.test(n)})}
 function deriveTitle(files){
-  if(!files||!files.length)return null
-  if(files.length===1)return cleanFile(files[0].name||files[0].short_name||'')
-  const names=files.map(f=>cleanFile(f.name||f.short_name||''))
+  const mf=mediaFiles(files);const src=mf.length?mf:files
+  if(!src||!src.length)return null
+  if(src.length===1)return cleanFile(src[0].name||src[0].short_name||'')
+  const names=src.map(f=>cleanFile(f.name||f.short_name||''))
   const words=names[0].split(' ');let common=[]
   for(let w of words){if(names.every(n=>n.toLowerCase().includes(w.toLowerCase())))common.push(w);else break}
   const r=common.join(' ').trim();return r.length>2?r:names[0]
@@ -232,7 +235,7 @@ function renderAll(){
 
 function renderActionBar(){
   const needs=torrents.filter(t=>edits[t.id]&&edits[t.id]!==t.name)
-  let h=''
+  let h='<button class="achip" onclick="refreshLibrary()">↻ Refresh</button>'
   if(backup)h+='<button class="achip" onclick="reDownload()">⬇ Backup</button>'
   if(backup)h+='<button class="achip" onclick="revertAll()">↩ Revert All</button>'
   if(needs.length)h+='<button class="achip primary" onclick="applyAll()">Apply '+needs.length+'</button>'
@@ -308,6 +311,24 @@ async function revertAll(){
 }
 
 function reDownload(){if(backup)downloadBackup(backup)}
+
+async function refreshLibrary(){
+  document.getElementById('abar').innerHTML='<span style="color:#00e5a0;padding:10px 4px;font-size:13px">↻ Refreshing...</span>'
+  try{
+    const r=await fetch('/api/torbox/list',{headers:{'x-torbox-key':apiKey}})
+    const d=await r.json()
+    if(!d.success)throw new Error(d.detail||'Failed')
+    torrents=Array.isArray(d.data)?d.data:[]
+    // Re-derive for any new entries not already in edits
+    torrents.forEach(t=>{if(!edits[t.id])edits[t.id]=deriveTitle(t.files)||t.name})
+    statuses={}
+    renderAll()
+    await runAI()
+  }catch(e){
+    renderActionBar()
+    alert('Refresh failed: '+e.message)
+  }
+}
 
 document.getElementById('key-input').addEventListener('keydown',e=>{if(e.key==='Enter')connect()})
 
