@@ -1,3 +1,4 @@
+import torboxPlugin from './torbox.js'
 import Fastify from 'fastify'
 import pinoPretty from 'pino-pretty'
 import cors from '@fastify/cors'
@@ -2065,6 +2066,7 @@ const start = async () => {
             return { success: true, deleted: result?.changes || 0 }
         })
 
+await fastify.register(torboxPlugin)
 
         // --- Stateless Catalog Sharing removed ---
 
