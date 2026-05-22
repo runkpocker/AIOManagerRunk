@@ -435,10 +435,20 @@ function renderDupes(){
         const files = (t.files||[]).length
         const quality = extractQuality(edits[t.id]||t.name) || extractQuality((t.files||[]).map(f=>f.name||'').join(' ')) || 'unknown'
         const sizeLabel = t.size ? (t.size>1073741824?(t.size/1073741824).toFixed(1)+' GB':(t.size/1048576).toFixed(0)+' MB') : ''
+        // Show up to 3 media filenames (just the filename part, no path)
+        const mf = mediaFiles(t.files||[]).slice(0,3).map(f=>(f.name||f.short_name||'').split('/').pop()).filter(Boolean)
+        const moreCount = mediaFiles(t.files||[]).length - mf.length
+        const filePreview = mf.length
+          ? '<div style="font-size:12px;color:#666;margin-top:5px;line-height:1.6;word-break:break-all">'
+              + mf.map(n=>'<span style="display:block">'+esc(n)+'</span>').join('')
+              + (moreCount>0?'<span style="color:#555">…+'+moreCount+' more</span>':'')
+            + '</div>'
+          : ''
         return '<div class="dupe-row">' +
           '<div style="flex:1;min-width:0">' +
             '<div class="dupe-title">'+esc(title)+'</div>' +
             '<div class="dupe-meta">'+files+' file'+(files!==1?'s':'')+(quality!=='unknown'?' · <b style="color:#e8e8e8">'+quality+'</b>':'')+(sizeLabel?' · '+sizeLabel:'')+'</div>' +
+            filePreview +
           '</div>' +
           '<button class="btn-delete" onclick="deleteTorrent('+t.id+',this)">Delete</button>' +
         '</div>'
