@@ -620,6 +620,7 @@ async function plugin(fastify) {
   // Serve the renamer UI
   fastify.get('/torbox', async (request, reply) => {
     reply.type('text/html')
+    reply.header('Cache-Control', 'no-store, no-cache, must-revalidate')
     return HTML
   })
 
