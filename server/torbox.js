@@ -130,11 +130,12 @@ const HTML = /* html */`<!DOCTYPE html>
   <div class="ai-banner" id="ai-banner" style="display:none">🤖 AI refining suggestions...</div>
   <div class="list" id="tlist"></div>
   <div id="dupe-panel" style="display:none;padding-bottom:40px"></div>
+  <div id="tag-panel" style="display:none;padding-bottom:40px"></div>
 </div>
 
 <script>
 const STEPS = ['Fetching library','Creating snapshot','Downloading backup','Almost done...']
-let apiKey='', torrents=[], backup=null, edits={}, statuses={}, expandedId=null, editingId=null, dupesView=false, dupeGroups=[], cleanupRunning=false
+let apiKey='', torrents=[], backup=null, edits={}, statuses={}, expandedId=null, editingId=null, dupesView=false, dupeGroups=[], cleanupRunning=false, tagView=false, tagProposals=[]
 
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
 
@@ -151,14 +152,55 @@ function cleanFile(n){n=n.split('/').pop()
 
 const MEDIA_EXT=/\.(mkv|mp4|avi|mov|wmv|m4v|ts|mpg|mpeg|m2ts|vob|flv|webm|divx|xvid)$/i
 function mediaFiles(files){return(files||[]).filter(f=>{const n=f.name||f.short_name||'';return MEDIA_EXT.test(n)})}
+
+function extractQualityFromFiles(files){
+  for(const f of files){const q=extractQuality(f.name||f.short_name||'');if(q)return q}
+  return null
+}
+
+function getBaseName(raw){
+  // Strip path, extension, then all technical tags — stop at first S##E## or year
+  let s=raw.split('/').pop().replace(/\.[^/.]+$/,'').replace(/[._]/g,' ')
+  s=s.replace(/\b(s\d{1,2}e\d{1,2}|season\s*\d+|series\s*\d+)\b.*/i,'')
+  s=s.replace(/\b(4k|2160p|1080p|720p|480p|bluray|bdrip|webrip|web-dl|webdl|hdtv|x264|x265|hevc|avc|h264|h265|hdr|sdr|yify|rarbg|ettv|eztv|prt|proper|repack|extended|theatrical|unrated)\b.*/gi,'')
+  s=s.replace(/\b\d{4}\b.*/,'') // stop at year
+  return s.replace(/\s{2,}/g,' ').trim()
+}
+
+function extractEpisodeDescriptor(files){
+  const names=files.map(f=>(f.name||f.short_name||'').split('/').pop())
+  const eps=[]
+  names.forEach(n=>{
+    // Match S01E01 or S01E01-E02 multi-ep patterns
+    const m=n.match(/[Ss](\d{1,2})[Ee](\d{1,2})/);
+    if(m)eps.push({s:parseInt(m[1]),e:parseInt(m[2])})
+  })
+  if(!eps.length)return null
+  const seasons=[...new Set(eps.map(e=>e.s))].sort((a,b)=>a-b)
+  const pad=n=>String(n).padStart(2,'0')
+  if(seasons.length>1){
+    return 'Seasons '+seasons[0]+'-'+seasons[seasons.length-1]
+  }
+  const s=seasons[0]
+  const epNums=[...new Set(eps.map(e=>e.e))].sort((a,b)=>a-b)
+  if(epNums.length===1)return 'S'+pad(s)+'E'+pad(epNums[0])
+  const min=epNums[0],max=epNums[epNums.length-1]
+  const sequential=epNums.length===max-min+1
+  // Treat as full season if: starts at E01, sequential, and 6+ episodes
+  if(min===1&&sequential&&epNums.length>=6)return 'Season '+s
+  return 'S'+pad(s)+' E'+pad(min)+'-E'+pad(max)
+}
+
 function deriveTitle(files){
   const mf=mediaFiles(files);const src=mf.length?mf:files
   if(!src||!src.length)return null
-  if(src.length===1)return cleanFile(src[0].name||src[0].short_name||'')
-  const names=src.map(f=>cleanFile(f.name||f.short_name||''))
-  const words=names[0].split(' ');let common=[]
-  for(let w of words){if(names.every(n=>n.toLowerCase().includes(w.toLowerCase())))common.push(w);else break}
-  const r=common.join(' ').trim();return r.length>2?r:names[0]
+  const quality=extractQuality((edits&&src[0]&&(src[0].name||src[0].short_name))||'')||extractQualityFromFiles(src)
+  const base=getBaseName(src[0].name||src[0].short_name||'')
+  const epDesc=extractEpisodeDescriptor(src)
+  const parts=[base]
+  if(epDesc)parts.push(epDesc)
+  if(quality)parts.push(quality)
+  return parts.filter(Boolean).join(' ')
 }
 
 function downloadBackup(data){
@@ -220,7 +262,7 @@ async function runAI(){
   document.getElementById('ai-banner').style.display='block'
   document.getElementById('ai-dot').style.display='inline'
   try{
-    const prompt='You are a media library assistant. For each torrent, suggest a clean title from the file names. Use title casing. ALWAYS include video quality at the end if present (1080p, 4K, 720p). TV: "Show Name 1080p". Movies: "Movie Title (Year) 1080p". Return ONLY a JSON array: [{"id":1,"suggested":"Title 1080p"}]. No other text.\\n\\nTorrents:\\n'+
+    const prompt='You are a media library assistant. Suggest clean titles from file names. Rules:\n1. ALWAYS end with quality if present (1080p, 4K, 720p).\n2. Movies: "Movie Title (Year) 1080p"\n3. TV single episode package: "Show Name S02E04 1080p"\n4. TV full season (sequential from E01, 6+ eps): "Show Name Season 2 1080p"\n5. TV partial season: "Show Name S02 E04-E08 1080p"\n6. TV multi-season: "Show Name Seasons 1-3 1080p"\n7. Title casing. Return ONLY JSON array: [{"id":1,"suggested":"Title"}]. No other text.\\n\\nTorrents:\\n'+
       JSON.stringify(torrents.map(t=>({id:t.id,current_name:t.name,files:(t.files||[]).slice(0,5).map(f=>f.name||f.short_name)})),null,2)
 
     const r=await fetch('/api/torbox/ai',{
@@ -240,7 +282,7 @@ async function runAI(){
 
 function renderAll(){
   document.getElementById('count').textContent=torrents.length
-  renderActionBar();renderList();renderDupes()
+  renderActionBar();renderList();renderDupes();renderTagPanel()
 }
 
 function renderActionBar(){
@@ -248,6 +290,7 @@ function renderActionBar(){
   let h='<button class="achip" onclick="refreshLibrary()">↻ Refresh</button>'
   h+='<button class="achip'+(cleanupRunning?' primary':'')+'" onclick="runTitleCleanup()">✨ Title Cleanup</button>'
   h+='<button class="achip'+(dupesView?' primary':'')+'" onclick="toggleDupes()">🔍 Duplicates</button>'
+  h+='<button class="achip'+(tagView?' primary':'')+'" onclick="toggleTagView()">🏷️ Auto-Tag</button>'
   if(backup)h+='<button class="achip" onclick="reDownload()">⬇ Backup</button>'
   if(backup)h+='<button class="achip" onclick="revertAll()">↩ Revert All</button>'
   if(needs.length)h+='<button class="achip primary" onclick="applyAll()">Apply '+needs.length+'</button>'
@@ -462,6 +505,91 @@ function renderDupes(){
     }).join('')
 }
 
+// ── AUTO-TAGGING ─────────────────────────────────────────────────────────────
+
+const MANAGED_TAGS = ['series','movies','adult']
+const TAG_COLOR = {series:'#4488ff', movies:'#aa66ff', adult:'#ff6688'}
+
+function classifyTorrent(t){
+  const allText=[t.name,...(t.files||[]).map(f=>f.name||f.short_name||'')].join(' ')
+  if(/\bxxx\b|letspostit|brazzers|bangbros|realitykings|mofos|nubiles|vixen|blacked|tushy|wicked|penthouse|playboy|\bporn\b|pornrips|adulttime|21sextury|digitalplayground|eternaldesire|sweetsin|puretaboo/i.test(allText))return 'adult'
+  if(/\bS\d{1,2}E\d{1,2}\b/i.test(allText))return 'series'
+  if(/\bSeason\s*\d+\b/i.test(edits[t.id]||t.name))return 'series'
+  return 'movies'
+}
+
+function buildFinalTags(existing,newTag){
+  const kept=(existing||[]).filter(tag=>!MANAGED_TAGS.includes(tag.toLowerCase()))
+  if(!kept.includes(newTag))kept.push(newTag)
+  return kept
+}
+
+function toggleTagView(){
+  if(tagView){tagView=false;tagProposals=[];renderAll();return}
+  tagProposals=torrents.map(t=>({t,currentTags:t.tags||[],proposed:classifyTorrent(t),finalTags:buildFinalTags(t.tags,classifyTorrent(t)),status:null}))
+  tagView=true;renderAll()
+}
+
+function renderTagPanel(){
+  const el=document.getElementById('tag-panel')
+  if(!el)return
+  if(!tagView){el.style.display='none';return}
+  el.style.display='block'
+  const counts={series:0,movies:0,adult:0}
+  tagProposals.forEach(p=>counts[p.proposed]=(counts[p.proposed]||0)+1)
+  const done=tagProposals.filter(p=>p.status==='done').length
+  const errors=tagProposals.filter(p=>p.status==='error').length
+  const pending=tagProposals.filter(p=>!p.status).length
+
+  let html='<div style="padding:14px 16px 8px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">'
+  Object.entries(counts).forEach(([k,v])=>{
+    html+='<span style="background:'+TAG_COLOR[k]+'22;color:'+TAG_COLOR[k]+';border:1px solid '+TAG_COLOR[k]+'44;border-radius:12px;padding:5px 14px;font-size:14px">'+k+' · '+v+'</span>'
+  })
+  if(done)html+='<span style="color:#00e5a0;font-size:13px">✓ '+done+' tagged</span>'
+  if(errors)html+='<span style="color:#ff6b6b;font-size:13px">✗ '+errors+' errors</span>'
+  html+='</div>'
+  if(pending){
+    html+='<div style="padding:0 16px 12px"><button class="btn-p" style="font-size:15px;padding:14px" onclick="applyAllTags()">Apply Tags to All '+tagProposals.length+' Items</button></div>'
+  }
+  ;['series','movies','adult'].forEach(tag=>{
+    const group=tagProposals.filter(p=>p.proposed===tag)
+    if(!group.length)return
+    html+='<div style="margin:0 12px 14px"><div style="font-size:14px;font-weight:bold;color:'+TAG_COLOR[tag]+';padding:8px 0 6px;border-bottom:1px solid #222;margin-bottom:4px">'+tag.toUpperCase()+' · '+group.length+'</div>'
+    group.forEach(p=>{
+      const title=edits[p.t.id]||p.t.name
+      const kept=(p.t.tags||[]).filter(tg=>!MANAGED_TAGS.includes(tg.toLowerCase()))
+      const tagPills=p.finalTags.map(tg=>'<span style="background:'+(TAG_COLOR[tg]||'#555')+'33;color:'+(TAG_COLOR[tg]||'#aaa')+';border-radius:8px;padding:3px 10px;font-size:13px;margin-right:4px">'+esc(tg)+'</span>').join('')
+      const st=p.status
+      html+='<div style="display:flex;align-items:flex-start;gap:10px;padding:11px 0;border-top:1px solid #1a1a1a">'
+        +'<div style="flex:1;min-width:0"><div style="font-size:15px;color:#e8e8e8;word-break:break-word;line-height:1.4">'+esc(title)+'</div>'
+        +'<div style="margin-top:6px">'+tagPills+'</div>'
+        +(kept.length?'<div style="font-size:12px;color:#555;margin-top:3px">keeping: '+kept.join(', ')+'</div>':'')
+        +'</div>'
+        +(st==='done'?'<span style="color:#00e5a0;font-size:20px;flex-shrink:0">✓</span>'
+         :st==='error'?'<span style="color:#ff6b6b;font-size:20px;flex-shrink:0">✗</span>'
+         :'<button class="btn-delete" style="background:#1a2030;color:#4488ff;border-color:#2a3a60" onclick="applyOneTag('+p.t.id+',this)">Tag</button>')
+        +'</div>'
+    })
+    html+='</div>'
+  })
+  el.innerHTML=html
+}
+
+async function applyOneTag(id,btnEl){
+  const p=tagProposals.find(p=>p.t.id===id);if(!p)return
+  if(btnEl){btnEl.disabled=true;btnEl.textContent='...'}
+  try{
+    const r=await fetch('/api/torbox/tag',{method:'POST',headers:{'Content-Type':'application/json','x-torbox-key':apiKey},body:JSON.stringify({torrent_id:id,tags:p.finalTags})})
+    const d=await r.json()
+    if(d.success){p.status='done';p.t.tags=p.finalTags}else{p.status='error';if(btnEl){btnEl.disabled=false;btnEl.textContent='Tag'}}
+  }catch{p.status='error';if(btnEl){btnEl.disabled=false;btnEl.textContent='Tag'}}
+  renderTagPanel()
+}
+
+async function applyAllTags(){
+  for(const p of tagProposals)if(!p.status)await applyOneTag(p.t.id,null)
+}
+
 async function refreshLibrary(){
   document.getElementById('abar').innerHTML='<span style="color:#00e5a0;padding:10px 4px;font-size:13px">↻ Refreshing...</span>'
   try{
@@ -527,6 +655,22 @@ async function plugin(fastify) {
     } catch (e) {
       const detail = e.response?.data?.detail || e.response?.data?.error || e.message
       return reply.status(e.response?.status || 502).send({ success: false, detail, raw: e.response?.data })
+    }
+  })
+
+  // Proxy: update torrent tags
+  fastify.post('/api/torbox/tag', async (request, reply) => {
+    const key = request.headers['x-torbox-key'] || process.env.TORBOX_API_KEY
+    if (!key) return reply.status(401).send({ success: false, detail: 'No API key provided' })
+    try {
+      const { torrent_id, tags } = request.body
+      const res = await axios.put(`${TORBOX}/torrents/edittorrent`, { torrent_id, tags }, {
+        headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' }
+      })
+      return res.data
+    } catch (e) {
+      const detail = e.response?.data?.detail || e.message
+      return reply.status(e.response?.status || 502).send({ success: false, detail })
     }
   })
 
