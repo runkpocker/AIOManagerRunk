@@ -228,7 +228,7 @@ function baseName(raw){
   // strip bracketed quality tags like [1080p] or (BluRay) and everything after
   s=s.replace(/[\(\[]\s*(?:4k|2160p|1080p|720p|480p|bluray|bdrip|webrip|web-dl|webdl|hdtv|x264|x265|hevc|avc|h264|h265|hdr|sdr)\s*[\)\]].*/gi,'');
   // strip bare quality and everything after
-  s=s.replace(/\b(4k|2160p|1080p|720p|480p|bluray|bdrip|webrip|web-dl|webdl|hdtv|x264|x265|hevc|avc|h264|h265|hdr|sdr|yify|rarbg|ettv|eztv|prt|proper|repack|extended|theatrical|unrated)\b.*/gi,'');
+  s=s.replace(/\b(4k|2160p|1080p|720p|480p|bluray|bdrip|webrip|web-dl|webdl|hdtv|x264|x265|hevc|avc|h264|h265|hdr|uhd|sdr|remux|multi|internal|dts|atmos|truehd|ddp|dd5|ac3|aac|yify|rarbg|ettv|eztv|prt|proper|repack|extended|theatrical|unrated)\b.*/gi,'');
   // strip bare year (will re-add formatted) — strip with surrounding brackets too
   s=cleanBrackets(s);
   s=s.replace(/\b(19\d\d|20\d\d)\b/g,'');
@@ -282,7 +282,7 @@ function cleanItemTitle(name){
   s=s.replace(/\bS\d\d?E\d\d?\b.*/i,'');
   s=s.replace(/\b[Ss]eason\s*\d+\b.*/i,'');
   s=s.replace(/[\(\[]\s*(?:4k|2160p|1080p|720p|480p|bluray|bdrip|webrip|web-dl|webdl|hdtv|x264|x265|hevc|avc|h264|h265|hdr|sdr)\s*[\)\]].*/gi,'');
-  s=s.replace(/\b(4k|2160p|1080p|720p|480p|bluray|bdrip|webrip|web-dl|webdl|hdtv|x264|x265|hevc|avc|h264|h265|hdr|sdr|yify|rarbg|ettv|eztv|prt|proper|repack|extended|theatrical|unrated)\b.*/gi,'');
+  s=s.replace(/\b(4k|2160p|1080p|720p|480p|bluray|bdrip|webrip|web-dl|webdl|hdtv|x264|x265|hevc|avc|h264|h265|hdr|uhd|sdr|remux|multi|internal|dts|atmos|truehd|ddp|dd5|ac3|aac|yify|rarbg|ettv|eztv|prt|proper|repack|extended|theatrical|unrated)\b.*/gi,'');
   s=cleanBrackets(s);
   s=s.replace(/\b(19\d\d|20\d\d)\b/g,'');
   s=cleanBrackets(s);
@@ -1081,7 +1081,7 @@ async function plugin(fastify) {
       let res
       if (type === 'usenet') {
         res = await axios.put(`${TORBOX}/usenet/editusenetdownload`,
-          { usenet_id: item_id, name },
+          { usenet_download_id: item_id, name },
           { headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' } }
         )
       } else {
@@ -1106,7 +1106,7 @@ async function plugin(fastify) {
       let res
       if (type === 'usenet') {
         res = await axios.post(`${TORBOX}/usenet/controlusenetdownload`,
-          { usenet_id: item_id, operation: 'delete' },
+          { usenet_download_id: item_id, operation: 'delete' },
           { headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' } }
         )
       } else {
@@ -1130,7 +1130,7 @@ async function plugin(fastify) {
       let res
       if (type === 'usenet') {
         res = await axios.put(`${TORBOX}/usenet/editusenetdownload`,
-          { usenet_id: item_id, tags },
+          { usenet_download_id: item_id, tags },
           { headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' } }
         )
       } else {
