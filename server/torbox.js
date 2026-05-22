@@ -90,6 +90,19 @@ input,button{font-family:'Courier New',monospace}
 .type-badge{font-size:11px;padding:2px 8px;border-radius:6px;font-weight:bold;margin-right:6px;vertical-align:middle}
 .type-torrent{background:#1a2a1a;color:#4a9a6a;border:1px solid #2a4a2a}
 .type-usenet{background:#1a1a2a;color:#6a7aff;border:1px solid #2a2a5a}
+#fbar{border-bottom:1px solid #1a1a1e;background:#0f0f12}
+.fsearch{width:100%;background:#1a1a20;border:none;border-bottom:1px solid #1a1a1e;padding:12px 16px;color:#e8e8e8;font-size:15px;font-family:'Courier New',monospace;outline:none}
+.fsearch::placeholder{color:#444}
+.frow{display:flex;gap:6px;padding:8px 12px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.frow::-webkit-scrollbar{display:none}
+.fchip{background:#1a1a20;color:#888;border:1px solid #2a2a30;border-radius:16px;padding:6px 14px;font-size:13px;cursor:pointer;white-space:nowrap;font-family:'Courier New',monospace}
+.fchip.on{background:#00e5a015;color:#00e5a0;border-color:#00e5a040}
+.fchip.on-type{background:#4a9a6a15;color:#4a9a6a;border-color:#4a9a6a40}
+.fchip.on-usenet{background:#6a7aff15;color:#6a7aff;border-color:#6a7aff40}
+.fchip.on-series{background:#4488ff15;color:#4488ff;border-color:#4488ff40}
+.fchip.on-movies{background:#aa66ff15;color:#aa66ff;border-color:#aa66ff40}
+.fchip.on-adult{background:#ff668815;color:#ff6688;border-color:#ff668840}
+.fcount{font-size:12px;color:#444;padding:0 14px 8px;font-family:'Courier New',monospace}
 </style>
 </head>
 <body>
@@ -124,6 +137,12 @@ input,button{font-family:'Courier New',monospace}
     </div>
   </div>
   <div class="abar" id="abar"></div>
+  <div id="fbar">
+    <input class="fsearch" id="fsearch" type="search" placeholder="&#x1f50d; Search titles..." autocorrect="off" spellcheck="false" oninput="onFilterChange()">
+    <div class="frow" id="frow-type"></div>
+    <div class="frow" id="frow-tag"></div>
+    <div class="fcount" id="fcount"></div>
+  </div>
   <div class="ai-banner" id="ai-banner" style="display:none"></div>
   <div class="list" id="tlist"></div>
   <div id="dpanel" class="panel" style="display:none"></div>
@@ -141,6 +160,7 @@ var expandId=null, editId=null;
 var dupesOpen=false, dupeGroups=[];
 var tagOpen=false, tagProposals=[];
 var cleanupBusy=false;
+var filterType='all', filterTag='all', filterStatus='all';
 
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
@@ -299,10 +319,84 @@ function showErr(msg){
   el.textContent=msg;el.style.display='block';
 }
 
+// ── FILTER ────────────────────────────────────────────────────
+function filteredItems(){
+  var q=(document.getElementById('fsearch')||{}).value||'';
+  q=q.toLowerCase().trim();
+  return items.filter(function(t){
+    if(filterType==='torrent'&&t._type!=='torrent')return false;
+    if(filterType==='usenet'&&t._type!=='usenet')return false;
+    if(filterTag==='untagged'){
+      var hasMgd=(t.tags||[]).some(function(tg){return MANAGED.indexOf(tg.toLowerCase())>=0;});
+      if(hasMgd)return false;
+    } else if(filterTag!=='all'){
+      var hasTag=(t.tags||[]).some(function(tg){return tg.toLowerCase()===filterTag;});
+      if(!hasTag)return false;
+    }
+    if(filterStatus==='pending'){var e=edits[t.id];if(!e||e===t.name)return false;}
+    if(filterStatus==='done'){if(statuses[t.id]!=='done')return false;}
+    if(q&&(t.name||'').toLowerCase().indexOf(q)<0){
+      var ed=edits[t.id]||'';
+      if(ed.toLowerCase().indexOf(q)<0)return false;
+    }
+    return true;
+  });
+}
+
+function onFilterChange(){renderFilterBar();renderList();}
+
+function setFilterType(v){filterType=v;onFilterChange();}
+function setFilterTag(v){filterTag=v;onFilterChange();}
+function setFilterStatus(v){filterStatus=v;onFilterChange();}
+
+function renderFilterBar(){
+  var tc=items.filter(function(t){return t._type==='torrent';}).length;
+  var uc=items.filter(function(t){return t._type==='usenet';}).length;
+  var pending=items.filter(function(t){var e=edits[t.id];return e&&e!==t.name;}).length;
+  var done=items.filter(function(t){return statuses[t.id]==='done';}).length;
+
+  var typeRow=document.getElementById('frow-type');
+  var tagRow=document.getElementById('frow-tag');
+  var fcountEl=document.getElementById('fcount');
+  if(!typeRow)return;
+
+  var types=[
+    {v:'all',label:'All ('+items.length+')',cls:'on'},
+    {v:'torrent',label:'&#x2729; Torrent ('+tc+')',cls:'on-type'},
+    {v:'usenet',label:'&#x25a3; Usenet ('+uc+')',cls:'on-usenet'}
+  ];
+  typeRow.innerHTML=types.map(function(x){
+    return '<button class="fchip'+(filterType===x.v?' '+x.cls:'')+'" onclick="setFilterType(\''+x.v+'\')">'+x.label+'</button>';
+  }).join('');
+
+  var tags=[
+    {v:'all',label:'All Tags',cls:'on'},
+    {v:'series',label:'&#x1f4fa; Series',cls:'on-series'},
+    {v:'movies',label:'&#x1f3ac; Movies',cls:'on-movies'},
+    {v:'adult',label:'&#x1f51e; Adult',cls:'on-adult'},
+    {v:'untagged',label:'Untagged',cls:'on'}
+  ];
+  tagRow.innerHTML=tags.map(function(x){
+    return '<button class="fchip'+(filterTag===x.v?' '+x.cls:'')+'" onclick="setFilterTag(\''+x.v+'\')">'+x.label+'</button>';
+  }).join('');
+
+  // append status filters to tag row
+  if(pending||done){
+    var statusBtns='';
+    if(pending)statusBtns+='<button class="fchip'+(filterStatus==='pending'?' on':'')+'" onclick="setFilterStatus(filterStatus===\'pending\'?\'all\':\'pending\')">&#x270f; Pending ('+pending+')</button>';
+    if(done)statusBtns+='<button class="fchip'+(filterStatus==='done'?' on':'')+'" onclick="setFilterStatus(filterStatus===\'done\'?\'all\':\'done\')">&#x2713; Done ('+done+')</button>';
+    tagRow.innerHTML+=statusBtns;
+  }
+
+  var vis=filteredItems().length;
+  fcountEl.textContent=vis===items.length?'':('Showing '+vis+' of '+items.length);
+}
+
 // ── RENDER ALL ────────────────────────────────────────────────
 function renderAll(){
-  document.getElementById('count').textContent=items.length;
-  renderBar();renderList();renderDupes();renderTags();
+  var vis=filteredItems().length;
+  document.getElementById('count').textContent=vis===items.length?items.length:(vis+'/'+items.length);
+  renderBar();renderFilterBar();renderList();renderDupes();renderTags();
 }
 
 // ── ACTION BAR ────────────────────────────────────────────────
@@ -320,7 +414,12 @@ function renderBar(){
 
 // ── ITEM LIST ─────────────────────────────────────────────────
 function renderList(){
-  document.getElementById('tlist').innerHTML=items.map(function(t){
+  var visible=filteredItems();
+  if(!visible.length){
+    document.getElementById('tlist').innerHTML='<div style="padding:30px 16px;color:#444;font-size:14px;text-align:center">No items match filters.</div>';
+    return;
+  }
+  document.getElementById('tlist').innerHTML=visible.map(function(t){
     var edit=edits[t.id]!==undefined?edits[t.id]:t.name;
     var changed=edit!==t.name;
     var st=statuses[t.id]||'';
@@ -412,7 +511,7 @@ function doRefresh(){
   .then(function(d){
     if(!d.success)throw new Error(d.detail||'Failed');
     items=Array.isArray(d.data)?d.data:[];
-    statuses={};renderAll();
+    statuses={};filterType='all';filterTag='all';filterStatus='all';renderAll();
   })
   .catch(function(e){renderBar();alert('Refresh failed: '+e.message);});
 }
