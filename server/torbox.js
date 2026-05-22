@@ -1,5 +1,5 @@
 // ============================================================
-//  TorBox Renamer — Fastify Plugin
+//  TorBox Renamer — Fastify Plugin  (Torrent + Usenet)
 //  Place in server/torbox.js
 //  In server/index.js add:
 //    import torboxPlugin from './torbox.js'
@@ -13,9 +13,6 @@ import axios from 'axios'
 
 const TORBOX = 'https://api.torbox.app/v1/api'
 
-// ── CLIENT HTML ──────────────────────────────────────────────
-// All regex inside this string uses \\\\ for \\ in the actual JS
-// (template literal: \\\\ → \\ → regex \)
 const HTML = String.raw`<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -90,6 +87,9 @@ input,button{font-family:'Courier New',monospace}
 .btn-del{background:#2a1515;color:#ff6b6b;border:1px solid #5a2020;border-radius:8px;padding:11px 16px;font-size:14px;cursor:pointer;white-space:nowrap;flex-shrink:0}
 .btn-del:disabled{opacity:.5}
 .tpill{border-radius:8px;padding:3px 10px;font-size:13px;margin-right:4px;display:inline-block;margin-bottom:4px}
+.type-badge{font-size:11px;padding:2px 8px;border-radius:6px;font-weight:bold;margin-right:6px;vertical-align:middle}
+.type-torrent{background:#1a2a1a;color:#4a9a6a;border:1px solid #2a4a2a}
+.type-usenet{background:#1a1a2a;color:#6a7aff;border:1px solid #2a2a5a}
 </style>
 </head>
 <body>
@@ -98,7 +98,7 @@ input,button{font-family:'Courier New',monospace}
   <div class="lcard">
     <div class="logo">&#x26a1;</div>
     <div class="app-name">TorBox Renamer</div>
-    <div class="app-sub">AI-powered title fixer</div>
+    <div class="app-sub">Torrents &amp; Usenet — AI-powered</div>
     <div id="lform" style="width:100%;display:flex;flex-direction:column;gap:14px">
       <input class="big-input" id="key-input" type="password" placeholder="TorBox API key..." autocomplete="off" autocorrect="off" spellcheck="false">
       <div class="err" id="err-msg" style="display:none"></div>
@@ -131,12 +131,12 @@ input,button{font-family:'Courier New',monospace}
 </div>
 
 <script>
-var STEPS = ['Fetching library','Creating snapshot','Downloading backup','Almost done...'];
+var STEPS = ['Fetching torrents & Usenet','Creating snapshot','Downloading backup','Almost done...'];
 var MANAGED = ['series','movies','adult'];
 var TC = {series:'#4488ff',movies:'#aa66ff',adult:'#ff6688'};
 var MEXT = /\.(mkv|mp4|avi|mov|wmv|m4v|ts|mpg|mpeg|m2ts|vob|flv|webm|divx|xvid)$/i;
 
-var apiKey='', torrents=[], backup=null, edits={}, statuses={};
+var apiKey='', items=[], backup=null, edits={}, statuses={};
 var expandId=null, editId=null;
 var dupesOpen=false, dupeGroups=[];
 var tagOpen=false, tagProposals=[];
@@ -264,15 +264,17 @@ function doConnect(){
   fetch('/api/torbox/list',{headers:{'x-torbox-key':apiKey}})
   .then(function(r){return r.json();})
   .then(function(d){
-    if(!d.success)throw new Error(d.detail||'Failed to fetch torrents');
-    torrents=Array.isArray(d.data)?d.data:[];
+    if(!d.success)throw new Error(d.detail||'Failed to fetch library');
+    items=Array.isArray(d.data)?d.data:[];
 
     showStep(1);
     backup={
       exported_at:new Date().toISOString(),
-      torrent_count:torrents.length,
-      torrents:torrents.map(function(t){return{
-        id:t.id,name:t.name,hash:t.hash,tags:t.tags||[],
+      total_count:items.length,
+      torrent_count:items.filter(function(i){return i._type==='torrent';}).length,
+      usenet_count:items.filter(function(i){return i._type==='usenet';}).length,
+      items:items.map(function(t){return{
+        id:t.id,name:t.name,hash:t.hash,tags:t.tags||[],_type:t._type,
         files:(t.files||[]).map(function(f){return{id:f.id,name:f.name||f.short_name,size:f.size};})
       };})
     };
@@ -299,13 +301,13 @@ function showErr(msg){
 
 // ── RENDER ALL ────────────────────────────────────────────────
 function renderAll(){
-  document.getElementById('count').textContent=torrents.length;
+  document.getElementById('count').textContent=items.length;
   renderBar();renderList();renderDupes();renderTags();
 }
 
 // ── ACTION BAR ────────────────────────────────────────────────
 function renderBar(){
-  var needs=torrents.filter(function(t){return edits[t.id]&&edits[t.id]!==t.name;});
+  var needs=items.filter(function(t){return edits[t.id]&&edits[t.id]!==t.name;});
   var h='<button class="chip" onclick="doRefresh()">&#x21bb; Refresh</button>';
   h+='<button class="chip'+(cleanupBusy?' on':'')+'" onclick="doCleanup()">&#x2728; Title Cleanup</button>';
   h+='<button class="chip'+(dupesOpen?' on':'')+'" onclick="toggleDupes()">&#x1f50d; Duplicates</button>';
@@ -316,19 +318,20 @@ function renderBar(){
   document.getElementById('abar').innerHTML=h;
 }
 
-// ── TORRENT LIST ─────────────────────────────────────────────
+// ── ITEM LIST ─────────────────────────────────────────────────
 function renderList(){
-  document.getElementById('tlist').innerHTML=torrents.map(function(t){
+  document.getElementById('tlist').innerHTML=items.map(function(t){
     var edit=edits[t.id]!==undefined?edits[t.id]:t.name;
     var changed=edit!==t.name;
     var st=statuses[t.id]||'';
     var isExp=expandId===t.id;
     var isEd=editId===t.id;
     var files=t.files||[];
-    var orig=backup&&backup.torrents.filter(function(b){return b.id===t.id;})[0];
+    var orig=backup&&backup.items.filter(function(b){return b.id===t.id&&b._type===t._type;})[0];
     var origName=orig&&orig.name;
     var cls='tcard'+(changed?' changed':'')+(st==='done'?' done':'');
-    var sub=files.length+' file'+(files.length!==1?'s':'');
+    var typeBadge='<span class="type-badge '+(t._type==='usenet'?'type-usenet':'type-torrent')+'">'+(t._type==='usenet'?'Usenet':'Torrent')+'</span>';
+    var sub=typeBadge+files.length+' file'+(files.length!==1?'s':'');
     if(st==='done')sub+=' <span class="tag-ok">&#x2713; saved</span>';
     else if(st==='reverted')sub+=' <span class="tag-rev">&#x21a9; reverted</span>';
     else if(st&&st.slice(0,4)==='err:')sub+=' <span class="tag-err">&#x2717; '+esc(st.slice(4))+'</span>';
@@ -337,23 +340,23 @@ function renderList(){
     if(isExp){
       var frows=files.slice(0,3).map(function(f){
         return '<div class="frow"><span>&#x1f4c4;</span><span class="fname">'+esc((f.name||f.short_name||'').split('/').pop())+'</span></div>';
-      }).join('')+(files.length>3?'<div class="fname" style="color:#555">+' +(files.length-3)+' more</div>':'');
+      }).join('')+(files.length>3?'<div class="fname" style="color:#555">+'+(files.length-3)+' more</div>':'');
       var acts='';
       if(isEd){
         acts='<div class="eblock"><input class="efield" id="ef-'+t.id+'" value="'+esc(edit)+'" type="text" autocorrect="off" spellcheck="false">'
-          +'<div class="eacts"><button class="btn-save" onclick="saveEdit('+t.id+')">Save</button>'
-          +'<button class="btn-cancel" onclick="cancelEdit('+t.id+')">Cancel</button></div></div>';
+          +'<div class="eacts"><button class="btn-save" onclick="saveEdit(\''+t.id+'\',\''+t._type+'\')">Save</button>'
+          +'<button class="btn-cancel" onclick="cancelEdit(\''+t.id+'\')">Cancel</button></div></div>';
       }else{
         acts='<div class="cacts">';
-        if(changed)acts+='<button class="btn-p" onclick="applyOne('+t.id+')">Apply &#x2192; '+esc(edit)+'</button>';
-        acts+='<button class="btn-s" onclick="startEdit('+t.id+')">&#x270f;&#xfe0f; Edit Title</button>';
-        if(origName&&t.name!==origName)acts+='<button class="btn-g" onclick="revertOne('+t.id+')">&#x21a9; Revert to Original</button>';
+        if(changed)acts+='<button class="btn-p" onclick="applyOne(\''+t.id+'\',\''+t._type+'\')">Apply &#x2192; '+esc(edit)+'</button>';
+        acts+='<button class="btn-s" onclick="startEdit(\''+t.id+'\')">&#x270f;&#xfe0f; Edit Title</button>';
+        if(origName&&t.name!==origName)acts+='<button class="btn-g" onclick="revertOne(\''+t.id+'\',\''+t._type+'\')">&#x21a9; Revert to Original</button>';
         acts+='</div>';
       }
       exp='<div class="ebody">'+(files.length?'<div class="flist">'+frows+'</div>':'')+acts+'</div>';
     }
     return '<div class="'+cls+'" id="c-'+t.id+'">'
-      +'<div class="cmain" onclick="toggleExp('+t.id+')">'
+      +'<div class="cmain" onclick="toggleExp(\''+t.id+'\')">'
       +'<div class="cmeta"><div class="ctitle">'+esc(t.name)+'</div>'
       +(changed?'<div class="csugg">&#x2192; '+esc(edit)+'</div>':'')
       +'<div class="csub">'+sub+'</div></div>'
@@ -362,17 +365,17 @@ function renderList(){
 }
 
 // ── CARD ACTIONS ─────────────────────────────────────────────
-function toggleExp(id){expandId=expandId===id?null:id;if(editId!==id)editId=null;renderList();if(editId===id)setTimeout(function(){var el=document.getElementById('ef-'+id);if(el)el.focus();},50);}
+function toggleExp(id){expandId=expandId===id?null:id;if(editId!==id)editId=null;renderList();}
 function startEdit(id){editId=id;renderList();setTimeout(function(){var el=document.getElementById('ef-'+id);if(el)el.focus();},50);}
-function cancelEdit(id){editId=null;var t=torrents.filter(function(x){return x.id===id;})[0];if(t)edits[id]=t.name;renderList();renderBar();}
-function saveEdit(id){var el=document.getElementById('ef-'+id);if(el&&el.value.trim()){edits[id]=el.value.trim();editId=null;}applyOne(id);}
+function cancelEdit(id){editId=null;var t=items.filter(function(x){return x.id===id;})[0];if(t)edits[id]=t.name;renderList();renderBar();}
+function saveEdit(id,type){var el=document.getElementById('ef-'+id);if(el&&el.value.trim()){edits[id]=el.value.trim();editId=null;}applyOne(id,type);}
 
-function applyOne(id,nameOv){
-  var t=torrents.filter(function(x){return x.id===id;})[0];if(!t)return;
+function applyOne(id,type,nameOv){
+  var t=items.filter(function(x){return x.id===id;})[0];if(!t)return;
   var newName=nameOv!==undefined?nameOv:edits[id];
   if(!newName||newName===t.name)return;
   statuses[id]='saving';renderList();
-  fetch('/api/torbox/rename',{method:'POST',headers:{'Content-Type':'application/json','x-torbox-key':apiKey},body:JSON.stringify({torrent_id:id,name:newName})})
+  fetch('/api/torbox/rename',{method:'POST',headers:{'Content-Type':'application/json','x-torbox-key':apiKey},body:JSON.stringify({item_id:id,name:newName,type:type||t._type})})
   .then(function(r){return r.json();})
   .then(function(d){
     if(d.success){t.name=newName;statuses[id]='done';}
@@ -383,21 +386,21 @@ function applyOne(id,nameOv){
 }
 
 function applyAll(){
-  torrents.forEach(function(t){if(edits[t.id]&&edits[t.id]!==t.name)applyOne(t.id);});
+  items.forEach(function(t){if(edits[t.id]&&edits[t.id]!==t.name)applyOne(t.id,t._type);});
 }
 
-function revertOne(id){
-  var orig=backup&&backup.torrents.filter(function(b){return b.id===id;})[0];
+function revertOne(id,type){
+  var orig=backup&&backup.items.filter(function(b){return b.id===id;})[0];
   if(!orig)return;
-  edits[id]=orig.name;applyOne(id,orig.name);
+  edits[id]=orig.name;applyOne(id,type||orig._type,orig.name);
 }
 
 function doRevertAll(){
   if(!backup)return;
-  if(!confirm('Revert all '+backup.torrents.length+' torrents to original names?'))return;
-  backup.torrents.forEach(function(orig){
-    var t=torrents.filter(function(x){return x.id===orig.id;})[0];
-    if(t&&t.name!==orig.name){edits[orig.id]=orig.name;applyOne(orig.id,orig.name);}
+  if(!confirm('Revert all '+backup.items.length+' items to original names?'))return;
+  backup.items.forEach(function(orig){
+    var t=items.filter(function(x){return x.id===orig.id&&x._type===orig._type;})[0];
+    if(t&&t.name!==orig.name){edits[orig.id]=orig.name;applyOne(orig.id,orig._type,orig.name);}
   });
 }
 
@@ -408,7 +411,7 @@ function doRefresh(){
   .then(function(r){return r.json();})
   .then(function(d){
     if(!d.success)throw new Error(d.detail||'Failed');
-    torrents=Array.isArray(d.data)?d.data:[];
+    items=Array.isArray(d.data)?d.data:[];
     statuses={};renderAll();
   })
   .catch(function(e){renderBar();alert('Refresh failed: '+e.message);});
@@ -421,10 +424,10 @@ function doCleanup(){
   var banner=document.getElementById('ai-banner');
   banner.style.display='block';banner.textContent='&#x2728; Deriving titles from file names...';
   document.getElementById('ai-dot').style.display='inline';
-  torrents.forEach(function(t){edits[t.id]=deriveTitle(t.files)||t.name;});
+  items.forEach(function(t){edits[t.id]=deriveTitle(t.files)||t.name;});
   renderList();
   banner.textContent='&#x1f916; AI refining suggestions...';
-  var prompt='You are a media library assistant. Suggest clean titles from file names. Rules:\n1. ALWAYS end with quality if present (1080p, 4K, 720p).\n2. Movies: "Movie Title (Year) 1080p"\n3. TV single episode package: "Show Name S02E04 1080p"\n4. TV full season (sequential from E01, 6+ eps): "Show Name Season 2 1080p"\n5. TV partial season: "Show Name S02 E04-E08 1080p"\n6. TV multi-season: "Show Name Seasons 1-3 1080p"\n7. Title casing. Return ONLY JSON array: [{"id":1,"suggested":"Title"}]. No other text.\n\nTorrents:\n'+JSON.stringify(torrents.map(function(t){return{id:t.id,current_name:t.name,files:(t.files||[]).slice(0,5).map(function(f){return f.name||f.short_name;})};}),null,2);
+  var prompt='You are a media library assistant. Suggest clean titles from file names. Rules:\n1. ALWAYS end with quality if present (1080p, 4K, 720p).\n2. Movies: "Movie Title (Year) 1080p"\n3. TV single episode package: "Show Name S02E04 1080p"\n4. TV full season (sequential from E01, 6+ eps): "Show Name Season 2 1080p"\n5. TV partial season: "Show Name S02 E04-E08 1080p"\n6. TV multi-season: "Show Name Seasons 1-3 1080p"\n7. Title casing. Return ONLY JSON array: [{"id":1,"suggested":"Title"}]. No other text.\n\nItems:\n'+JSON.stringify(items.map(function(t){return{id:t.id,type:t._type,current_name:t.name,files:(t.files||[]).slice(0,5).map(function(f){return f.name||f.short_name;})};}),null,2);
   fetch('/api/torbox/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]})})
   .then(function(r){return r.json();})
   .then(function(d){
@@ -454,7 +457,7 @@ function isExact(group){
 
 function scanDupes(){
   var groups={};
-  torrents.forEach(function(t){
+  items.forEach(function(t){
     var key=norm(edits[t.id]||t.name);
     if(!key||key.length<3)return;
     if(!groups[key])groups[key]=[];
@@ -470,14 +473,14 @@ function toggleDupes(){
   scanDupes();dupesOpen=true;renderAll();
 }
 
-function delTorrent(id,btn){
-  if(!confirm('Delete this torrent permanently from TorBox?'))return;
+function delItem(id,type,btn){
+  if(!confirm('Delete this item permanently from TorBox?'))return;
   btn.disabled=true;btn.textContent='...';
-  fetch('/api/torbox/delete',{method:'POST',headers:{'Content-Type':'application/json','x-torbox-key':apiKey},body:JSON.stringify({torrent_id:id})})
+  fetch('/api/torbox/delete',{method:'POST',headers:{'Content-Type':'application/json','x-torbox-key':apiKey},body:JSON.stringify({item_id:id,type:type})})
   .then(function(r){return r.json();})
   .then(function(d){
     if(d.success){
-      torrents=torrents.filter(function(t){return t.id!==id;});
+      items=items.filter(function(t){return !(t.id===id&&t._type===type);});
       delete edits[id];delete statuses[id];
       scanDupes();renderAll();
     }else{btn.disabled=false;btn.textContent='Delete';alert('Delete failed: '+(d.detail||'Unknown'));}
@@ -508,12 +511,13 @@ function renderDupes(){
       var mf=mfiles(files).slice(0,3);
       var fnames=mf.map(function(f){return '<span style="display:block;font-size:12px;color:#555;margin-top:2px">'+esc((f.name||f.short_name||'').split('/').pop())+'</span>';}).join('');
       var more=mfiles(files).length-mf.length;
+      var typeBadge='<span class="type-badge '+(t._type==='usenet'?'type-usenet':'type-torrent')+'">'+(t._type==='usenet'?'Usenet':'Torrent')+'</span>';
       h+='<div class="drow"><div style="flex:1;min-width:0">'
-        +'<div class="dtitle">'+esc(title)+'</div>'
+        +'<div class="dtitle">'+typeBadge+esc(title)+'</div>'
         +'<div class="dmeta">'+files.length+' file'+(files.length!==1?'s':'')+(q!=='?'?' &bull; <b style="color:#e8e8e8">'+q+'</b>':'')+(sz?' &bull; '+sz:'')+'</div>'
         +fnames+(more>0?'<span style="font-size:12px;color:#444">+'+more+' more</span>':'')
         +'</div>'
-        +'<button class="btn-del" onclick="delTorrent('+t.id+',this)">Delete</button></div>';
+        +'<button class="btn-del" onclick="delItem(\''+t.id+'\',\''+t._type+'\',this)">Delete</button></div>';
     });
     h+='</div>';
   });
@@ -523,7 +527,7 @@ function renderDupes(){
 // ── AUTO-TAG ─────────────────────────────────────────────────
 function toggleTags(){
   if(tagOpen){tagOpen=false;tagProposals=[];renderAll();return;}
-  tagProposals=torrents.map(function(t){
+  tagProposals=items.map(function(t){
     var cat=classify(t);
     var kept=(t.tags||[]).filter(function(tag){return MANAGED.indexOf(tag.toLowerCase())<0;});
     var final=kept.slice();
@@ -560,14 +564,15 @@ function renderTags(){
       var kept=(p.t.tags||[]).filter(function(tg){return MANAGED.indexOf(tg.toLowerCase())<0;});
       var pills=p.final.map(function(tg){return '<span class="tpill" style="background:'+(TC[tg]||'#555')+'33;color:'+(TC[tg]||'#aaa')+'">'+esc(tg)+'</span>';}).join('');
       var st=p.status;
+      var typeBadge='<span class="type-badge '+(p.t._type==='usenet'?'type-usenet':'type-torrent')+'">'+(p.t._type==='usenet'?'Usenet':'Torrent')+'</span>';
       h+='<div style="display:flex;align-items:flex-start;gap:10px;padding:11px 0;border-top:1px solid #1a1a1a">'
-        +'<div style="flex:1;min-width:0"><div style="font-size:15px;color:#e8e8e8;word-break:break-word;line-height:1.4">'+esc(title)+'</div>'
+        +'<div style="flex:1;min-width:0"><div style="font-size:15px;color:#e8e8e8;word-break:break-word;line-height:1.4">'+typeBadge+esc(title)+'</div>'
         +'<div style="margin-top:6px">'+pills+'</div>'
         +(kept.length?'<div style="font-size:12px;color:#555;margin-top:3px">keeping: '+kept.join(', ')+'</div>':'')
         +'</div>'
         +(st==='done'?'<span style="color:#00e5a0;font-size:20px;flex-shrink:0">&#x2713;</span>'
          :st==='error'?'<span style="color:#ff6b6b;font-size:20px;flex-shrink:0">&#x2717;</span>'
-         :'<button class="btn-del" style="background:#1a2030;color:#4488ff;border-color:#2a3a60" onclick="applyOneTag('+p.t.id+',this)">Tag</button>')
+         :'<button class="btn-del" style="background:#1a2030;color:#4488ff;border-color:#2a3a60" onclick="applyOneTag(\''+p.t.id+'\',\''+p.t._type+'\',this)">Tag</button>')
         +'</div>';
     });
     h+='</div>';
@@ -575,10 +580,10 @@ function renderTags(){
   el.innerHTML=h;
 }
 
-function applyOneTag(id,btn){
+function applyOneTag(id,type,btn){
   var p=tagProposals.filter(function(x){return x.t.id===id;})[0];if(!p)return;
   if(btn){btn.disabled=true;btn.textContent='...';}
-  fetch('/api/torbox/tag',{method:'POST',headers:{'Content-Type':'application/json','x-torbox-key':apiKey},body:JSON.stringify({torrent_id:id,tags:p.final})})
+  fetch('/api/torbox/tag',{method:'POST',headers:{'Content-Type':'application/json','x-torbox-key':apiKey},body:JSON.stringify({item_id:id,type:type||p.t._type,tags:p.final})})
   .then(function(r){return r.json();})
   .then(function(d){
     if(d.success){p.status='done';p.t.tags=p.final;}
@@ -589,7 +594,7 @@ function applyOneTag(id,btn){
 }
 
 function applyAllTags(){
-  tagProposals.forEach(function(p){if(!p.status)applyOneTag(p.t.id,null);});
+  tagProposals.forEach(function(p){if(!p.status)applyOneTag(p.t.id,p.t._type,null);});
 }
 
 // ── INIT ──────────────────────────────────────────────────────
@@ -617,27 +622,55 @@ async function plugin(fastify) {
     return { hasKey: !!process.env.TORBOX_API_KEY, hasAI: !!process.env.ANTHROPIC_API_KEY }
   })
 
+  // ── LIST: fetch torrents + usenet, tag each with _type ──────
   fastify.get('/api/torbox/list', async (request, reply) => {
     const key = request.headers['x-torbox-key'] || process.env.TORBOX_API_KEY
     if (!key) return reply.status(401).send({ success: false, detail: 'No API key' })
     try {
-      const res = await axios.get(`${TORBOX}/torrents/mylist?bypass_cache=true`, {
-        headers: { Authorization: `Bearer ${key}` }
-      })
-      return res.data
+      const [torrentRes, usenetRes] = await Promise.allSettled([
+        axios.get(`${TORBOX}/torrents/mylist?bypass_cache=true`, {
+          headers: { Authorization: `Bearer ${key}` }
+        }),
+        axios.get(`${TORBOX}/usenet/mylist?bypass_cache=true`, {
+          headers: { Authorization: `Bearer ${key}` }
+        })
+      ])
+
+      const torrents = (torrentRes.status === 'fulfilled' && torrentRes.value.data?.success)
+        ? (Array.isArray(torrentRes.value.data.data) ? torrentRes.value.data.data : [])
+        : []
+
+      const usenet = (usenetRes.status === 'fulfilled' && usenetRes.value.data?.success)
+        ? (Array.isArray(usenetRes.value.data.data) ? usenetRes.value.data.data : [])
+        : []
+
+      torrents.forEach(t => { t._type = 'torrent' })
+      usenet.forEach(t => { t._type = 'usenet' })
+
+      return { success: true, data: [...torrents, ...usenet] }
     } catch (e) {
       return reply.status(502).send({ success: false, detail: e.message })
     }
   })
 
+  // ── RENAME: route by type ────────────────────────────────────
   fastify.post('/api/torbox/rename', async (request, reply) => {
     const key = request.headers['x-torbox-key'] || process.env.TORBOX_API_KEY
     if (!key) return reply.status(401).send({ success: false, detail: 'No API key' })
     try {
-      const { torrent_id, name } = request.body
-      const res = await axios.put(`${TORBOX}/torrents/edittorrent`, { torrent_id, name }, {
-        headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' }
-      })
+      const { item_id, name, type } = request.body
+      let res
+      if (type === 'usenet') {
+        res = await axios.put(`${TORBOX}/usenet/editusenetdownload`,
+          { usenet_id: item_id, name },
+          { headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' } }
+        )
+      } else {
+        res = await axios.put(`${TORBOX}/torrents/edittorrent`,
+          { torrent_id: item_id, name },
+          { headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' } }
+        )
+      }
       return res.data
     } catch (e) {
       const detail = e.response?.data?.detail || e.message
@@ -645,34 +678,55 @@ async function plugin(fastify) {
     }
   })
 
+  // ── DELETE: route by type ────────────────────────────────────
   fastify.post('/api/torbox/delete', async (request, reply) => {
     const key = request.headers['x-torbox-key'] || process.env.TORBOX_API_KEY
     if (!key) return reply.status(401).send({ success: false, detail: 'No API key' })
     try {
-      const { torrent_id } = request.body
-      const res = await axios.post(`${TORBOX}/torrents/controltorrent`, { torrent_id, operation: 'delete' }, {
-        headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' }
-      })
+      const { item_id, type } = request.body
+      let res
+      if (type === 'usenet') {
+        res = await axios.post(`${TORBOX}/usenet/controlusenetdownload`,
+          { usenet_id: item_id, operation: 'delete' },
+          { headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' } }
+        )
+      } else {
+        res = await axios.post(`${TORBOX}/torrents/controltorrent`,
+          { torrent_id: item_id, operation: 'delete' },
+          { headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' } }
+        )
+      }
       return res.data
     } catch (e) {
       return reply.status(e.response?.status || 502).send({ success: false, detail: e.response?.data?.detail || e.message })
     }
   })
 
+  // ── TAG: route by type ───────────────────────────────────────
   fastify.post('/api/torbox/tag', async (request, reply) => {
     const key = request.headers['x-torbox-key'] || process.env.TORBOX_API_KEY
     if (!key) return reply.status(401).send({ success: false, detail: 'No API key' })
     try {
-      const { torrent_id, tags } = request.body
-      const res = await axios.put(`${TORBOX}/torrents/edittorrent`, { torrent_id, tags }, {
-        headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' }
-      })
+      const { item_id, type, tags } = request.body
+      let res
+      if (type === 'usenet') {
+        res = await axios.put(`${TORBOX}/usenet/editusenetdownload`,
+          { usenet_id: item_id, tags },
+          { headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' } }
+        )
+      } else {
+        res = await axios.put(`${TORBOX}/torrents/edittorrent`,
+          { torrent_id: item_id, tags },
+          { headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' } }
+        )
+      }
       return res.data
     } catch (e) {
       return reply.status(e.response?.status || 502).send({ success: false, detail: e.response?.data?.detail || e.message })
     }
   })
 
+  // ── AI PROXY ─────────────────────────────────────────────────
   fastify.post('/api/torbox/ai', async (request, reply) => {
     const key = process.env.ANTHROPIC_API_KEY
     if (!key) return reply.status(503).send({ error: 'ANTHROPIC_API_KEY not set' })
