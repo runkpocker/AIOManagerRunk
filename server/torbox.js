@@ -185,7 +185,7 @@ var apiKey='', items=[], backup=null, edits={}, statuses={};
 var expandId=null, editId=null;
 var dupesOpen=false, dupeGroups=[];
 var tagOpen=false, tagProposals=[];
-var cleanupBusy=false;
+var cleanupBusy=false, cleanupMode=false;
 var filterType='all', filterTag='all', filterStatus='all';
 
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
@@ -492,29 +492,41 @@ function renderFilterBar(){
 
 // ── RENDER ALL ────────────────────────────────────────────────
 function renderAll(){
-  var vis=filteredItems().length;
+  var panelMode=dupesOpen||tagOpen;
+  var tlist=document.getElementById('tlist');
+  var fbar=document.getElementById('fbar');
+  if(tlist)tlist.style.display=panelMode?'none':'flex';
+  if(fbar)fbar.style.display=panelMode?'none':'block';
+  var vis=panelMode?items.length:filteredItems().length;
   document.getElementById('count').textContent=vis===items.length?items.length:(vis+'/'+items.length);
-  renderBar();renderFilterBar();renderList();renderDupes();renderTags();
+  renderBar();
+  if(!panelMode)renderFilterBar();
+  renderList();
+  renderDupes();
+  renderTags();
 }
 
 // ── ACTION BAR ────────────────────────────────────────────────
 function renderBar(){
   var needs=items.filter(function(t){return edits[t.id]&&edits[t.id]!==t.name;});
   var h='<button class="chip" onclick="doRefresh()">&#x21bb; Refresh</button>';
-  h+='<button class="chip'+(cleanupBusy?' on':'')+'" onclick="doCleanup()">&#x2728; Title Cleanup</button>';
+  h+='<button class="chip'+(cleanupBusy||cleanupMode?' on':'')+'" onclick="doCleanup()">&#x2728; Title Cleanup'+(cleanupMode?' ('+needs.length+')':'')+'</button>';
   h+='<button class="chip'+(dupesOpen?' on':'')+'" onclick="toggleDupes()">&#x1f50d; Duplicates</button>';
   h+='<button class="chip'+(tagOpen?' on':'')+'" onclick="toggleTags()">&#x1f3f7; Auto-Tag</button>';
   if(backup)h+='<button class="chip" onclick="dlBackup(backup)">&#x2b07; Backup</button>';
   if(backup)h+='<button class="chip" onclick="doRevertAll()">&#x21a9; Revert All</button>';
-  if(needs.length)h+='<button class="chip on" onclick="applyAll()">Apply '+needs.length+'</button>';
+  if(needs.length&&!cleanupMode)h+='<button class="chip on" onclick="applyAll()">Apply '+needs.length+'</button>';
+  if(needs.length&&cleanupMode)h+='<button class="chip on" onclick="applyAll()">&#x2714; Apply All '+needs.length+'</button>';
   document.getElementById('abar').innerHTML=h;
 }
 
 // ── ITEM LIST ─────────────────────────────────────────────────
 function renderList(){
+  if(dupesOpen||tagOpen)return;
   var visible=filteredItems();
+  if(cleanupMode)visible=visible.filter(function(t){var e=edits[t.id];return e&&e!==t.name;});
   if(!visible.length){
-    document.getElementById('tlist').innerHTML='<div style="padding:30px 16px;color:#444;font-size:14px;text-align:center">No items match filters.</div>';
+    document.getElementById('tlist').innerHTML='<div style="padding:30px 16px;color:#444;font-size:14px;text-align:center">'+(cleanupMode?'No pending title changes.':'No items match filters.')+'</div>';
     return;
   }
   document.getElementById('tlist').innerHTML=visible.map(function(t){
@@ -609,14 +621,18 @@ function doRefresh(){
   .then(function(d){
     if(!d.success)throw new Error(d.detail||'Failed');
     items=Array.isArray(d.data)?d.data:[];
-    statuses={};filterType='all';filterTag='all';filterStatus='all';renderAll();
+    statuses={};filterType='all';filterTag='all';filterStatus='all';cleanupMode=false;renderAll();
   })
   .catch(function(e){renderBar();alert('Refresh failed: '+e.message);});
 }
 
 // ── TITLE CLEANUP ─────────────────────────────────────────────
 function doCleanup(){
+  // if already in cleanup view and not busy, toggle it off
+  if(cleanupMode&&!cleanupBusy){cleanupMode=false;renderAll();return;}
   if(cleanupBusy)return;
+  // close other panels
+  dupesOpen=false;dupeSelected={};tagOpen=false;tagProposals=[];
   cleanupBusy=true;renderBar();
   var banner=document.getElementById('ai-banner');
   banner.style.display='block';banner.textContent='&#x2728; Deriving titles from file names...';
@@ -665,6 +681,7 @@ function doCleanup(){
   .catch(function(){})
   .then(function(){
     cleanupBusy=false;
+    cleanupMode=true;
     banner.style.display='none';
     document.getElementById('ai-dot').style.display='none';
     renderAll();
@@ -725,6 +742,7 @@ function scanDupes(){
 
 function toggleDupes(){
   if(dupesOpen){dupesOpen=false;dupeSelected={};renderAll();return;}
+  tagOpen=false;tagProposals=[];cleanupMode=false;
   scanDupes();dupesOpen=true;renderAll();
 }
 
@@ -890,6 +908,7 @@ function renderDupes(){
 // ── AUTO-TAG ─────────────────────────────────────────────────
 function toggleTags(){
   if(tagOpen){tagOpen=false;tagProposals=[];renderAll();return;}
+  dupesOpen=false;dupeSelected={};cleanupMode=false;
   tagProposals=items.map(function(t){
     var cat=classify(t);
     var kept=(t.tags||[]).filter(function(tag){return MANAGED.indexOf(tag.toLowerCase())<0;});
