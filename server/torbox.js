@@ -161,9 +161,9 @@ function extractQualityFromFiles(files){
 function getBaseName(raw){
   // Strip path, extension, then all technical tags — stop at first S##E## or year
   let s=raw.split('/').pop().replace(/\.[^/.]+$/,'').replace(/[._]/g,' ')
-  s=s.replace(/\b(s\d{1,2}e\d{1,2}|season\s*\d+|series\s*\d+)\b.*/i,'')
-  s=s.replace(/\b(4k|2160p|1080p|720p|480p|bluray|bdrip|webrip|web-dl|webdl|hdtv|x264|x265|hevc|avc|h264|h265|hdr|sdr|yify|rarbg|ettv|eztv|prt|proper|repack|extended|theatrical|unrated)\b.*/gi,'')
-  s=s.replace(/\b\d{4}\b.*/,'') // stop at year
+  s=s.replace(/\\b(s\\d{1,2}e\\d{1,2}|season\\s*\\d+|series\\s*\\d+)\\b.*/i,'')
+  s=s.replace(/\\b(4k|2160p|1080p|720p|480p|bluray|bdrip|webrip|web-dl|webdl|hdtv|x264|x265|hevc|avc|h264|h265|hdr|sdr|yify|rarbg|ettv|eztv|prt|proper|repack|extended|theatrical|unrated)\\b.*/gi,'')
+  s=s.replace(/\\b\\d{4}\\b.*/,'') // stop at year
   return s.replace(/\s{2,}/g,' ').trim()
 }
 
@@ -172,7 +172,7 @@ function extractEpisodeDescriptor(files){
   const eps=[]
   names.forEach(n=>{
     // Match S01E01 or S01E01-E02 multi-ep patterns
-    const m=n.match(/[Ss](\d{1,2})[Ee](\d{1,2})/);
+    const m=n.match(/[Ss](\\d{1,2})[Ee](\\d{1,2})/);
     if(m)eps.push({s:parseInt(m[1]),e:parseInt(m[2])})
   })
   if(!eps.length)return null
@@ -395,15 +395,15 @@ function normalizeTitle(raw){
   // Use the derived edit title if available, else the raw torrent name
   let s = raw.toLowerCase()
   // Strip episode markers — keep base show name
-  s = s.replace(/\bs\d{1,2}e\d{1,2}\b.*/i,'')
+  s = s.replace(/\\bs\\d{1,2}e\\d{1,2}\\b.*/i,'')
   // Strip quality/codec/source junk
-  s = s.replace(/\b(4k|2160p|1080p|720p|480p|bluray|bdrip|webrip|web-dl|webdl|hdtv|x264|x265|hevc|avc|h264|h265|hdr|sdr|dv|dolby|atmos|aac|ac3|dd5|dts|remux|proper|repack|extended|theatrical|unrated|limited|yify|rarbg|ettv|eztv|prt|nf|amzn|hmax|dsnp|pcok)\b/gi,'')
+  s = s.replace(/\\b(4k|2160p|1080p|720p|480p|bluray|bdrip|webrip|web-dl|webdl|hdtv|x264|x265|hevc|avc|h264|h265|hdr|sdr|dv|dolby|atmos|aac|ac3|dd5|dts|remux|proper|repack|extended|theatrical|unrated|limited|yify|rarbg|ettv|eztv|prt|nf|amzn|hmax|dsnp|pcok)\\b/gi,'')
   // Strip release group suffixes (dash + word at end)
   s = s.replace(/-[a-z0-9]+$/i,'')
   // Strip file size markers like "303 mb" "350 mib"
-  s = s.replace(/\b\d+\s*(mb|mib|gb|gib)\b/gi,'')
+  s = s.replace(/\\b\\d+\\s*(mb|mib|gb|gib)\\b/gi,'')
   // Normalize spaces/dots/underscores
-  s = s.replace(/[._\-]+/g,' ').replace(/\s{2,}/g,' ').trim()
+  s = s.replace(/[._\-]+/g,' ').replace(/\\s{2,}/g,' ').trim()
   return s
 }
 
@@ -512,9 +512,9 @@ const TAG_COLOR = {series:'#4488ff', movies:'#aa66ff', adult:'#ff6688'}
 
 function classifyTorrent(t){
   const allText=[t.name,...(t.files||[]).map(f=>f.name||f.short_name||'')].join(' ')
-  if(/\bxxx\b|letspostit|brazzers|bangbros|realitykings|mofos|nubiles|vixen|blacked|tushy|wicked|penthouse|playboy|\bporn\b|pornrips|adulttime|21sextury|digitalplayground|eternaldesire|sweetsin|puretaboo/i.test(allText))return 'adult'
-  if(/\bS\d{1,2}E\d{1,2}\b/i.test(allText))return 'series'
-  if(/\bSeason\s*\d+\b/i.test(edits[t.id]||t.name))return 'series'
+  if(/\\bxxx\\b|letspostit|brazzers|bangbros|realitykings|mofos|nubiles|vixen|blacked|tushy|wicked|penthouse|playboy|\\bporn\\b|pornrips|adulttime|21sextury|digitalplayground|eternaldesire|sweetsin|puretaboo/i.test(allText))return 'adult'
+  if(/\\bS\\d{1,2}E\\d{1,2}\\b/i.test(allText))return 'series'
+  if(/\\bSeason\\s*\\d+\\b/i.test(edits[t.id]||t.name))return 'series'
   return 'movies'
 }
 
