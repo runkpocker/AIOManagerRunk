@@ -181,7 +181,7 @@ var MANAGED = ['series','movies','adult'];
 var TC = {series:'#4488ff',movies:'#aa66ff',adult:'#ff6688'};
 var MEXT = /\.(mkv|mp4|avi|mov|wmv|m4v|ts|mpg|mpeg|m2ts|vob|flv|webm|divx|xvid)$/i;
 
-var apiKey='', items=[], backup=null, edits={}, statuses={};
+var apiKey='', serverHasKey=false, items=[], backup=null, edits={}, statuses={};
 var expandId=null, editId=null;
 var dupesOpen=false, dupeGroups=[];
 var tagOpen=false, tagProposals=[];
@@ -410,7 +410,7 @@ function showStep(i){
 // ── CONNECT ───────────────────────────────────────────────────
 function doConnect(){
   apiKey=document.getElementById('key-input').value.trim();
-  if(!apiKey){showErr('Please enter your API key.');return;}
+  if(!apiKey&&!serverHasKey){showErr('Please enter your API key.');return;}
   document.getElementById('lform').style.display='none';
   document.getElementById('steps-ui').style.display='block';
   document.getElementById('err-msg').style.display='none';
@@ -1022,7 +1022,13 @@ document.getElementById('key-input').addEventListener('keydown',function(e){if(e
 
 fetch('/api/torbox/config')
   .then(function(r){return r.json();})
-  .then(function(d){if(d.hasKey)document.getElementById('key-input').placeholder='API key configured on server \u2713';})
+  .then(function(d){
+    if(d.hasKey){
+      serverHasKey=true;
+      document.getElementById('key-input').placeholder='API key configured on server \u2713';
+      doConnect();
+    }
+  })
   .catch(function(){});
 </script>
 </body>
