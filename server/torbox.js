@@ -206,17 +206,33 @@ function mfiles(files){
   return (files||[]).filter(function(f){return MEXT.test(f.name||f.short_name||'');});
 }
 
+// ── BRACKET CLEANUP ──────────────────────────────────────────
+function cleanBrackets(s){
+  s=s.replace(/[\(\[]\s*(19\d\d|20\d\d)\s*[\)\]]/g,''); // (YYYY) or [YYYY]
+  s=s.replace(/\(\s*\)/g,'');       // empty ()
+  s=s.replace(/\[\s*\]/g,'');       // empty []
+  s=s.replace(/\s*[\(\[]\s*$/,'');  // trailing orphan ( or [
+  s=s.replace(/^\s*[\)\]]\s*/,'');  // leading orphan ) or ]
+  s=s.replace(/\s*-\s*$/,'');       // trailing dash
+  return s.replace(/\s{2,}/g,' ').trim();
+}
+
 // ── BASE NAME ────────────────────────────────────────────────
 function baseName(raw){
   var s=raw.split('/').pop().replace(/\.[^/.]+$/,'').replace(/[._]/g,' ');
-  // extract year before stripping everything after it
-  var yearM=s.match(/\b(19\d\d|20\d\d)\b/);
+  // extract year (from (YYYY), [YYYY], or bare YYYY)
+  var yearM=s.match(/[\(\[]?\b(19\d\d|20\d\d)\b[\)\]]?/);
   var year=yearM?yearM[1]:null;
   s=s.replace(/\bS\d\d?E\d\d?\b.*/i,'');
   s=s.replace(/\b[Ss]eason\s*\d+\b.*/i,'');
+  // strip bracketed quality tags like [1080p] or (BluRay) and everything after
+  s=s.replace(/[\(\[]\s*(?:4k|2160p|1080p|720p|480p|bluray|bdrip|webrip|web-dl|webdl|hdtv|x264|x265|hevc|avc|h264|h265|hdr|sdr)\s*[\)\]].*/gi,'');
+  // strip bare quality and everything after
   s=s.replace(/\b(4k|2160p|1080p|720p|480p|bluray|bdrip|webrip|web-dl|webdl|hdtv|x264|x265|hevc|avc|h264|h265|hdr|sdr|yify|rarbg|ettv|eztv|prt|proper|repack|extended|theatrical|unrated)\b.*/gi,'');
-  s=s.replace(/\b(19\d\d|20\d\d)\b/g,''); // remove bare year (will re-add formatted)
-  s=s.replace(/\s{2,}/g,' ').trim();
+  // strip bare year (will re-add formatted) — strip with surrounding brackets too
+  s=cleanBrackets(s);
+  s=s.replace(/\b(19\d\d|20\d\d)\b/g,'');
+  s=cleanBrackets(s);
   // title-case
   s=s.replace(/\b\w/g,function(c){return c.toUpperCase();});
   return year?s+' ('+year+')':s;
@@ -224,8 +240,22 @@ function baseName(raw){
 
 // ── HAS WORDS ────────────────────────────────────────────────
 function hasWords(s){
-  // at least one run of 2+ letters — real text, not just hashes/numbers
   return /[a-zA-Z]{2,}/.test(s.replace(/\.[a-z0-9]{1,4}$/i,''));
+}
+
+// ── LOOKS ABBREVIATED ────────────────────────────────────────
+var STOP=/^(the|a|an|of|in|on|at|to|and|or|is|it|its)$/;
+function contentWords(s){
+  return (s.toLowerCase().match(/[a-z]{2,}/g)||[]).filter(function(w){return !STOP.test(w);});
+}
+function looksAbbreviated(derivedBase, itemName){
+  if(!itemName)return false;
+  var bWords=contentWords(derivedBase.replace(/\s*\(\d{4}\)/g,''));
+  var iClean=itemName.replace(/[._]/g,' ').replace(/\b(4k|2160p|1080p|720p|480p)\b.*/gi,'');
+  var iWords=contentWords(iClean);
+  if(iWords.length<=bWords.length+1)return false; // item name not significantly longer
+  var overlap=bWords.filter(function(w){return iWords.indexOf(w)>=0;}).length;
+  return overlap/Math.max(bWords.length,1)<0.5; // <50% of filename words match item title
 }
 
 // ── SCENE PACK DETECTION ─────────────────────────────────────
@@ -234,7 +264,6 @@ function isScenePack(files, itemName){
   var src=mf.length?mf:files;
   if(/\b(pack|collection|bundle|anthology|mega|archive|complete\s*series)\b/i.test(itemName))return true;
   if(src.length<6)return false;
-  // many distinct base names across files = pack
   var bases={};
   src.forEach(function(f){
     var b=baseName((f.name||f.short_name||'').split('/').pop())
@@ -247,19 +276,19 @@ function isScenePack(files, itemName){
 // ── CLEAN ITEM TITLE (no-words fallback) ─────────────────────
 function cleanItemTitle(name){
   var s=name.replace(/[._]/g,' ');
-  var yearM=s.match(/\b(19\d\d|20\d\d)\b/);
+  var yearM=s.match(/[\(\[]?\b(19\d\d|20\d\d)\b[\)\]]?/);
   var year=yearM?yearM[1]:null;
   var q=getQ(s);
   s=s.replace(/\bS\d\d?E\d\d?\b.*/i,'');
   s=s.replace(/\b[Ss]eason\s*\d+\b.*/i,'');
+  s=s.replace(/[\(\[]\s*(?:4k|2160p|1080p|720p|480p|bluray|bdrip|webrip|web-dl|webdl|hdtv|x264|x265|hevc|avc|h264|h265|hdr|sdr)\s*[\)\]].*/gi,'');
   s=s.replace(/\b(4k|2160p|1080p|720p|480p|bluray|bdrip|webrip|web-dl|webdl|hdtv|x264|x265|hevc|avc|h264|h265|hdr|sdr|yify|rarbg|ettv|eztv|prt|proper|repack|extended|theatrical|unrated)\b.*/gi,'');
+  s=cleanBrackets(s);
   s=s.replace(/\b(19\d\d|20\d\d)\b/g,'');
-  s=s.replace(/\s{2,}/g,' ').trim();
+  s=cleanBrackets(s);
   s=s.replace(/\b\w/g,function(c){return c.toUpperCase();});
   var title=year?s+' ('+year+')':s;
-  var parts=[title];
-  if(q)parts.push(q);
-  return parts.filter(Boolean).join(' ');
+  return q?title+' '+q:title;
 }
 
 // ── SCENE PACK TITLE ─────────────────────────────────────────
@@ -267,10 +296,10 @@ function scenePackTitle(files, itemName){
   var mf=mfiles(files);
   var src=mf.length?mf:files;
   var q=getQFiles(src)||getQ(itemName)||'';
-  // derive clean base from item name (most reliable for packs)
-  var base=cleanItemTitle(itemName).replace(/\s*(scene\s*pack|collection|bundle|pack)\s*/gi,' ').replace(/\s{2,}/g,' ').trim();
-  // strip trailing quality tag we're about to re-add
-  base=base.replace(/\s+(4K|1080p|720p|480p)$/,'').trim();
+  var base=cleanItemTitle(itemName)
+    .replace(/\s*(scene\s*pack|collection|bundle|pack)\s*/gi,' ')
+    .replace(/\s+(4K|1080p|720p|480p)$/,'').trim();
+  base=cleanBrackets(base);
   var parts=[base];
   if(q)parts.push(q);
   parts.push('Scene Pack');
@@ -320,6 +349,14 @@ function deriveTitle(files, itemName){
 
   var q=getQ(src[0].name||src[0].short_name||'')||getQFiles(src);
   var b=baseName(src[0].name||src[0].short_name||'');
+
+  // if filename base looks abbreviated vs item name, use item title instead
+  if(itemName&&looksAbbreviated(b,itemName)){
+    var itemBase=cleanItemTitle(itemName).replace(/\s+(4K|1080p|720p|480p)$/,'').trim();
+    itemBase=cleanBrackets(itemBase);
+    b=itemBase;
+  }
+
   var ep=epDesc(src);
   var parts=[b];
   if(ep)parts.push(ep);
