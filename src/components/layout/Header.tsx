@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 import { useTheme } from '@/contexts/ThemeContext'
 import { useSyncStore } from '@/store/syncStore'
 import { useFailoverStore } from '@/store/failoverStore'
-import { LogOut, LayoutDashboard, Package, Activity, BarChart3, Settings, HelpCircle, Zap, ZapOff, ShieldCheck, ExternalLink } from 'lucide-react'
+import { LogOut, LayoutDashboard, Package, Activity, BarChart3, Settings, HelpCircle, Zap, ZapOff, ShieldCheck, ExternalLink, PenLine } from 'lucide-react'
 import { SyncStatus } from '@/components/SyncStatus'
 import { useVaultStore } from '@/store/vaultStore'
 import { useProviderStore } from '@/store/providerStore'
@@ -80,6 +80,16 @@ export function Header() {
                 </p>
               </div>
             </Link>
+
+            {/* TorBox Renamer shortcut */}
+            <a
+              href="/torbox"
+              title="TorBox Renamer"
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full border border-[#00e5a030] bg-[#00e5a008] hover:bg-[#00e5a015] hover:border-[#00e5a060] transition-all text-[#00e5a0] ml-2"
+            >
+              <PenLine className="h-3.5 w-3.5" />
+              <span className="text-[11px] font-bold uppercase tracking-wider hidden sm:inline">Renamer</span>
+            </a>
 
             {/* Mobile Logout (Shows next to logo on tiny screens) */}
             {auth.isAuthenticated && (
