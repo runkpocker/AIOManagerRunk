@@ -209,11 +209,72 @@ function mfiles(files){
 // ── BASE NAME ────────────────────────────────────────────────
 function baseName(raw){
   var s=raw.split('/').pop().replace(/\.[^/.]+$/,'').replace(/[._]/g,' ');
+  // extract year before stripping everything after it
+  var yearM=s.match(/\b(19\d\d|20\d\d)\b/);
+  var year=yearM?yearM[1]:null;
   s=s.replace(/\bS\d\d?E\d\d?\b.*/i,'');
   s=s.replace(/\b[Ss]eason\s*\d+\b.*/i,'');
   s=s.replace(/\b(4k|2160p|1080p|720p|480p|bluray|bdrip|webrip|web-dl|webdl|hdtv|x264|x265|hevc|avc|h264|h265|hdr|sdr|yify|rarbg|ettv|eztv|prt|proper|repack|extended|theatrical|unrated)\b.*/gi,'');
-  s=s.replace(/\b\d{4}\b.*/,'');
-  return s.replace(/\s{2,}/g,' ').trim();
+  s=s.replace(/\b(19\d\d|20\d\d)\b/g,''); // remove bare year (will re-add formatted)
+  s=s.replace(/\s{2,}/g,' ').trim();
+  // title-case
+  s=s.replace(/\b\w/g,function(c){return c.toUpperCase();});
+  return year?s+' ('+year+')':s;
+}
+
+// ── HAS WORDS ────────────────────────────────────────────────
+function hasWords(s){
+  // at least one run of 2+ letters — real text, not just hashes/numbers
+  return /[a-zA-Z]{2,}/.test(s.replace(/\.[a-z0-9]{1,4}$/i,''));
+}
+
+// ── SCENE PACK DETECTION ─────────────────────────────────────
+function isScenePack(files, itemName){
+  var mf=mfiles(files);
+  var src=mf.length?mf:files;
+  if(/\b(pack|collection|bundle|anthology|mega|archive|complete\s*series)\b/i.test(itemName))return true;
+  if(src.length<6)return false;
+  // many distinct base names across files = pack
+  var bases={};
+  src.forEach(function(f){
+    var b=baseName((f.name||f.short_name||'').split('/').pop())
+      .replace(/\s*\(\d{4}\)/g,'').toLowerCase().slice(0,30).trim();
+    if(b.length>3)bases[b]=1;
+  });
+  return Object.keys(bases).length>=5;
+}
+
+// ── CLEAN ITEM TITLE (no-words fallback) ─────────────────────
+function cleanItemTitle(name){
+  var s=name.replace(/[._]/g,' ');
+  var yearM=s.match(/\b(19\d\d|20\d\d)\b/);
+  var year=yearM?yearM[1]:null;
+  var q=getQ(s);
+  s=s.replace(/\bS\d\d?E\d\d?\b.*/i,'');
+  s=s.replace(/\b[Ss]eason\s*\d+\b.*/i,'');
+  s=s.replace(/\b(4k|2160p|1080p|720p|480p|bluray|bdrip|webrip|web-dl|webdl|hdtv|x264|x265|hevc|avc|h264|h265|hdr|sdr|yify|rarbg|ettv|eztv|prt|proper|repack|extended|theatrical|unrated)\b.*/gi,'');
+  s=s.replace(/\b(19\d\d|20\d\d)\b/g,'');
+  s=s.replace(/\s{2,}/g,' ').trim();
+  s=s.replace(/\b\w/g,function(c){return c.toUpperCase();});
+  var title=year?s+' ('+year+')':s;
+  var parts=[title];
+  if(q)parts.push(q);
+  return parts.filter(Boolean).join(' ');
+}
+
+// ── SCENE PACK TITLE ─────────────────────────────────────────
+function scenePackTitle(files, itemName){
+  var mf=mfiles(files);
+  var src=mf.length?mf:files;
+  var q=getQFiles(src)||getQ(itemName)||'';
+  // derive clean base from item name (most reliable for packs)
+  var base=cleanItemTitle(itemName).replace(/\s*(scene\s*pack|collection|bundle|pack)\s*/gi,' ').replace(/\s{2,}/g,' ').trim();
+  // strip trailing quality tag we're about to re-add
+  base=base.replace(/\s+(4K|1080p|720p|480p)$/,'').trim();
+  var parts=[base];
+  if(q)parts.push(q);
+  parts.push('Scene Pack');
+  return parts.join(' ');
 }
 
 // ── EPISODE DESCRIPTOR ───────────────────────────────────────
@@ -242,10 +303,21 @@ function epDesc(files){
 }
 
 // ── DERIVE TITLE ─────────────────────────────────────────────
-function deriveTitle(files){
+function deriveTitle(files, itemName){
   var mf=mfiles(files);
   var src=mf.length?mf:files;
-  if(!src||!src.length)return null;
+
+  // no files or none have readable words → clean the existing title
+  var anyWords=src&&src.some(function(f){return hasWords(f.name||f.short_name||'');});
+  if(!src||!src.length||!anyWords){
+    return itemName?cleanItemTitle(itemName):null;
+  }
+
+  // scene pack → derive from item name + "Scene Pack"
+  if(isScenePack(src, itemName||'')){
+    return scenePackTitle(src, itemName||'');
+  }
+
   var q=getQ(src[0].name||src[0].short_name||'')||getQFiles(src);
   var b=baseName(src[0].name||src[0].short_name||'');
   var ep=epDesc(src);
@@ -549,10 +621,35 @@ function doCleanup(){
   var banner=document.getElementById('ai-banner');
   banner.style.display='block';banner.textContent='&#x2728; Deriving titles from file names...';
   document.getElementById('ai-dot').style.display='inline';
-  items.forEach(function(t){edits[t.id]=deriveTitle(t.files)||t.name;});
+  items.forEach(function(t){edits[t.id]=deriveTitle(t.files,t.name)||t.name;});
   renderList();
   banner.textContent='&#x1f916; AI refining suggestions...';
-  var prompt='You are a media library assistant. Suggest clean titles from file names. Rules:\n1. ALWAYS end with quality if present (1080p, 4K, 720p).\n2. Movies: "Movie Title (Year) 1080p"\n3. TV single episode package: "Show Name S02E04 1080p"\n4. TV full season (sequential from E01, 6+ eps): "Show Name Season 2 1080p"\n5. TV partial season: "Show Name S02 E04-E08 1080p"\n6. TV multi-season: "Show Name Seasons 1-3 1080p"\n7. Title casing. Return ONLY JSON array: [{"id":1,"suggested":"Title"}]. No other text.\n\nItems:\n'+JSON.stringify(items.map(function(t){return{id:t.id,type:t._type,current_name:t.name,files:(t.files||[]).slice(0,5).map(function(f){return f.name||f.short_name;})};}),null,2);
+  var prompt='You are a media library assistant. Suggest clean titles. Strict rules:\n'
+    +'1. Quality suffix: ALWAYS end with quality tag if present (1080p, 4K, 720p).\n'
+    +'2. Year: if a year (YYYY) appears anywhere in the name or files, ALWAYS include it as (YYYY). e.g. "The Movie (2021) 1080p".\n'
+    +'3. Movies: "Movie Title (Year) Quality" e.g. "Inception (2010) 1080p".\n'
+    +'4. TV single ep: "Show Name S02E04 1080p".\n'
+    +'5. TV full season (E01 sequential, 6+ eps): "Show Name Season 2 1080p".\n'
+    +'6. TV partial season: "Show Name S02 E04-E08 1080p".\n'
+    +'7. TV multi-season: "Show Name Seasons 1-3 1080p".\n'
+    +'8. Scene Pack: if the item has many diverse files (a collection/pack/bundle), end with "Scene Pack". e.g. "Studio Name 1080p Scene Pack" or "Artist Discography 2023 Scene Pack".\n'
+    +'9. No readable filenames: if files are hashes/codes/unreadable, clean and format the current_name instead — apply title casing, standardize year, add quality.\n'
+    +'10. Title casing always.\n'
+    +'Return ONLY JSON array: [{"id":1,"suggested":"Title"}]. No other text.\n\n'
+    +'Items:\n'+JSON.stringify(items.map(function(t){
+      var mf=mfiles(t.files||[]);
+      var src=mf.length?mf:(t.files||[]);
+      var anyWords=src.some(function(f){return hasWords(f.name||f.short_name||'');});
+      var pack=isScenePack(src,t.name);
+      return{
+        id:t.id,
+        type:t._type,
+        current_name:t.name,
+        is_pack:pack,
+        has_readable_filenames:anyWords,
+        files:src.slice(0,6).map(function(f){return f.name||f.short_name;})
+      };
+    }),null,2);
   fetch('/api/torbox/ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]})})
   .then(function(r){return r.json();})
   .then(function(d){
