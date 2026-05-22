@@ -443,19 +443,19 @@ function renderList(){
       var acts='';
       if(isEd){
         acts='<div class="eblock"><input class="efield" id="ef-'+t.id+'" value="'+esc(edit)+'" type="text" autocorrect="off" spellcheck="false">'
-          +'<div class="eacts"><button class="btn-save" onclick="saveEdit(\''+t.id+'\',\''+t._type+'\')">Save</button>'
-          +'<button class="btn-cancel" onclick="cancelEdit(\''+t.id+'\')">Cancel</button></div></div>';
+          +'<div class="eacts"><button class="btn-save" onclick="saveEdit('+t.id+',\''+t._type+'\')">Save</button>'
+          +'<button class="btn-cancel" onclick="cancelEdit('+t.id+')">Cancel</button></div></div>';
       }else{
         acts='<div class="cacts">';
-        if(changed)acts+='<button class="btn-p" onclick="applyOne(\''+t.id+'\',\''+t._type+'\')">Apply &#x2192; '+esc(edit)+'</button>';
-        acts+='<button class="btn-s" onclick="startEdit(\''+t.id+'\')">&#x270f;&#xfe0f; Edit Title</button>';
-        if(origName&&t.name!==origName)acts+='<button class="btn-g" onclick="revertOne(\''+t.id+'\',\''+t._type+'\')">&#x21a9; Revert to Original</button>';
+        if(changed)acts+='<button class="btn-p" onclick="applyOne('+t.id+',\''+t._type+'\')">Apply &#x2192; '+esc(edit)+'</button>';
+        acts+='<button class="btn-s" onclick="startEdit('+t.id+')">&#x270f;&#xfe0f; Edit Title</button>';
+        if(origName&&t.name!==origName)acts+='<button class="btn-g" onclick="revertOne('+t.id+',\''+t._type+'\')">&#x21a9; Revert to Original</button>';
         acts+='</div>';
       }
       exp='<div class="ebody">'+(files.length?'<div class="flist">'+frows+'</div>':'')+acts+'</div>';
     }
     return '<div class="'+cls+'" id="c-'+t.id+'">'
-      +'<div class="cmain" onclick="toggleExp(\''+t.id+'\')">'
+      +'<div class="cmain" onclick="toggleExp('+t.id+')">'
       +'<div class="cmeta"><div class="ctitle">'+esc(t.name)+'</div>'
       +(changed?'<div class="csugg">&#x2192; '+esc(edit)+'</div>':'')
       +'<div class="csub">'+sub+'</div></div>'
@@ -616,7 +616,7 @@ function renderDupes(){
         +'<div class="dmeta">'+files.length+' file'+(files.length!==1?'s':'')+(q!=='?'?' &bull; <b style="color:#e8e8e8">'+q+'</b>':'')+(sz?' &bull; '+sz:'')+'</div>'
         +fnames+(more>0?'<span style="font-size:12px;color:#444">+'+more+' more</span>':'')
         +'</div>'
-        +'<button class="btn-del" onclick="delItem(\''+t.id+'\',\''+t._type+'\',this)">Delete</button></div>';
+        +'<button class="btn-del" onclick="delItem('+t.id+',\''+t._type+'\',this)">Delete</button></div>';
     });
     h+='</div>';
   });
@@ -671,7 +671,7 @@ function renderTags(){
         +'</div>'
         +(st==='done'?'<span style="color:#00e5a0;font-size:20px;flex-shrink:0">&#x2713;</span>'
          :st==='error'?'<span style="color:#ff6b6b;font-size:20px;flex-shrink:0">&#x2717;</span>'
-         :'<button class="btn-del" style="background:#1a2030;color:#4488ff;border-color:#2a3a60" onclick="applyOneTag(\''+p.t.id+'\',\''+p.t._type+'\',this)">Tag</button>')
+         :'<button class="btn-del" style="background:#1a2030;color:#4488ff;border-color:#2a3a60" onclick="applyOneTag('+p.t.id+',\''+p.t._type+'\',this)">Tag</button>')
         +'</div>';
     });
     h+='</div>';
