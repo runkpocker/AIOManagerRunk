@@ -431,7 +431,7 @@ function doCleanup(){
     var block=d.content&&d.content.filter(function(b){return b.type==='text';})[0];
     if(block){
       try{
-        var text=block.text.replace(/```json|```/g,'').trim();
+        var text=block.text.replace(/\x60\x60\x60json|\x60\x60\x60/g,'').trim();
         var results=JSON.parse(text);
         results.forEach(function(r){edits[r.id]=r.suggested;});
       }catch(e){}
