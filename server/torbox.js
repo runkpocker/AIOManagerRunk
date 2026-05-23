@@ -243,6 +243,16 @@ function hasWords(s){
   return /[a-zA-Z]{2,}/.test(s.replace(/\.[a-z0-9]{1,4}$/i,''));
 }
 
+// ── IS HASH NAME ─────────────────────────────────────────────
+function isHashName(s){
+  var t=s.trim();
+  // pure hex hash (md5, sha1, etc.)
+  if(/^[a-f0-9]{16,}$/i.test(t))return true;
+  // long alphanumeric blob with no spaces
+  if(/^[a-zA-Z0-9]{20,}$/.test(t))return true;
+  return false;
+}
+
 // ── LOOKS ABBREVIATED ────────────────────────────────────────
 var STOP=/^(the|a|an|of|in|on|at|to|and|or|is|it|its)$/;
 function contentWords(s){
@@ -351,7 +361,7 @@ function deriveTitle(files, itemName){
   var b=baseName(src[0].name||src[0].short_name||'');
 
   // if filename base looks abbreviated vs item name, use item title instead
-  if(itemName&&looksAbbreviated(b,itemName)){
+  if(itemName&&!isHashName(itemName)&&looksAbbreviated(b,itemName)){
     var itemBase=cleanItemTitle(itemName).replace(/\s+(4K|1080p|720p|480p)$/,'').trim();
     itemBase=cleanBrackets(itemBase);
     b=itemBase;
@@ -686,7 +696,7 @@ function doCleanup(){
     +'6. TV partial season: "Show Name S02E04-E08 1080p".\n'
     +'7. TV multi-season: "Show Name S01-S03 1080p".\n'
     +'8. Scene Pack: if the item has many diverse files (a collection/pack/bundle), end with "Scene Pack". e.g. "Studio Name 1080p Scene Pack" or "Artist Discography 2023 Scene Pack".\n'
-    +'9. local_suggestion is pre-derived from the filenames — use it as your PRIMARY source. Only override if it is clearly wrong (e.g. garbled, hash-based, or missing key info).\n'
+    +'9. local_suggestion is pre-derived from the filenames — use it as your PRIMARY source. Only override if it is clearly wrong (e.g. garbled, missing key info).\n'
     +'10. If local_suggestion looks correct, return it unchanged.\n'
     +'11. Title casing always.\n'
     +'Return ONLY JSON array: [{"id":1,"suggested":"Title"}]. No other text.\n\n'
