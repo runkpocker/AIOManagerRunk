@@ -420,17 +420,20 @@ function dlBackup(data){
 }
 
 // ── QUOTA WIDGET ─────────────────────────────────────────────
+var PLAN_NAMES={0:'Free',1:'Essential',2:'Pro',3:'Standard',4:'Enterprise'};
 function renderQuota(){
   var el=document.getElementById('quota-widget');
   if(!el||!userInfo)return;
-  var plan=(userInfo.plan||userInfo.role||'Unknown');
-  var used=userInfo.total_bytes_downloaded||0;
-  var limit=userInfo.monthly_bandwidth_limit||userInfo.monthly_bandwidth||0;
+  var planRaw=userInfo.plan!==undefined?userInfo.plan:userInfo.role;
+  var planLabel=PLAN_NAMES[planRaw]||String(planRaw||'');
+  if(!planLabel)planLabel='Plan';
+  var used=userInfo.total_bytes_downloaded||userInfo.used_bandwidth||userInfo.bandwidth_used||userInfo.bytes_used||0;
+  var limit=userInfo.monthly_bandwidth_limit||userInfo.monthly_bandwidth||userInfo.bandwidth_limit||userInfo.total_bandwidth||0;
   var pct=limit>0?Math.min(100,Math.round(used/limit*100)):0;
   var cls=pct>=90?'quota-crit':pct>=70?'quota-warn':'';
   el.className='quota-wrap '+cls;
   el.style.display='flex';
-  el.innerHTML='<span class="quota-pill" title="'+esc(plan)+'">'+esc(plan)+'</span>'
+  el.innerHTML='<span class="quota-pill" title="'+esc(planLabel)+'">'+esc(planLabel)+'</span>'
     +(limit>0?'<div class="quota-bar-outer"><div class="quota-bar-inner" style="width:'+pct+'%"></div></div>'
     +'<span class="quota-pct">'+pct+'%</span>':'');
 }
@@ -438,7 +441,10 @@ function renderQuota(){
 function fetchUserInfo(){
   fetch('/api/torbox/user',{headers:{'x-torbox-key':apiKey}})
   .then(function(r){return r.json();})
-  .then(function(d){if(d.success&&d.data){userInfo=d.data;renderQuota();}})
+  .then(function(d){
+    var data=d.data||d;
+    if(data&&typeof data==='object'&&!Array.isArray(data)){userInfo=data;renderQuota();}
+  })
   .catch(function(){});
 }
 
@@ -1159,10 +1165,6 @@ function renderTags(){
        :'<span style="color:#333;font-size:12px;flex-shrink:0;margin-top:4px">no change</span>')
       +'</div>';
   });
-  if(hiddenCount||dupeShowIgnored){
-    h+='<div style="padding:14px 16px;text-align:center"><button class="btn-g" style="width:auto;padding:10px 18px;font-size:13px" onclick="toggleDupeShowIgnored()">'+(dupeShowIgnored?'&#x25b2; Hide ignored':'&#x25bc; Show '+hiddenCount+' ignored group'+(hiddenCount!==1?'s':''))+'</button></div>';
-  }
-
   if(ignoredTagCount||tagShowIgnored){
     h+='<div style="padding:12px 16px;text-align:center"><button class="btn-g" style="width:auto;padding:10px 18px;font-size:13px" onclick="toggleTagShowIgnored()">'+(tagShowIgnored?'&#x25b2; Hide ignored':'&#x25bc; Show '+ignoredTagCount+' ignored item'+(ignoredTagCount!==1?'s':''))+'</button></div>';
   }
