@@ -375,7 +375,7 @@ function deriveTitle(files, itemName){
 // ── NORMALIZE FOR DUPE DETECTION ─────────────────────────────
 function norm(raw){
   var s=raw.toLowerCase();
-  // keep SxxExx so S01E07 and S01E09 don't collide as dupes
+  // keep SxxExx so different episodes aren't flagged as dupes
   s=s.replace(/\b(4k|2160p|1080p|720p|480p|bluray|bdrip|webrip|web-dl|webdl|hdtv|x264|x265|hevc|avc|h264|h265|hdr|sdr|dv|dolby|atmos|aac|ac3|dts|remux|proper|repack|extended|theatrical|unrated|yify|rarbg|ettv|eztv|prt)\b/gi,'');
   s=s.replace(/-[a-z0-9]+$/i,'');
   s=s.replace(/\b\d+\s*(mb|mib|gb|gib)\b/gi,'');
@@ -693,8 +693,8 @@ function doCleanup(){
     +'5. TV full season (E01 sequential, 6+ eps): "Show Name S02 1080p".\n'
     +'6. TV partial season: "Show Name S02E04-E08 1080p".\n'
     +'7. TV multi-season: "Show Name S01-S03 1080p".\n'
-    +'8. Scene Pack: if the item has many diverse files (a collection/pack/bundle), end with "Scene Pack".\n'
-    +'9. local_suggestion is pre-derived from the filenames — use it as your PRIMARY source. Only override if it is clearly wrong (garbled, hash-based, or missing key info).\n'
+    +'8. Scene Pack: if the item has many diverse files (a collection/pack/bundle), end with "Scene Pack". e.g. "Studio Name 1080p Scene Pack" or "Artist Discography 2023 Scene Pack".\n'
+    +'9. local_suggestion is pre-derived from filenames — use as PRIMARY source. Only override if clearly wrong (garbled, hash-based, missing key info).\n'
     +'10. If local_suggestion looks correct, return it unchanged.\n'
     +'11. Title casing always.\n'
     +'Return ONLY JSON array: [{"id":1,"suggested":"Title"}]. No other text.\n\n'
@@ -958,12 +958,23 @@ function toggleTags(){
   dupesOpen=false;dupeSelected={};cleanupMode=false;
   tagProposals=items.map(function(t){
     var cat=classify(t);
-    var kept=(t.tags||[]).filter(function(tag){return MANAGED.indexOf(tag.toLowerCase())<0;});
-    var final=kept.slice();
-    if(final.indexOf(cat)<0)final.push(cat);
-    return{t:t,cat:cat,final:final,status:null};
+    var current=(t.tags||[]).slice();
+    // build suggested final: keep all current tags, add cat if missing
+    var final=current.slice();
+    if(final.map(function(x){return x.toLowerCase();}).indexOf(cat)<0)final.push(cat);
+    return{t:t,cat:cat,current:current,final:final,status:null};
   });
   tagOpen=true;renderAll();
+}
+
+function toggleTagInFinal(id,tag){
+  var p=tagProposals.filter(function(x){return x.t.id===id;})[0];if(!p)return;
+  var lower=p.final.map(function(x){return x.toLowerCase();});
+  var idx=lower.indexOf(tag.toLowerCase());
+  if(idx>=0)p.final.splice(idx,1);
+  else p.final.push(tag);
+  p.status=null;
+  renderTags();
 }
 
 function renderTags(){
@@ -971,41 +982,78 @@ function renderTags(){
   if(!el)return;
   if(!tagOpen){el.style.display='none';return;}
   el.style.display='block';
-  var counts={series:0,movies:0,adult:0};
-  tagProposals.forEach(function(p){counts[p.cat]=(counts[p.cat]||0)+1;});
+
+  var changed=tagProposals.filter(function(p){
+    if(p.status==='done')return false;
+    var a=p.current.slice().sort().join(',');
+    var b=p.final.slice().sort().join(',');
+    return a!==b;
+  });
   var done=tagProposals.filter(function(p){return p.status==='done';}).length;
   var errs=tagProposals.filter(function(p){return p.status==='error';}).length;
-  var pending=tagProposals.filter(function(p){return !p.status;}).length;
+
+  var counts={series:0,movies:0,adult:0};
+  tagProposals.forEach(function(p){counts[p.cat]=(counts[p.cat]||0)+1;});
+
   var h='<div style="padding:14px 16px 8px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">';
   ['series','movies','adult'].forEach(function(k){
     if(counts[k])h+='<span style="background:'+TC[k]+'22;color:'+TC[k]+';border:1px solid '+TC[k]+'44;border-radius:12px;padding:5px 14px;font-size:14px">'+k+' &bull; '+counts[k]+'</span>';
   });
-  if(done)h+='<span style="color:#00e5a0;font-size:13px">&#x2713; '+done+' tagged</span>';
+  if(done)h+='<span style="color:#00e5a0;font-size:13px">&#x2713; '+done+' saved</span>';
   if(errs)h+='<span style="color:#ff6b6b;font-size:13px">&#x2717; '+errs+' errors</span>';
   h+='</div>';
-  if(pending)h+='<div style="padding:0 16px 12px"><button class="btn-p" onclick="applyAllTags()">Apply Tags to All '+tagProposals.length+' Items</button></div>';
-  ['series','movies','adult'].forEach(function(cat){
-    var grp=tagProposals.filter(function(p){return p.cat===cat;});
-    if(!grp.length)return;
-    h+='<div style="margin:0 12px 14px"><div style="font-size:14px;font-weight:bold;color:'+TC[cat]+';padding:8px 0 6px;border-bottom:1px solid #222;margin-bottom:4px">'+cat.toUpperCase()+' &bull; '+grp.length+'</div>';
-    grp.forEach(function(p){
-      var title=edits[p.t.id]||p.t.name;
-      var kept=(p.t.tags||[]).filter(function(tg){return MANAGED.indexOf(tg.toLowerCase())<0;});
-      var pills=p.final.map(function(tg){return '<span class="tpill" style="background:'+(TC[tg]||'#555')+'33;color:'+(TC[tg]||'#aaa')+'">'+esc(tg)+'</span>';}).join('');
-      var st=p.status;
-      var typeBadge='<span class="type-badge '+(p.t._type==='usenet'?'type-usenet':'type-torrent')+'">'+(p.t._type==='usenet'?'Usenet':'Torrent')+'</span>';
-      h+='<div style="display:flex;align-items:flex-start;gap:10px;padding:11px 0;border-top:1px solid #1a1a1a">'
-        +'<div style="flex:1;min-width:0"><div style="font-size:15px;color:#e8e8e8;word-break:break-word;line-height:1.4">'+typeBadge+esc(title)+'</div>'
-        +'<div style="margin-top:6px">'+pills+'</div>'
-        +(kept.length?'<div style="font-size:12px;color:#555;margin-top:3px">keeping: '+kept.join(', ')+'</div>':'')
-        +'</div>'
-        +(st==='done'?'<span style="color:#00e5a0;font-size:20px;flex-shrink:0">&#x2713;</span>'
-         :st==='error'?'<span style="color:#ff6b6b;font-size:20px;flex-shrink:0">&#x2717;</span>'
-         :'<button class="btn-del" style="background:#1a2030;color:#4488ff;border-color:#2a3a60" onclick="applyOneTag('+p.t.id+',\''+p.t._type+'\',this)">Tag</button>')
-        +'</div>';
-    });
-    h+='</div>';
+  if(changed.length)h+='<div style="padding:0 16px 12px"><button class="btn-p" onclick="applyAllTags()">Apply Changes to '+changed.length+' Items</button></div>';
+
+  tagProposals.forEach(function(p){
+    var title=edits[p.t.id]||p.t.name;
+    var typeBadge='<span class="type-badge '+(p.t._type==='usenet'?'type-usenet':'type-torrent')+'">'+(p.t._type==='usenet'?'Usenet':'Torrent')+'</span>';
+    var st=p.status;
+
+    // build tag chips for final set — each removable
+    var finalLower=p.final.map(function(x){return x.toLowerCase();});
+    var chips=p.final.map(function(tg){
+      var col=TC[tg.toLowerCase()]||'#888';
+      var isNew=p.current.map(function(x){return x.toLowerCase();}).indexOf(tg.toLowerCase())<0;
+      var badge=isNew?'<span style="font-size:10px;background:#00e5a030;color:#00e5a0;border-radius:4px;padding:1px 5px;margin-left:4px">+new</span>':'';
+      return '<span style="display:inline-flex;align-items:center;background:'+col+'22;color:'+col
+        +';border:1px solid '+col+'44;border-radius:10px;padding:4px 10px;font-size:13px;margin:2px;cursor:default">'
+        +esc(tg)+badge
+        +(st!=='done'?'<span onclick="toggleTagInFinal('+p.t.id+',\''+esc(tg)+'\')" style="margin-left:6px;cursor:pointer;opacity:.7;font-size:11px">&#x2715;</span>':'')
+        +'</span>';
+    }).join('');
+
+    // show removed tags (in current but not in final)
+    var removed=p.current.filter(function(tg){return finalLower.indexOf(tg.toLowerCase())<0;});
+    var removedChips=removed.map(function(tg){
+      var col=TC[tg.toLowerCase()]||'#888';
+      return '<span style="display:inline-flex;align-items:center;background:#1a1a1a;color:#555'
+        +';border:1px dashed #333;border-radius:10px;padding:4px 10px;font-size:13px;margin:2px;text-decoration:line-through">'
+        +esc(tg)
+        +(st!=='done'?'<span onclick="toggleTagInFinal('+p.t.id+',\''+esc(tg)+'\')" style="margin-left:6px;cursor:pointer;opacity:.7;font-size:11px">&#x21ba;</span>':'')
+        +'</span>';
+    }).join('');
+
+    // quick-add buttons for standard tags not in final
+    var addable=MANAGED.filter(function(m){return finalLower.indexOf(m)<0;});
+    var addBtns=st==='done'?'':addable.map(function(m){
+      return '<span onclick="toggleTagInFinal('+p.t.id+',\''+m+'\')" style="display:inline-flex;align-items:center;background:transparent;color:'+TC[m]
+        +';border:1px dashed '+TC[m]+'66;border-radius:10px;padding:4px 10px;font-size:13px;margin:2px;cursor:pointer;opacity:.6">+ '+m+'</span>';
+    }).join('');
+
+    var hasDiff=p.current.slice().sort().join(',')!==p.final.slice().sort().join(',');
+
+    h+='<div style="display:flex;align-items:flex-start;gap:10px;padding:12px 16px;border-top:1px solid #1a1a1a">'
+      +'<div style="flex:1;min-width:0">'
+      +'<div style="font-size:15px;color:#e8e8e8;word-break:break-word;line-height:1.4;margin-bottom:6px">'+typeBadge+esc(title)+'</div>'
+      +'<div>'+chips+removedChips+addBtns+'</div>'
+      +'</div>'
+      +(st==='done'?'<span style="color:#00e5a0;font-size:20px;flex-shrink:0;margin-top:2px">&#x2713;</span>'
+       :st==='error'?'<span style="color:#ff6b6b;font-size:20px;flex-shrink:0;margin-top:2px">&#x2717;</span>'
+       :hasDiff?'<button class="btn-del" style="background:#1a2030;color:#4488ff;border-color:#2a3a60;flex-shrink:0" onclick="applyOneTag('+p.t.id+',\''+p.t._type+'\',this)">Apply</button>'
+       :'<span style="color:#333;font-size:12px;flex-shrink:0;margin-top:4px">no change</span>')
+      +'</div>';
   });
+
   el.innerHTML=h;
 }
 
@@ -1015,15 +1063,20 @@ function applyOneTag(id,type,btn){
   fetch('/api/torbox/tag',{method:'POST',headers:{'Content-Type':'application/json','x-torbox-key':apiKey},body:JSON.stringify({item_id:id,type:type||p.t._type,tags:p.final})})
   .then(function(r){return r.json();})
   .then(function(d){
-    if(d.success){p.status='done';p.t.tags=p.final;}
-    else{p.status='error';if(btn){btn.disabled=false;btn.textContent='Tag';}}
+    if(d.success){p.status='done';p.t.tags=p.final.slice();p.current=p.final.slice();}
+    else{p.status='error';if(btn){btn.disabled=false;btn.textContent='Apply';}}
     renderTags();
   })
-  .catch(function(){p.status='error';if(btn){btn.disabled=false;btn.textContent='Tag';}renderTags();});
+  .catch(function(){p.status='error';if(btn){btn.disabled=false;btn.textContent='Apply';}renderTags();});
 }
 
 function applyAllTags(){
-  tagProposals.forEach(function(p){if(!p.status)applyOneTag(p.t.id,p.t._type,null);});
+  tagProposals.forEach(function(p){
+    if(p.status==='done')return;
+    var a=p.current.slice().sort().join(',');
+    var b=p.final.slice().sort().join(',');
+    if(a!==b)applyOneTag(p.t.id,p.t._type,null);
+  });
 }
 
 // ── INIT ──────────────────────────────────────────────────────
@@ -1121,7 +1174,6 @@ async function plugin(fastify) {
       const { item_id, type } = request.body
       let res
       if (type === 'usenet') {
-        // TorBox API inconsistency: edit uses usenet_download_id, control may use usenet_id
         res = await axios.post(`${TORBOX}/usenet/controlusenetdownload`,
           { usenet_download_id: item_id, usenet_id: item_id, operation: 'delete' },
           { headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' } }
