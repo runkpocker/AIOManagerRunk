@@ -181,7 +181,7 @@ var MANAGED = ['series','movies','adult'];
 var TC = {series:'#4488ff',movies:'#aa66ff',adult:'#ff6688'};
 var MEXT = /\.(mkv|mp4|avi|mov|wmv|m4v|ts|mpg|mpeg|m2ts|vob|flv|webm|divx|xvid)$/i;
 
-var apiKey='', items=[], backup=null, edits={}, statuses={};
+var apiKey='', serverHasKey=false, items=[], backup=null, edits={}, statuses={};
 var expandId=null, editId=null;
 var dupesOpen=false, dupeGroups=[];
 var tagOpen=false, tagProposals=[];
@@ -410,7 +410,7 @@ function showStep(i){
 // ── CONNECT ───────────────────────────────────────────────────
 function doConnect(){
   apiKey=document.getElementById('key-input').value.trim();
-  if(!apiKey){showErr('Please enter your API key.');return;}
+  if(!apiKey&&!serverHasKey){showErr('Please enter your API key.');return;}
   document.getElementById('lform').style.display='none';
   document.getElementById('steps-ui').style.display='block';
   document.getElementById('err-msg').style.display='none';
@@ -686,8 +686,9 @@ function doCleanup(){
     +'6. TV partial season: "Show Name S02E04-E08 1080p".\n'
     +'7. TV multi-season: "Show Name S01-S03 1080p".\n'
     +'8. Scene Pack: if the item has many diverse files (a collection/pack/bundle), end with "Scene Pack". e.g. "Studio Name 1080p Scene Pack" or "Artist Discography 2023 Scene Pack".\n'
-    +'9. No readable filenames: if files are hashes/codes/unreadable, clean and format the current_name instead — apply title casing, standardize year, add quality.\n'
-    +'10. Title casing always.\n'
+    +'9. local_suggestion is pre-derived from the filenames — use it as your PRIMARY source. Only override if it is clearly wrong (e.g. garbled, hash-based, or missing key info).\n'
+    +'10. If local_suggestion looks correct, return it unchanged.\n'
+    +'11. Title casing always.\n'
     +'Return ONLY JSON array: [{"id":1,"suggested":"Title"}]. No other text.\n\n'
     +'Items:\n'+JSON.stringify(items.map(function(t){
       var mf=mfiles(t.files||[]);
@@ -698,6 +699,7 @@ function doCleanup(){
         id:t.id,
         type:t._type,
         current_name:t.name,
+        local_suggestion:edits[t.id]||t.name,
         is_pack:pack,
         has_readable_filenames:anyWords,
         files:src.slice(0,6).map(function(f){return f.name||f.short_name;})
@@ -1022,7 +1024,13 @@ document.getElementById('key-input').addEventListener('keydown',function(e){if(e
 
 fetch('/api/torbox/config')
   .then(function(r){return r.json();})
-  .then(function(d){if(d.hasKey)document.getElementById('key-input').placeholder='API key configured on server \u2713';})
+  .then(function(d){
+    if(d.hasKey){
+      serverHasKey=true;
+      document.getElementById('key-input').placeholder='API key configured on server \u2713';
+      doConnect();
+    }
+  })
   .catch(function(){});
 </script>
 </body>
