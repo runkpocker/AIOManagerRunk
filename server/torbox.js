@@ -375,7 +375,7 @@ function deriveTitle(files, itemName){
 // ── NORMALIZE FOR DUPE DETECTION ─────────────────────────────
 function norm(raw){
   var s=raw.toLowerCase();
-  // NOTE: keep SxxExx so S01E07 and S01E09 don't collide
+  // keep SxxExx so S01E07 and S01E09 don't collide as dupes
   s=s.replace(/\b(4k|2160p|1080p|720p|480p|bluray|bdrip|webrip|web-dl|webdl|hdtv|x264|x265|hevc|avc|h264|h265|hdr|sdr|dv|dolby|atmos|aac|ac3|dts|remux|proper|repack|extended|theatrical|unrated|yify|rarbg|ettv|eztv|prt)\b/gi,'');
   s=s.replace(/-[a-z0-9]+$/i,'');
   s=s.replace(/\b\d+\s*(mb|mib|gb|gib)\b/gi,'');
@@ -1097,7 +1097,7 @@ async function plugin(fastify) {
       let res
       if (type === 'usenet') {
         res = await axios.put(`${TORBOX}/usenet/editusenetdownload`,
-          { usenet_download_id: item_id, name },
+          { usenet_download_id: item_id, usenet_id: item_id, name },
           { headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' } }
         )
       } else {
@@ -1121,8 +1121,9 @@ async function plugin(fastify) {
       const { item_id, type } = request.body
       let res
       if (type === 'usenet') {
+        // TorBox API inconsistency: edit uses usenet_download_id, control may use usenet_id
         res = await axios.post(`${TORBOX}/usenet/controlusenetdownload`,
-          { usenet_download_id: item_id, operation: 'delete' },
+          { usenet_download_id: item_id, usenet_id: item_id, operation: 'delete' },
           { headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' } }
         )
       } else {
@@ -1146,7 +1147,7 @@ async function plugin(fastify) {
       let res
       if (type === 'usenet') {
         res = await axios.put(`${TORBOX}/usenet/editusenetdownload`,
-          { usenet_download_id: item_id, tags },
+          { usenet_download_id: item_id, usenet_id: item_id, tags },
           { headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' } }
         )
       } else {
