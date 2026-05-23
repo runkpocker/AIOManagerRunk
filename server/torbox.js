@@ -641,20 +641,30 @@ function renderList(){
           +'<button class="btn-cancel" onclick="cancelEdit('+t.id+')">Cancel</button></div></div>';
       }else{
         acts='<div class="cacts">';
-        if(changed)acts+='<button class="btn-p" onclick="applyOne('+t.id+',\''+t._type+'\')">Apply &#x2192; '+esc(edit)+'</button>';
+        if(!cleanupMode&&changed)acts+='<button class="btn-p" onclick="applyOne('+t.id+',\''+t._type+'\')">Apply &#x2192; '+esc(edit)+'</button>';
         acts+='<button class="btn-s" onclick="startEdit('+t.id+')">&#x270f;&#xfe0f; Edit Title</button>';
-        if(origName&&t.name!==origName)acts+='<button class="btn-g" onclick="revertOne('+t.id+',\''+t._type+'\')">↩ Revert to Original</button>';
-        if(cleanupMode&&changed)acts+='<button class="btn-g" onclick="ignoreTitle('+t.id+')">&#x2298; Ignore Suggestion</button>';
+        if(origName&&t.name!==origName)acts+='<button class="btn-g" onclick="revertOne('+t.id+',\''+t._type+'\')">&#x21a9; Revert to Original</button>';
         acts+='</div>';
       }
       exp='<div class="ebody">'+(files.length?'<div class="flist">'+frows+'</div>':'')+acts+'</div>';
+    }
+    // In cleanup mode: inline ✓/⊘ buttons + chevron. Otherwise: just chevron.
+    var rightSide='';
+    if(cleanupMode&&changed){
+      rightSide='<div style="display:flex;gap:6px;flex-shrink:0;align-items:center">'
+        +'<button onclick="event.stopPropagation();applyOne('+t.id+',\''+t._type+'\')" style="width:36px;height:36px;background:#00e5a015;color:#00e5a0;border:1px solid #00e5a040;border-radius:8px;font-size:17px;cursor:pointer;flex-shrink:0" title="Apply">&#x2714;</button>'
+        +'<button onclick="event.stopPropagation();ignoreTitle('+t.id+')" style="width:36px;height:36px;background:#2a2a1a;color:#888;border:1px solid #44443a;border-radius:8px;font-size:16px;cursor:pointer;flex-shrink:0" title="Ignore">&#x2298;</button>'
+        +'<div class="chev" style="margin-left:2px">'+(isExp?'&#x25b2;':'&#x25bc;')+'</div>'
+        +'</div>';
+    } else {
+      rightSide='<div class="chev">'+(isExp?'&#x25b2;':'&#x25bc;')+'</div>';
     }
     return '<div class="'+cls+'" id="c-'+t.id+'">'
       +'<div class="cmain" onclick="toggleExp('+t.id+')">'
       +'<div class="cmeta"><div class="ctitle">'+esc(t.name)+'</div>'
       +(changed?'<div class="csugg">&#x2192; '+esc(edit)+'</div>':'')
       +'<div class="csub">'+sub+'</div></div>'
-      +'<div class="chev">'+(isExp?'&#x25b2;':'&#x25bc;')+'</div></div>'+exp+'</div>';
+      +rightSide+'</div>'+exp+'</div>';
   }).join('');
 }
 
@@ -1023,6 +1033,7 @@ function renderDupes(){
     } else {
       h+='<button class="btn-autosel" onclick="autoSelectGroup('+gi+')">&#x2713; Select Duplicates</button>';
       h+='<button class="btn-keepbest" onclick="deleteGroupAll('+gi+')">&#x26a1; Keep Best &amp; Delete Rest</button>';
+      h+='<button class="btn-g" style="width:auto;padding:10px 14px;font-size:13px" onclick="ignoreDupeGroup(\''+key.replace(/\'/g,\'\\\'\')+'\')">⊘ Ignore Group</button>';
     }
     h+='</div>';
     h+='</div>';
@@ -1098,7 +1109,7 @@ function renderTags(){
   h+='</div>';
   if(changed.length)h+='<div style="padding:0 16px 12px"><button class="btn-p" onclick="applyAllTags()">Apply Changes to '+changed.length+' Items</button></div>';
 
-  tagProposals.forEach(function(p){
+  visibleProposals.forEach(function(p){
     var title=edits[p.t.id]||p.t.name;
     var typeBadge='<span class="type-badge '+(p.t._type==='usenet'?'type-usenet':'type-torrent')+'">'+(p.t._type==='usenet'?'Usenet':'Torrent')+'</span>';
     var st=p.status;
