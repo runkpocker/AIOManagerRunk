@@ -246,9 +246,7 @@ function hasWords(s){
 // ── IS HASH NAME ─────────────────────────────────────────────
 function isHashName(s){
   var t=s.trim();
-  // pure hex hash (md5, sha1, etc.)
   if(/^[a-f0-9]{16,}$/i.test(t))return true;
-  // long alphanumeric blob with no spaces
   if(/^[a-zA-Z0-9]{20,}$/.test(t))return true;
   return false;
 }
@@ -377,7 +375,7 @@ function deriveTitle(files, itemName){
 // ── NORMALIZE FOR DUPE DETECTION ─────────────────────────────
 function norm(raw){
   var s=raw.toLowerCase();
-  s=s.replace(/\bS\d\d?E\d\d?\b/gi,'');
+  // NOTE: keep SxxExx so S01E07 and S01E09 don't collide
   s=s.replace(/\b(4k|2160p|1080p|720p|480p|bluray|bdrip|webrip|web-dl|webdl|hdtv|x264|x265|hevc|avc|h264|h265|hdr|sdr|dv|dolby|atmos|aac|ac3|dts|remux|proper|repack|extended|theatrical|unrated|yify|rarbg|ettv|eztv|prt)\b/gi,'');
   s=s.replace(/-[a-z0-9]+$/i,'');
   s=s.replace(/\b\d+\s*(mb|mib|gb|gib)\b/gi,'');
@@ -391,7 +389,7 @@ function classify(t){
   if(/\bxxx\b|letspostit|brazzers|bangbros|realitykings|mofos|nubiles|vixen|blacked|tushy|wicked|penthouse|playboy|\bporn\b|pornrips|adulttime|21sextury|digitalplayground|eternaldesire|sweetsin|puretaboo/i.test(txt))return 'adult';
   if(/\bS\d\d?E\d\d?\b/i.test(txt))return 'series';
   var t2=edits[t.id]||t.name;
-  if(/\bSeason\s*\d+\b/i.test(t2))return 'series';
+  if(/\bSeason\s*\d+\b|\bS\d\d?(?:\s*-\s*S\d\d?)?\s*(?:\b|$)/i.test(t2))return 'series';
   return 'movies';
 }
 
@@ -695,8 +693,8 @@ function doCleanup(){
     +'5. TV full season (E01 sequential, 6+ eps): "Show Name S02 1080p".\n'
     +'6. TV partial season: "Show Name S02E04-E08 1080p".\n'
     +'7. TV multi-season: "Show Name S01-S03 1080p".\n'
-    +'8. Scene Pack: if the item has many diverse files (a collection/pack/bundle), end with "Scene Pack". e.g. "Studio Name 1080p Scene Pack" or "Artist Discography 2023 Scene Pack".\n'
-    +'9. local_suggestion is pre-derived from the filenames — use it as your PRIMARY source. Only override if it is clearly wrong (e.g. garbled, missing key info).\n'
+    +'8. Scene Pack: if the item has many diverse files (a collection/pack/bundle), end with "Scene Pack".\n'
+    +'9. local_suggestion is pre-derived from the filenames — use it as your PRIMARY source. Only override if it is clearly wrong (garbled, hash-based, or missing key info).\n'
     +'10. If local_suggestion looks correct, return it unchanged.\n'
     +'11. Title casing always.\n'
     +'Return ONLY JSON array: [{"id":1,"suggested":"Title"}]. No other text.\n\n'
