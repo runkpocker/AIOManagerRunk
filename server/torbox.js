@@ -1033,7 +1033,7 @@ function renderDupes(){
     } else {
       h+='<button class="btn-autosel" onclick="autoSelectGroup('+gi+')">&#x2713; Select Duplicates</button>';
       h+='<button class="btn-keepbest" onclick="deleteGroupAll('+gi+')">&#x26a1; Keep Best &amp; Delete Rest</button>';
-      h+='<button class="btn-g" style="width:auto;padding:10px 14px;font-size:13px" onclick="ignoreDupeGroup(\''+key.replace(/\'/g,\'\\\'\')+'\')">⊘ Ignore Group</button>';
+      h+='<button class="btn-g" style="width:auto;padding:10px 14px;font-size:13px" data-key='+JSON.stringify(key)+' onclick="ignoreDupeGroup(JSON.parse(this.dataset.key))">⊘ Ignore Group</button>';
     }
     h+='</div>';
     h+='</div>';
