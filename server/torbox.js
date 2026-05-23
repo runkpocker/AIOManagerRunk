@@ -10,6 +10,8 @@
 // ============================================================
 
 import axios from 'axios'
+import { createRequire } from 'module'
+const _require = createRequire(import.meta.url)
 
 const TORBOX = 'https://api.torbox.app/v1/api'
 
@@ -201,6 +203,11 @@ var ignoredDupeGroups={};  // {normKey:true}
 var dupeShowIgnored=false;
 var tagShowIgnored=false;
 var userInfo=null;
+// Ignores persisted server-side in SQLite — fire-and-forget POST
+function saveIgnored(){
+  fetch('/api/torbox/ignores',{method:'POST',headers:{'Content-Type':'application/json','x-torbox-key':apiKey},
+    body:JSON.stringify({ignored:ignored,ignored_dupes:ignoredDupeGroups})}).catch(function(){});
+}
 
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
@@ -426,6 +433,7 @@ function renderQuota(){
   if(!el||!userInfo)return;
   var planRaw=userInfo.plan!==undefined?userInfo.plan:userInfo.role;
   var planLabel=PLAN_NAMES[planRaw]||String(planRaw||'');
+  if(planLabel)planLabel=planLabel.charAt(0).toUpperCase()+planLabel.slice(1);
   if(!planLabel)planLabel='Plan';
   var used=userInfo.total_bytes_downloaded||userInfo.used_bandwidth||userInfo.bandwidth_used||userInfo.bytes_used||0;
   var limit=userInfo.monthly_bandwidth_limit||userInfo.monthly_bandwidth||userInfo.bandwidth_limit||userInfo.total_bandwidth||0;
@@ -467,11 +475,16 @@ function doConnect(){
   document.getElementById('err-msg').style.display='none';
 
   showStep(0);
-  fetch('/api/torbox/list',{headers:{'x-torbox-key':apiKey}})
-  .then(function(r){return r.json();})
-  .then(function(d){
+  Promise.all([
+    fetch('/api/torbox/list',{headers:{'x-torbox-key':apiKey}}).then(function(r){return r.json();}),
+    fetch('/api/torbox/ignores',{headers:{'x-torbox-key':apiKey}}).then(function(r){return r.json();}).catch(function(){return{};})
+  ])
+  .then(function(results){
+    var d=results[0],ignData=results[1];
     if(!d.success)throw new Error(d.detail||'Failed to fetch library');
     items=Array.isArray(d.data)?d.data:[];
+    if(ignData.ignored&&typeof ignData.ignored==='object')ignored=ignData.ignored;
+    if(ignData.ignored_dupes&&typeof ignData.ignored_dupes==='object')ignoredDupeGroups=ignData.ignored_dupes;
 
     showStep(1);
     backup={
@@ -575,6 +588,19 @@ function renderFilterBar(){
     tagRow.innerHTML+=statusBtns;
   }
 
+  // ignored counts chip
+  var ignTitles=Object.keys(ignored).filter(function(id){return ignored[id]&&ignored[id].title;}).length;
+  var ignTags=Object.keys(ignored).filter(function(id){return ignored[id]&&ignored[id].tag;}).length;
+  var ignDupes=Object.keys(ignoredDupeGroups).length;
+  var totalIgn=ignTitles+ignTags+ignDupes;
+  if(totalIgn){
+    var parts=[];
+    if(ignTitles)parts.push(ignTitles+' title'+(ignTitles!==1?'s':''));
+    if(ignTags)parts.push(ignTags+' tag'+(ignTags!==1?'s':''));
+    if(ignDupes)parts.push(ignDupes+' dupe'+(ignDupes!==1?'s':''));
+    tagRow.innerHTML+='<button class="fchip" style="color:#888;border-color:#333" title="Ignored: '+parts.join(', ')+'">&#x2298; '+totalIgn+' ignored</button>';
+  }
+
   var vis=filteredItems().length;
   fcountEl.textContent=vis===items.length?'':('Showing '+vis+' of '+items.length);
 }
@@ -597,7 +623,7 @@ function renderAll(){
 
 // ── ACTION BAR ────────────────────────────────────────────────
 function renderBar(){
-  var needs=items.filter(function(t){return edits[t.id]&&edits[t.id]!==t.name;});
+  var needs=items.filter(function(t){if(ignored[t.id]&&ignored[t.id].title)return false;return edits[t.id]&&edits[t.id]!==t.name;});
   var h='<button class="chip" onclick="doRefresh()">&#x21bb; Refresh</button>';
   h+='<button class="chip'+(cleanupBusy||cleanupMode?' on':'')+'" onclick="doCleanup()">&#x2728; Title Cleanup'+(cleanupMode?' ('+needs.length+')':'')+'</button>';
   h+='<button class="chip'+(dupesOpen?' on':'')+'" onclick="toggleDupes()">&#x1f50d; Duplicates</button>';
@@ -685,6 +711,7 @@ function ignoreTitle(id){
   var sugg=edits[id];
   ignored[id]=Object.assign({},ignored[id]||{},{title:true,titleSugg:sugg});
   edits[id]=t.name;
+  saveIgnored();
   renderList();renderBar();
 }
 function unignoreTitle(id){
@@ -692,6 +719,7 @@ function unignoreTitle(id){
   var sugg=ignored[id].titleSugg;
   delete ignored[id].title;delete ignored[id].titleSugg;
   if(sugg)edits[id]=sugg;
+  saveIgnored();
   renderList();renderBar();
 }
 
@@ -737,6 +765,7 @@ function clearIgnoredTitles(){
     var t=items.filter(function(x){return x.id===parseInt(id);})[0];
     if(t&&sugg)edits[parseInt(id)]=sugg;
   });
+  saveIgnored();
   renderAll();
 }
 
@@ -748,7 +777,7 @@ function doRefresh(){
   .then(function(d){
     if(!d.success)throw new Error(d.detail||'Failed');
     items=Array.isArray(d.data)?d.data:[];
-    statuses={};ignored={};ignoredDupeGroups={};dupeShowIgnored=false;tagShowIgnored=false;
+    statuses={};dupeShowIgnored=false;tagShowIgnored=false;
     filterType='all';filterTag='all';filterStatus='all';cleanupMode=false;renderAll();
   })
   .catch(function(e){renderBar();alert('Refresh failed: '+e.message);});
@@ -944,10 +973,12 @@ function deleteGroupAll(gi){
 
 function ignoreDupeGroup(key){
   ignoredDupeGroups[key]=true;
+  saveIgnored();
   renderDupes();
 }
 function unignoreDupeGroup(key){
   delete ignoredDupeGroups[key];
+  saveIgnored();
   renderDupes();
 }
 function toggleDupeShowIgnored(){dupeShowIgnored=!dupeShowIgnored;renderDupes();}
@@ -1078,10 +1109,12 @@ function toggleTagInFinal(id,tag){
 
 function ignoreTag(id){
   ignored[id]=Object.assign({},ignored[id]||{},{tag:true});
+  saveIgnored();
   renderTags();
 }
 function unignoreTag(id){
   if(ignored[id])delete ignored[id].tag;
+  saveIgnored();
   renderTags();
 }
 function toggleTagShowIgnored(){tagShowIgnored=!tagShowIgnored;renderTags();}
@@ -1094,6 +1127,7 @@ function renderTags(){
 
   var changed=tagProposals.filter(function(p){
     if(p.status==='done')return false;
+    if(ignored[p.t.id]&&ignored[p.t.id].tag)return false;
     var a=p.current.slice().sort().join(',');
     var b=p.final.slice().sort().join(',');
     return a!==b;
@@ -1211,6 +1245,41 @@ fetch('/api/torbox/config')
 </script>
 </body>
 </html>`;
+
+// ── SQLITE IGNORES DB ────────────────────────────────────────
+const DB_PATH = (process.env.DATA_DIR || '/app/data') + '/aio.db'
+let _ignDb = null
+function getIgnDb() {
+  if (_ignDb) return _ignDb
+  try {
+    const Database = _require('better-sqlite3')
+    _ignDb = new Database(DB_PATH)
+    // Safe: CREATE IF NOT EXISTS never touches existing tables or data
+    _ignDb.exec(`
+      CREATE TABLE IF NOT EXISTS bw_meta (
+        key   TEXT PRIMARY KEY,
+        value TEXT NOT NULL
+      );
+      INSERT OR IGNORE INTO bw_meta (key, value) VALUES ('app', 'boxwarden');
+      INSERT OR IGNORE INTO bw_meta (key, value) VALUES ('schema_version', '1');
+      CREATE TABLE IF NOT EXISTS bw_ignores (
+        key_hash      TEXT PRIMARY KEY,
+        ignored       TEXT NOT NULL DEFAULT '{}',
+        ignored_dupes TEXT NOT NULL DEFAULT '{}',
+        updated_at    TEXT NOT NULL DEFAULT (datetime('now'))
+      );
+    `)
+    return _ignDb
+  } catch(e) {
+    console.warn('BoxWarden: SQLite unavailable, ignores will not persist:', e.message)
+    return null
+  }
+}
+function _keyHash(k) {
+  let h = 0
+  for (let i = 0; i < k.length; i++) h = (h * 31 + k.charCodeAt(i)) & 0xfffffff
+  return h.toString(36)
+}
 
 // ── SERVER PLUGIN ────────────────────────────────────────────
 async function plugin(fastify) {
@@ -1340,6 +1409,39 @@ async function plugin(fastify) {
       return res.data
     } catch (e) {
       return reply.status(e.response?.status || 502).send({ success: false, detail: e.message })
+    }
+  })
+
+  // ── IGNORES (SQLite, keyed by API key hash) ─────────────────
+  fastify.get('/api/torbox/ignores', async (request, reply) => {
+    const key = request.headers['x-torbox-key'] || process.env.TORBOX_API_KEY
+    if (!key) return reply.status(401).send({ success: false })
+    const db = getIgnDb()
+    if (!db) return { success: true, ignored: {}, ignored_dupes: {} }
+    try {
+      const row = db.prepare('SELECT ignored, ignored_dupes FROM bw_ignores WHERE key_hash = ?').get(_keyHash(key))
+      return {
+        success: true,
+        ignored: row ? JSON.parse(row.ignored) : {},
+        ignored_dupes: row ? JSON.parse(row.ignored_dupes) : {}
+      }
+    } catch(e) {
+      return { success: true, ignored: {}, ignored_dupes: {} }
+    }
+  })
+
+  fastify.post('/api/torbox/ignores', async (request, reply) => {
+    const key = request.headers['x-torbox-key'] || process.env.TORBOX_API_KEY
+    if (!key) return reply.status(401).send({ success: false })
+    const db = getIgnDb()
+    if (!db) return { success: false, detail: 'DB unavailable' }
+    try {
+      const { ignored, ignored_dupes } = request.body
+      db.prepare('INSERT OR REPLACE INTO bw_ignores (key_hash, ignored, ignored_dupes) VALUES (?, ?, ?)')
+        .run(_keyHash(key), JSON.stringify(ignored || {}), JSON.stringify(ignored_dupes || {}))
+      return { success: true }
+    } catch(e) {
+      return reply.status(500).send({ success: false, detail: e.message })
     }
   })
 
