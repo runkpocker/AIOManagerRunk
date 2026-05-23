@@ -181,7 +181,7 @@ var MANAGED = ['series','movies','adult'];
 var TC = {series:'#4488ff',movies:'#aa66ff',adult:'#ff6688'};
 var MEXT = /\.(mkv|mp4|avi|mov|wmv|m4v|ts|mpg|mpeg|m2ts|vob|flv|webm|divx|xvid)$/i;
 
-var apiKey='', serverHasKey=false, items=[], backup=null, edits={}, statuses={};
+var apiKey='', items=[], backup=null, edits={}, statuses={};
 var expandId=null, editId=null;
 var dupesOpen=false, dupeGroups=[];
 var tagOpen=false, tagProposals=[];
@@ -319,7 +319,7 @@ function epDesc(files){
   eps.forEach(function(e){if(!seen[e.s]){seasons.push(e.s);seen[e.s]=1;}});
   seasons.sort(function(a,b){return a-b;});
   function pad(n){return n<10?'0'+n:''+n;}
-  if(seasons.length>1)return 'Seasons '+seasons[0]+'-'+seasons[seasons.length-1];
+  if(seasons.length>1)return 'S'+pad(seasons[0])+'-S'+pad(seasons[seasons.length-1]);
   var s=seasons[0];
   var epNums=[],seenE={};
   eps.forEach(function(e){if(e.s===s&&!seenE[e.e]){epNums.push(e.e);seenE[e.e]=1;}});
@@ -327,8 +327,8 @@ function epDesc(files){
   if(epNums.length===1)return 'S'+pad(s)+'E'+pad(epNums[0]);
   var mn=epNums[0],mx=epNums[epNums.length-1];
   var seq=(epNums.length===mx-mn+1);
-  if(mn===1&&seq&&epNums.length>=6)return 'Season '+s;
-  return 'S'+pad(s)+' E'+pad(mn)+'-E'+pad(mx);
+  if(mn===1&&seq&&epNums.length>=6)return 'S'+pad(s);
+  return 'S'+pad(s)+'E'+pad(mn)+'-E'+pad(mx);
 }
 
 // ── DERIVE TITLE ─────────────────────────────────────────────
@@ -410,7 +410,7 @@ function showStep(i){
 // ── CONNECT ───────────────────────────────────────────────────
 function doConnect(){
   apiKey=document.getElementById('key-input').value.trim();
-  if(!apiKey&&!serverHasKey){showErr('Please enter your API key.');return;}
+  if(!apiKey){showErr('Please enter your API key.');return;}
   document.getElementById('lform').style.display='none';
   document.getElementById('steps-ui').style.display='block';
   document.getElementById('err-msg').style.display='none';
@@ -682,9 +682,9 @@ function doCleanup(){
     +'2. Year: if a year (YYYY) appears anywhere in the name or files, ALWAYS include it as (YYYY). e.g. "The Movie (2021) 1080p".\n'
     +'3. Movies: "Movie Title (Year) Quality" e.g. "Inception (2010) 1080p".\n'
     +'4. TV single ep: "Show Name S02E04 1080p".\n'
-    +'5. TV full season (E01 sequential, 6+ eps): "Show Name Season 2 1080p".\n'
-    +'6. TV partial season: "Show Name S02 E04-E08 1080p".\n'
-    +'7. TV multi-season: "Show Name Seasons 1-3 1080p".\n'
+    +'5. TV full season (E01 sequential, 6+ eps): "Show Name S02 1080p".\n'
+    +'6. TV partial season: "Show Name S02E04-E08 1080p".\n'
+    +'7. TV multi-season: "Show Name S01-S03 1080p".\n'
     +'8. Scene Pack: if the item has many diverse files (a collection/pack/bundle), end with "Scene Pack". e.g. "Studio Name 1080p Scene Pack" or "Artist Discography 2023 Scene Pack".\n'
     +'9. No readable filenames: if files are hashes/codes/unreadable, clean and format the current_name instead — apply title casing, standardize year, add quality.\n'
     +'10. Title casing always.\n'
@@ -1022,13 +1022,7 @@ document.getElementById('key-input').addEventListener('keydown',function(e){if(e
 
 fetch('/api/torbox/config')
   .then(function(r){return r.json();})
-  .then(function(d){
-    if(d.hasKey){
-      serverHasKey=true;
-      document.getElementById('key-input').placeholder='API key configured on server \u2713';
-      doConnect();
-    }
-  })
+  .then(function(d){if(d.hasKey)document.getElementById('key-input').placeholder='API key configured on server \u2713';})
   .catch(function(){});
 </script>
 </body>
