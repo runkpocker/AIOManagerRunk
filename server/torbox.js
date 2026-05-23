@@ -130,6 +130,19 @@ input,button{font-family:'Courier New',monospace}
 .fchip.on-series{background:#4488ff15;color:#4488ff;border-color:#4488ff40}
 .fchip.on-movies{background:#aa66ff15;color:#aa66ff;border-color:#aa66ff40}
 .fchip.on-adult{background:#ff668815;color:#ff6688;border-color:#ff668840}
+.snap-row{display:flex;align-items:center;gap:10px;padding:14px 16px;border-top:1px solid #1a1a1e}
+.snap-row:first-child{border-top:none}
+.snap-info{flex:1;min-width:0}
+.snap-title{font-size:14px;color:#e8e8e8;margin-bottom:3px}
+.snap-meta{font-size:12px;color:#555;display:flex;gap:10px;flex-wrap:wrap}
+.snap-acts{display:flex;gap:6px;flex-shrink:0}
+.snap-trigger{font-size:11px;padding:2px 8px;border-radius:6px;font-weight:bold}
+.trig-connect{background:#1a2a1a;color:#4a9a6a;border:1px solid #2a4a2a}
+.trig-apply{background:#1a1a2a;color:#6a7aff;border:1px solid #2a2a5a}
+.trig-delete{background:#2a1515;color:#ff6b6b;border:1px solid #4a2020}
+.trig-tags{background:#1a1a2a;color:#aa66ff;border:1px solid #2a1a4a}
+.trig-manual{background:#1a2020;color:#00e5a0;border:1px solid #1e3020}
+.snap-empty{padding:30px 16px;color:#444;font-size:14px;text-align:center}
 .fcount{font-size:12px;color:#444;padding:0 14px 8px;font-family:'Courier New',monospace}
 .ign-badge{font-size:11px;padding:2px 8px;border-radius:6px;background:#2a2a1a;color:#888;border:1px solid #44443a}
 .quota-wrap{display:flex;align-items:center;gap:6px}
@@ -151,8 +164,8 @@ input,button{font-family:'Courier New',monospace}
     <div id="lform" style="width:100%;display:flex;flex-direction:column;gap:14px">
       <input class="big-input" id="key-input" type="password" placeholder="TorBox API key..." autocomplete="off" autocorrect="off" spellcheck="false">
       <div class="err" id="err-msg" style="display:none"></div>
-      <button class="big-btn" id="conn-btn" type="button">Connect &amp; Backup Library</button>
-      <div class="note">&#x1f4e6; Backup auto-downloads before any changes</div>
+      <button class="big-btn" id="conn-btn" type="button">Connect</button>
+      <div class="note">&#x1f4e6; Library snapshots saved automatically</div>
     </div>
     <div id="steps-ui" style="width:100%;display:none">
       <div class="steps-wrap">
@@ -184,6 +197,7 @@ input,button{font-family:'Courier New',monospace}
   <div class="list" id="tlist"></div>
   <div id="dpanel" class="panel" style="display:none"></div>
   <div id="tpanel" class="panel" style="display:none"></div>
+  <div id="bpanel" class="panel" style="display:none"></div>
 </div>
 
 <script>
@@ -426,6 +440,114 @@ function dlBackup(data){
   }catch(e){console.warn('Backup download failed:',e);}
 }
 
+// ── SNAPSHOTS ────────────────────────────────────────────────
+var backupOpen=false;
+var snapshots=[];
+
+function buildSnapshotPayload(trigger){
+  return{
+    trigger:trigger,
+    item_count:items.length,
+    snapshot:{
+      exported_at:new Date().toISOString(),
+      trigger:trigger,
+      total_count:items.length,
+      torrent_count:items.filter(function(i){return i._type==='torrent';}).length,
+      usenet_count:items.filter(function(i){return i._type==='usenet';}).length,
+      items:items.map(function(t){return{
+        id:t.id,name:t.name,hash:t.hash,tags:t.tags||[],_type:t._type,
+        files:(t.files||[]).map(function(f){return{id:f.id,name:f.name||f.short_name,size:f.size};})
+      };})
+    }
+  };
+}
+
+function takeSnapshot(trigger){
+  if(!items.length)return;
+  fetch('/api/torbox/snapshot',{method:'POST',headers:{'Content-Type':'application/json','x-torbox-key':apiKey},
+    body:JSON.stringify(buildSnapshotPayload(trigger))}).catch(function(){});
+}
+
+function checkAndSnapshot(){
+  fetch('/api/torbox/snapshots',{headers:{'x-torbox-key':apiKey}})
+  .then(function(r){return r.json();})
+  .then(function(d){
+    snapshots=d.snapshots||[];
+    if(!snapshots.length){takeSnapshot('connect');return;}
+    var last=new Date(snapshots[0].created_at).getTime();
+    var ageHours=(Date.now()-last)/3600000;
+    if(ageHours>=24)takeSnapshot('connect');
+  }).catch(function(){});
+}
+
+function downloadSnapshot(id){
+  fetch('/api/torbox/snapshot/'+id,{headers:{'x-torbox-key':apiKey}})
+  .then(function(r){return r.json();})
+  .then(function(d){if(d.snapshot)dlBackup(d.snapshot);})
+  .catch(function(){});
+}
+
+function restoreSnapshot(id){
+  if(!confirm('Restore all item names from this snapshot?'))return;
+  fetch('/api/torbox/snapshot/'+id,{headers:{'x-torbox-key':apiKey}})
+  .then(function(r){return r.json();})
+  .then(function(d){
+    if(!d.snapshot||!d.snapshot.items)return;
+    d.snapshot.items.forEach(function(orig){
+      var t=items.filter(function(x){return x.id===orig.id&&x._type===orig._type;})[0];
+      if(t&&t.name!==orig.name){edits[orig.id]=orig.name;applyOne(orig.id,orig._type,orig.name);}
+    });
+  }).catch(function(){});
+}
+
+function toggleBackup(){
+  if(backupOpen){backupOpen=false;renderAll();return;}
+  dupesOpen=false;dupeSelected={};tagOpen=false;tagProposals=[];cleanupMode=false;
+  backupOpen=true;
+  fetch('/api/torbox/snapshots',{headers:{'x-torbox-key':apiKey}})
+  .then(function(r){return r.json();})
+  .then(function(d){snapshots=d.snapshots||[];renderAll();})
+  .catch(function(){renderAll();});
+}
+
+function fmtSnapDate(s){
+  var d=new Date(s);
+  return d.toLocaleDateString()+' '+d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+}
+
+function renderBackup(){
+  var el=document.getElementById('bpanel');
+  if(!el)return;
+  if(!backupOpen){el.style.display='none';return;}
+  el.style.display='block';
+  var trigLabels={connect:'Auto',apply:'Rename',delete:'Delete',tags:'Tags',manual:'Manual'};
+  var trigCls={connect:'trig-connect',apply:'trig-apply',delete:'trig-delete',tags:'trig-tags',manual:'trig-manual'};
+  var h='<div style="padding:14px 16px 8px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">'
+    +'<span style="font-size:15px;font-weight:bold;color:#e8e8e8">&#x1f4e6; Snapshots</span>'
+    +'<button class="btn-s" style="width:auto;padding:10px 16px;font-size:14px" onclick="takeSnapshot('manual');setTimeout(function(){toggleBackup();toggleBackup();},600)">&#x2b07; Snapshot Now</button>'
+    +'</div>';
+  if(!snapshots.length){
+    h+='<div class="snap-empty">No snapshots yet. One will be taken automatically.</div>';
+  } else {
+    h+='<div>';
+    snapshots.forEach(function(s){
+      var trig=s.trigger||'connect';
+      h+='<div class="snap-row">'
+        +'<div class="snap-info">'
+        +'<div class="snap-title"><span class="snap-trigger '+(trigCls[trig]||'trig-connect')+'">'+(trigLabels[trig]||trig)+'</span> &nbsp;'+esc(fmtSnapDate(s.created_at))+'</div>'
+        +'<div class="snap-meta"><span>'+s.item_count+' items</span></div>'
+        +'</div>'
+        +'<div class="snap-acts">'
+        +'<button class="btn-g" style="padding:9px 12px;font-size:13px" onclick="downloadSnapshot('+s.id+')">&#x2b07;</button>'
+        +'<button class="btn-g" style="padding:9px 12px;font-size:13px" onclick="restoreSnapshot('+s.id+')">&#x21a9;</button>'
+        +'</div>'
+        +'</div>';
+    });
+    h+='</div>';
+  }
+  el.innerHTML=h;
+}
+
 // ── QUOTA WIDGET ─────────────────────────────────────────────
 var PLAN_NAMES={0:'Free',1:'Essential',2:'Pro',3:'Standard',4:'Enterprise'};
 function renderQuota(){
@@ -499,13 +621,12 @@ function doConnect(){
     };
 
     showStep(2);
-    dlBackup(backup);
-
     showStep(3);
     document.getElementById('login').style.display='none';
     document.getElementById('main').style.display='flex';
     renderAll();
     fetchUserInfo();
+    checkAndSnapshot();
   })
   .catch(function(e){
     document.getElementById('steps-ui').style.display='none';
@@ -607,7 +728,7 @@ function renderFilterBar(){
 
 // ── RENDER ALL ────────────────────────────────────────────────
 function renderAll(){
-  var panelMode=dupesOpen||tagOpen;
+  var panelMode=dupesOpen||tagOpen||backupOpen;
   var tlist=document.getElementById('tlist');
   var fbar=document.getElementById('fbar');
   if(tlist)tlist.style.display=panelMode?'none':'flex';
@@ -619,6 +740,7 @@ function renderAll(){
   renderList();
   renderDupes();
   renderTags();
+  renderBackup();
 }
 
 // ── ACTION BAR ────────────────────────────────────────────────
@@ -628,7 +750,7 @@ function renderBar(){
   h+='<button class="chip'+(cleanupBusy||cleanupMode?' on':'')+'" onclick="doCleanup()">&#x2728; Title Cleanup'+(cleanupMode?' ('+needs.length+')':'')+'</button>';
   h+='<button class="chip'+(dupesOpen?' on':'')+'" onclick="toggleDupes()">&#x1f50d; Duplicates</button>';
   h+='<button class="chip'+(tagOpen?' on':'')+'" onclick="toggleTags()">&#x1f3f7; Auto-Tag</button>';
-  if(backup)h+='<button class="chip" onclick="dlBackup(backup)">&#x2b07; Backup</button>';
+  h+='<button class="chip'+(backupOpen?' on':'')+"' onclick='toggleBackup()'>&#x1f4e6; Backups</button>";
   if(backup)h+='<button class="chip" onclick="doRevertAll()">&#x21a9; Revert All</button>';
   if(needs.length&&!cleanupMode)h+='<button class="chip on" onclick="applyAll()">Apply '+needs.length+'</button>';
   if(needs.length&&cleanupMode)h+='<button class="chip on" onclick="applyAll()">&#x2714; Apply All '+needs.length+'</button>';
@@ -739,7 +861,10 @@ function applyOne(id,type,nameOv){
 }
 
 function applyAll(){
-  items.forEach(function(t){if(ignored[t.id]&&ignored[t.id].title)return;if(edits[t.id]&&edits[t.id]!==t.name)applyOne(t.id,t._type);});
+  var pending=items.filter(function(t){return !(ignored[t.id]&&ignored[t.id].title)&&edits[t.id]&&edits[t.id]!==t.name;});
+  if(!pending.length)return;
+  pending.forEach(function(t){applyOne(t.id,t._type);});
+  setTimeout(function(){takeSnapshot('apply');},pending.length*200+500);
 }
 
 function revertOne(id,type){
@@ -959,7 +1084,7 @@ function deleteSelected(){
       .catch(function(){});
     });
   });
-  chain.then(function(){scanDupes();renderAll();});
+  chain.then(function(){scanDupes();renderAll();takeSnapshot('delete');});
 }
 
 function deleteGroupAll(gi){
@@ -1219,13 +1344,15 @@ function applyOneTag(id,type,btn){
 }
 
 function applyAllTags(){
-  tagProposals.forEach(function(p){
-    if(p.status==='done')return;
-    if(ignored[p.t.id]&&ignored[p.t.id].tag)return;
+  var pending=tagProposals.filter(function(p){
+    if(p.status==='done')return false;
+    if(ignored[p.t.id]&&ignored[p.t.id].tag)return false;
     var a=p.current.slice().sort().join(',');
     var b=p.final.slice().sort().join(',');
-    if(a!==b)applyOneTag(p.t.id,p.t._type,null);
+    return a!==b;
   });
+  pending.forEach(function(p){applyOneTag(p.t.id,p.t._type,null);});
+  if(pending.length)setTimeout(function(){takeSnapshot('tags');},pending.length*200+500);
 }
 
 // ── INIT ──────────────────────────────────────────────────────
@@ -1267,6 +1394,14 @@ function getIgnDb() {
         ignored       TEXT NOT NULL DEFAULT '{}',
         ignored_dupes TEXT NOT NULL DEFAULT '{}',
         updated_at    TEXT NOT NULL DEFAULT (datetime('now'))
+      );
+      CREATE TABLE IF NOT EXISTS bw_snapshots (
+        id         INTEGER PRIMARY KEY AUTOINCREMENT,
+        key_hash   TEXT NOT NULL,
+        trigger    TEXT NOT NULL DEFAULT 'manual',
+        item_count INTEGER NOT NULL DEFAULT 0,
+        created_at TEXT NOT NULL DEFAULT (datetime('now')),
+        snapshot   TEXT NOT NULL
       );
     `)
     return _ignDb
@@ -1440,6 +1575,57 @@ async function plugin(fastify) {
       db.prepare('INSERT OR REPLACE INTO bw_ignores (key_hash, ignored, ignored_dupes) VALUES (?, ?, ?)')
         .run(_keyHash(key), JSON.stringify(ignored || {}), JSON.stringify(ignored_dupes || {}))
       return { success: true }
+    } catch(e) {
+      return reply.status(500).send({ success: false, detail: e.message })
+    }
+  })
+
+  // ── SNAPSHOTS ─────────────────────────────────────────────────
+  fastify.post('/api/torbox/snapshot', async (request, reply) => {
+    const key = request.headers['x-torbox-key'] || process.env.TORBOX_API_KEY
+    if (!key) return reply.status(401).send({ success: false })
+    const db = getIgnDb()
+    if (!db) return { success: false, detail: 'DB unavailable' }
+    try {
+      const { trigger, item_count, snapshot } = request.body
+      db.prepare('INSERT INTO bw_snapshots (key_hash, trigger, item_count, snapshot) VALUES (?, ?, ?, ?)')
+        .run(_keyHash(key), trigger || 'manual', item_count || 0, JSON.stringify(snapshot))
+      // Prune to last 7 per account
+      db.prepare(`DELETE FROM bw_snapshots WHERE key_hash = ? AND id NOT IN (
+        SELECT id FROM bw_snapshots WHERE key_hash = ? ORDER BY id DESC LIMIT 7
+      )`).run(_keyHash(key), _keyHash(key))
+      return { success: true }
+    } catch(e) {
+      return reply.status(500).send({ success: false, detail: e.message })
+    }
+  })
+
+  fastify.get('/api/torbox/snapshots', async (request, reply) => {
+    const key = request.headers['x-torbox-key'] || process.env.TORBOX_API_KEY
+    if (!key) return reply.status(401).send({ success: false })
+    const db = getIgnDb()
+    if (!db) return { success: true, snapshots: [] }
+    try {
+      const rows = db.prepare(
+        'SELECT id, trigger, item_count, created_at FROM bw_snapshots WHERE key_hash = ? ORDER BY id DESC'
+      ).all(_keyHash(key))
+      return { success: true, snapshots: rows }
+    } catch(e) {
+      return { success: true, snapshots: [] }
+    }
+  })
+
+  fastify.get('/api/torbox/snapshot/:id', async (request, reply) => {
+    const key = request.headers['x-torbox-key'] || process.env.TORBOX_API_KEY
+    if (!key) return reply.status(401).send({ success: false })
+    const db = getIgnDb()
+    if (!db) return reply.status(503).send({ success: false })
+    try {
+      const row = db.prepare(
+        'SELECT snapshot FROM bw_snapshots WHERE id = ? AND key_hash = ?'
+      ).get(request.params.id, _keyHash(key))
+      if (!row) return reply.status(404).send({ success: false })
+      return { success: true, snapshot: JSON.parse(row.snapshot) }
     } catch(e) {
       return reply.status(500).send({ success: false, detail: e.message })
     }
