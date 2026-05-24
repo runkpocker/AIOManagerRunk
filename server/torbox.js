@@ -524,7 +524,7 @@ function renderBackup(){
   var trigCls={connect:'trig-connect',apply:'trig-apply',delete:'trig-delete',tags:'trig-tags',manual:'trig-manual'};
   var h='<div style="padding:14px 16px 8px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">'
     +'<span style="font-size:15px;font-weight:bold;color:#e8e8e8">&#x1f4e6; Snapshots</span>'
-    +'<button class="btn-s" style="width:auto;padding:10px 16px;font-size:14px" onclick="takeSnapshot('manual');setTimeout(function(){toggleBackup();toggleBackup();},600)">&#x2b07; Snapshot Now</button>'
+    +'<button class="btn-s" style="width:auto;padding:10px 16px;font-size:14px" onclick="takeSnapshot(\'manual\');setTimeout(function(){toggleBackup();toggleBackup();},600)">&#x2b07; Snapshot Now</button>'
     +'</div>';
   if(!snapshots.length){
     h+='<div class="snap-empty">No snapshots yet. One will be taken automatically.</div>';
@@ -750,7 +750,7 @@ function renderBar(){
   h+='<button class="chip'+(cleanupBusy||cleanupMode?' on':'')+'" onclick="doCleanup()">&#x2728; Title Cleanup'+(cleanupMode?' ('+needs.length+')':'')+'</button>';
   h+='<button class="chip'+(dupesOpen?' on':'')+'" onclick="toggleDupes()">&#x1f50d; Duplicates</button>';
   h+='<button class="chip'+(tagOpen?' on':'')+'" onclick="toggleTags()">&#x1f3f7; Auto-Tag</button>';
-  h+='<button class="chip'+(backupOpen?' on':'')+"' onclick='toggleBackup()'>&#x1f4e6; Backups</button>";
+  h+='<button class="chip'+(backupOpen?' on':'')+'" onclick="toggleBackup()">&#x1f4e6; Backups</button>';
   if(backup)h+='<button class="chip" onclick="doRevertAll()">&#x21a9; Revert All</button>';
   if(needs.length&&!cleanupMode)h+='<button class="chip on" onclick="applyAll()">Apply '+needs.length+'</button>';
   if(needs.length&&cleanupMode)h+='<button class="chip on" onclick="applyAll()">&#x2714; Apply All '+needs.length+'</button>';
