@@ -1,5 +1,5 @@
 // ============================================================
-//  BoxWarden — Fastify Plugin  (Torrent + Usenet)
+//  TorBox Renamer — Fastify Plugin  (Torrent + Usenet)
 //  Place in server/torbox.js
 //  In server/index.js add:
 //    import torboxPlugin from './torbox.js'
@@ -10,8 +10,6 @@
 // ============================================================
 
 import axios from 'axios'
-import { createRequire } from 'module'
-const _require = createRequire(import.meta.url)
 
 const TORBOX = 'https://api.torbox.app/v1/api'
 
@@ -21,7 +19,7 @@ const HTML = String.raw`<!DOCTYPE html>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
 <meta name="theme-color" content="#0d0d0f">
-<title>BoxWarden</title>
+<title>TorBox Renamer</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
 body{background:#0d0d0f;color:#e8e8e8;font-family:'Courier New',monospace;min-height:100vh}
@@ -130,42 +128,21 @@ input,button{font-family:'Courier New',monospace}
 .fchip.on-series{background:#4488ff15;color:#4488ff;border-color:#4488ff40}
 .fchip.on-movies{background:#aa66ff15;color:#aa66ff;border-color:#aa66ff40}
 .fchip.on-adult{background:#ff668815;color:#ff6688;border-color:#ff668840}
-.snap-row{display:flex;align-items:center;gap:10px;padding:14px 16px;border-top:1px solid #1a1a1e}
-.snap-row:first-child{border-top:none}
-.snap-info{flex:1;min-width:0}
-.snap-title{font-size:14px;color:#e8e8e8;margin-bottom:3px}
-.snap-meta{font-size:12px;color:#555;display:flex;gap:10px;flex-wrap:wrap}
-.snap-acts{display:flex;gap:6px;flex-shrink:0}
-.snap-trigger{font-size:11px;padding:2px 8px;border-radius:6px;font-weight:bold}
-.trig-connect{background:#1a2a1a;color:#4a9a6a;border:1px solid #2a4a2a}
-.trig-apply{background:#1a1a2a;color:#6a7aff;border:1px solid #2a2a5a}
-.trig-delete{background:#2a1515;color:#ff6b6b;border:1px solid #4a2020}
-.trig-tags{background:#1a1a2a;color:#aa66ff;border:1px solid #2a1a4a}
-.trig-manual{background:#1a2020;color:#00e5a0;border:1px solid #1e3020}
-.snap-empty{padding:30px 16px;color:#444;font-size:14px;text-align:center}
 .fcount{font-size:12px;color:#444;padding:0 14px 8px;font-family:'Courier New',monospace}
-.ign-badge{font-size:11px;padding:2px 8px;border-radius:6px;background:#2a2a1a;color:#888;border:1px solid #44443a}
-.quota-wrap{display:flex;align-items:center;gap:6px}
-.quota-pill{font-size:12px;background:#1e1e24;color:#aaa;padding:3px 10px;border-radius:20px;white-space:nowrap;max-width:100px;overflow:hidden;text-overflow:ellipsis}
-.quota-bar-outer{width:60px;height:5px;background:#1e1e24;border-radius:3px;overflow:hidden;flex-shrink:0}
-.quota-bar-inner{height:100%;background:#00e5a0;border-radius:3px;transition:width .3s}
-.quota-warn .quota-bar-inner{background:#ff9900}
-.quota-crit .quota-bar-inner{background:#ff4444}
-.quota-pct{font-size:11px;color:#666;flex-shrink:0}
 </style>
 </head>
 <body>
 
 <div id="login">
   <div class="lcard">
-    <div class="logo">&#x1f6e1;</div>
-    <div class="app-name">BoxWarden</div>
-    <div class="app-sub">TorBox library manager &amp; curator</div>
+    <div class="logo">&#x26a1;</div>
+    <div class="app-name">TorBox Renamer</div>
+    <div class="app-sub">Torrents &amp; Usenet — AI-powered</div>
     <div id="lform" style="width:100%;display:flex;flex-direction:column;gap:14px">
       <input class="big-input" id="key-input" type="password" placeholder="TorBox API key..." autocomplete="off" autocorrect="off" spellcheck="false">
       <div class="err" id="err-msg" style="display:none"></div>
-      <button class="big-btn" id="conn-btn" type="button">Connect</button>
-      <div class="note">&#x1f4e6; Library snapshots saved automatically</div>
+      <button class="big-btn" id="conn-btn" type="button">Connect &amp; Backup Library</button>
+      <div class="note">&#x1f4e6; Backup auto-downloads before any changes</div>
     </div>
     <div id="steps-ui" style="width:100%;display:none">
       <div class="steps-wrap">
@@ -179,10 +156,9 @@ input,button{font-family:'Courier New',monospace}
 
 <div id="main">
   <div class="topbar">
-    <div class="top-l"><span class="top-logo">&#x1f6e1;</span><span class="top-title">BoxWarden</span></div>
+    <div class="top-l"><span class="top-logo">&#x26a1;</span><span class="top-title">TorBox Renamer</span></div>
     <div class="top-r">
       <span id="ai-dot" style="display:none;font-size:18px">&#x1f916;</span>
-      <div id="quota-widget" class="quota-wrap" style="display:none"></div>
       <span class="badge" id="count">0</span>
     </div>
   </div>
@@ -197,7 +173,6 @@ input,button{font-family:'Courier New',monospace}
   <div class="list" id="tlist"></div>
   <div id="dpanel" class="panel" style="display:none"></div>
   <div id="tpanel" class="panel" style="display:none"></div>
-  <div id="bpanel" class="panel" style="display:none"></div>
 </div>
 
 <script>
@@ -212,16 +187,6 @@ var dupesOpen=false, dupeGroups=[];
 var tagOpen=false, tagProposals=[];
 var cleanupBusy=false, cleanupMode=false;
 var filterType='all', filterTag='all', filterStatus='all';
-var ignored={};           // {id:{title:bool,titleSugg:str,tag:bool}}
-var ignoredDupeGroups={};  // {normKey:true}
-var dupeShowIgnored=false;
-var tagShowIgnored=false;
-var userInfo=null;
-// Ignores persisted server-side in SQLite — fire-and-forget POST
-function saveIgnored(){
-  fetch('/api/torbox/ignores',{method:'POST',headers:{'Content-Type':'application/json','x-torbox-key':apiKey},
-    body:JSON.stringify({ignored:ignored,ignored_dupes:ignoredDupeGroups})}).catch(function(){});
-}
 
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
@@ -440,144 +405,6 @@ function dlBackup(data){
   }catch(e){console.warn('Backup download failed:',e);}
 }
 
-// ── SNAPSHOTS ────────────────────────────────────────────────
-var backupOpen=false;
-var snapshots=[];
-
-function buildSnapshotPayload(trigger){
-  return{
-    trigger:trigger,
-    item_count:items.length,
-    snapshot:{
-      exported_at:new Date().toISOString(),
-      trigger:trigger,
-      total_count:items.length,
-      torrent_count:items.filter(function(i){return i._type==='torrent';}).length,
-      usenet_count:items.filter(function(i){return i._type==='usenet';}).length,
-      items:items.map(function(t){return{
-        id:t.id,name:t.name,hash:t.hash,tags:t.tags||[],_type:t._type,
-        files:(t.files||[]).map(function(f){return{id:f.id,name:f.name||f.short_name,size:f.size};})
-      };})
-    }
-  };
-}
-
-function takeSnapshot(trigger){
-  if(!items.length)return;
-  fetch('/api/torbox/snapshot',{method:'POST',headers:{'Content-Type':'application/json','x-torbox-key':apiKey},
-    body:JSON.stringify(buildSnapshotPayload(trigger))}).catch(function(){});
-}
-
-function checkAndSnapshot(){
-  fetch('/api/torbox/snapshots',{headers:{'x-torbox-key':apiKey}})
-  .then(function(r){return r.json();})
-  .then(function(d){
-    snapshots=d.snapshots||[];
-    if(!snapshots.length){takeSnapshot('connect');return;}
-    var last=new Date(snapshots[0].created_at).getTime();
-    var ageHours=(Date.now()-last)/3600000;
-    if(ageHours>=24)takeSnapshot('connect');
-  }).catch(function(){});
-}
-
-function downloadSnapshot(id){
-  fetch('/api/torbox/snapshot/'+id,{headers:{'x-torbox-key':apiKey}})
-  .then(function(r){return r.json();})
-  .then(function(d){if(d.snapshot)dlBackup(d.snapshot);})
-  .catch(function(){});
-}
-
-function restoreSnapshot(id){
-  if(!confirm('Restore all item names from this snapshot?'))return;
-  fetch('/api/torbox/snapshot/'+id,{headers:{'x-torbox-key':apiKey}})
-  .then(function(r){return r.json();})
-  .then(function(d){
-    if(!d.snapshot||!d.snapshot.items)return;
-    d.snapshot.items.forEach(function(orig){
-      var t=items.filter(function(x){return x.id===orig.id&&x._type===orig._type;})[0];
-      if(t&&t.name!==orig.name){edits[orig.id]=orig.name;applyOne(orig.id,orig._type,orig.name);}
-    });
-  }).catch(function(){});
-}
-
-function toggleBackup(){
-  if(backupOpen){backupOpen=false;renderAll();return;}
-  dupesOpen=false;dupeSelected={};tagOpen=false;tagProposals=[];cleanupMode=false;
-  backupOpen=true;
-  fetch('/api/torbox/snapshots',{headers:{'x-torbox-key':apiKey}})
-  .then(function(r){return r.json();})
-  .then(function(d){snapshots=d.snapshots||[];renderAll();})
-  .catch(function(){renderAll();});
-}
-
-function fmtSnapDate(s){
-  var d=new Date(s);
-  return d.toLocaleDateString()+' '+d.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
-}
-
-function renderBackup(){
-  var el=document.getElementById('bpanel');
-  if(!el)return;
-  if(!backupOpen){el.style.display='none';return;}
-  el.style.display='block';
-  var trigLabels={connect:'Auto',apply:'Rename',delete:'Delete',tags:'Tags',manual:'Manual'};
-  var trigCls={connect:'trig-connect',apply:'trig-apply',delete:'trig-delete',tags:'trig-tags',manual:'trig-manual'};
-  var h='<div style="padding:14px 16px 8px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">'
-    +'<span style="font-size:15px;font-weight:bold;color:#e8e8e8">&#x1f4e6; Snapshots</span>'
-    +'<button class="btn-s" style="width:auto;padding:10px 16px;font-size:14px" onclick="takeSnapshot(\'manual\');setTimeout(function(){toggleBackup();toggleBackup();},600)">&#x2b07; Snapshot Now</button>'
-    +'</div>';
-  if(!snapshots.length){
-    h+='<div class="snap-empty">No snapshots yet. One will be taken automatically.</div>';
-  } else {
-    h+='<div>';
-    snapshots.forEach(function(s){
-      var trig=s.trigger||'connect';
-      h+='<div class="snap-row">'
-        +'<div class="snap-info">'
-        +'<div class="snap-title"><span class="snap-trigger '+(trigCls[trig]||'trig-connect')+'">'+(trigLabels[trig]||trig)+'</span> &nbsp;'+esc(fmtSnapDate(s.created_at))+'</div>'
-        +'<div class="snap-meta"><span>'+s.item_count+' items</span></div>'
-        +'</div>'
-        +'<div class="snap-acts">'
-        +'<button class="btn-g" style="padding:9px 12px;font-size:13px" onclick="downloadSnapshot('+s.id+')">&#x2b07;</button>'
-        +'<button class="btn-g" style="padding:9px 12px;font-size:13px" onclick="restoreSnapshot('+s.id+')">&#x21a9;</button>'
-        +'</div>'
-        +'</div>';
-    });
-    h+='</div>';
-  }
-  el.innerHTML=h;
-}
-
-// ── QUOTA WIDGET ─────────────────────────────────────────────
-var PLAN_NAMES={0:'Free',1:'Essential',2:'Pro',3:'Standard',4:'Enterprise'};
-function renderQuota(){
-  var el=document.getElementById('quota-widget');
-  if(!el||!userInfo)return;
-  var planRaw=userInfo.plan!==undefined?userInfo.plan:userInfo.role;
-  var planLabel=PLAN_NAMES[planRaw]||String(planRaw||'');
-  if(planLabel)planLabel=planLabel.charAt(0).toUpperCase()+planLabel.slice(1);
-  if(!planLabel)planLabel='Plan';
-  var used=userInfo.total_bytes_downloaded||userInfo.used_bandwidth||userInfo.bandwidth_used||userInfo.bytes_used||0;
-  var limit=userInfo.monthly_bandwidth_limit||userInfo.monthly_bandwidth||userInfo.bandwidth_limit||userInfo.total_bandwidth||0;
-  var pct=limit>0?Math.min(100,Math.round(used/limit*100)):0;
-  var cls=pct>=90?'quota-crit':pct>=70?'quota-warn':'';
-  el.className='quota-wrap '+cls;
-  el.style.display='flex';
-  el.innerHTML='<span class="quota-pill" title="'+esc(planLabel)+'">'+esc(planLabel)+'</span>'
-    +(limit>0?'<div class="quota-bar-outer"><div class="quota-bar-inner" style="width:'+pct+'%"></div></div>'
-    +'<span class="quota-pct">'+pct+'%</span>':'');
-}
-
-function fetchUserInfo(){
-  fetch('/api/torbox/user',{headers:{'x-torbox-key':apiKey}})
-  .then(function(r){return r.json();})
-  .then(function(d){
-    var data=d.data||d;
-    if(data&&typeof data==='object'&&!Array.isArray(data)){userInfo=data;renderQuota();}
-  })
-  .catch(function(){});
-}
-
 // ── STEPS UI ─────────────────────────────────────────────────
 function showStep(i){
   document.getElementById('step-label').textContent=STEPS[i]||'Working...';
@@ -597,16 +424,11 @@ function doConnect(){
   document.getElementById('err-msg').style.display='none';
 
   showStep(0);
-  Promise.all([
-    fetch('/api/torbox/list',{headers:{'x-torbox-key':apiKey}}).then(function(r){return r.json();}),
-    fetch('/api/torbox/ignores',{headers:{'x-torbox-key':apiKey}}).then(function(r){return r.json();}).catch(function(){return{};})
-  ])
-  .then(function(results){
-    var d=results[0],ignData=results[1];
+  fetch('/api/torbox/list',{headers:{'x-torbox-key':apiKey}})
+  .then(function(r){return r.json();})
+  .then(function(d){
     if(!d.success)throw new Error(d.detail||'Failed to fetch library');
     items=Array.isArray(d.data)?d.data:[];
-    if(ignData.ignored&&typeof ignData.ignored==='object')ignored=ignData.ignored;
-    if(ignData.ignored_dupes&&typeof ignData.ignored_dupes==='object')ignoredDupeGroups=ignData.ignored_dupes;
 
     showStep(1);
     backup={
@@ -621,12 +443,12 @@ function doConnect(){
     };
 
     showStep(2);
+    dlBackup(backup);
+
     showStep(3);
     document.getElementById('login').style.display='none';
     document.getElementById('main').style.display='flex';
     renderAll();
-    fetchUserInfo();
-    checkAndSnapshot();
   })
   .catch(function(e){
     document.getElementById('steps-ui').style.display='none';
@@ -709,26 +531,13 @@ function renderFilterBar(){
     tagRow.innerHTML+=statusBtns;
   }
 
-  // ignored counts chip
-  var ignTitles=Object.keys(ignored).filter(function(id){return ignored[id]&&ignored[id].title;}).length;
-  var ignTags=Object.keys(ignored).filter(function(id){return ignored[id]&&ignored[id].tag;}).length;
-  var ignDupes=Object.keys(ignoredDupeGroups).length;
-  var totalIgn=ignTitles+ignTags+ignDupes;
-  if(totalIgn){
-    var parts=[];
-    if(ignTitles)parts.push(ignTitles+' title'+(ignTitles!==1?'s':''));
-    if(ignTags)parts.push(ignTags+' tag'+(ignTags!==1?'s':''));
-    if(ignDupes)parts.push(ignDupes+' dupe'+(ignDupes!==1?'s':''));
-    tagRow.innerHTML+='<button class="fchip" style="color:#888;border-color:#333" title="Ignored: '+parts.join(', ')+'">&#x2298; '+totalIgn+' ignored</button>';
-  }
-
   var vis=filteredItems().length;
   fcountEl.textContent=vis===items.length?'':('Showing '+vis+' of '+items.length);
 }
 
 // ── RENDER ALL ────────────────────────────────────────────────
 function renderAll(){
-  var panelMode=dupesOpen||tagOpen||backupOpen;
+  var panelMode=dupesOpen||tagOpen;
   var tlist=document.getElementById('tlist');
   var fbar=document.getElementById('fbar');
   if(tlist)tlist.style.display=panelMode?'none':'flex';
@@ -740,21 +549,19 @@ function renderAll(){
   renderList();
   renderDupes();
   renderTags();
-  renderBackup();
 }
 
 // ── ACTION BAR ────────────────────────────────────────────────
 function renderBar(){
-  var needs=items.filter(function(t){if(ignored[t.id]&&ignored[t.id].title)return false;return edits[t.id]&&edits[t.id]!==t.name;});
+  var needs=items.filter(function(t){return edits[t.id]&&edits[t.id]!==t.name;});
   var h='<button class="chip" onclick="doRefresh()">&#x21bb; Refresh</button>';
   h+='<button class="chip'+(cleanupBusy||cleanupMode?' on':'')+'" onclick="doCleanup()">&#x2728; Title Cleanup'+(cleanupMode?' ('+needs.length+')':'')+'</button>';
   h+='<button class="chip'+(dupesOpen?' on':'')+'" onclick="toggleDupes()">&#x1f50d; Duplicates</button>';
   h+='<button class="chip'+(tagOpen?' on':'')+'" onclick="toggleTags()">&#x1f3f7; Auto-Tag</button>';
-  h+='<button class="chip'+(backupOpen?' on':'')+'" onclick="toggleBackup()">&#x1f4e6; Backups</button>';
+  if(backup)h+='<button class="chip" onclick="dlBackup(backup)">&#x2b07; Backup</button>';
   if(backup)h+='<button class="chip" onclick="doRevertAll()">&#x21a9; Revert All</button>';
   if(needs.length&&!cleanupMode)h+='<button class="chip on" onclick="applyAll()">Apply '+needs.length+'</button>';
   if(needs.length&&cleanupMode)h+='<button class="chip on" onclick="applyAll()">&#x2714; Apply All '+needs.length+'</button>';
-  if(cleanupMode){var ign=Object.keys(ignored).filter(function(id){return ignored[id]&&ignored[id].title;}).length;if(ign)h+='<button class="chip" onclick="clearIgnoredTitles()">&#x2298; '+ign+' Ignored</button>';}
   document.getElementById('abar').innerHTML=h;
 }
 
@@ -762,7 +569,7 @@ function renderBar(){
 function renderList(){
   if(dupesOpen||tagOpen)return;
   var visible=filteredItems();
-  if(cleanupMode)visible=visible.filter(function(t){if(ignored[t.id]&&ignored[t.id].title)return false;var e=edits[t.id];return e&&e!==t.name;});
+  if(cleanupMode)visible=visible.filter(function(t){var e=edits[t.id];return e&&e!==t.name;});
   if(!visible.length){
     document.getElementById('tlist').innerHTML='<div style="padding:30px 16px;color:#444;font-size:14px;text-align:center">'+(cleanupMode?'No pending title changes.':'No items match filters.')+'</div>';
     return;
@@ -795,30 +602,19 @@ function renderList(){
           +'<button class="btn-cancel" onclick="cancelEdit('+t.id+')">Cancel</button></div></div>';
       }else{
         acts='<div class="cacts">';
-        if(!cleanupMode&&changed)acts+='<button class="btn-p" onclick="applyOne('+t.id+',\''+t._type+'\')">Apply &#x2192; '+esc(edit)+'</button>';
+        if(changed)acts+='<button class="btn-p" onclick="applyOne('+t.id+',\''+t._type+'\')">Apply &#x2192; '+esc(edit)+'</button>';
         acts+='<button class="btn-s" onclick="startEdit('+t.id+')">&#x270f;&#xfe0f; Edit Title</button>';
         if(origName&&t.name!==origName)acts+='<button class="btn-g" onclick="revertOne('+t.id+',\''+t._type+'\')">&#x21a9; Revert to Original</button>';
         acts+='</div>';
       }
       exp='<div class="ebody">'+(files.length?'<div class="flist">'+frows+'</div>':'')+acts+'</div>';
     }
-    // In cleanup mode: inline ✓/⊘ buttons + chevron. Otherwise: just chevron.
-    var rightSide='';
-    if(cleanupMode&&changed){
-      rightSide='<div style="display:flex;gap:6px;flex-shrink:0;align-items:center">'
-        +'<button onclick="event.stopPropagation();applyOne('+t.id+',\''+t._type+'\')" style="width:36px;height:36px;background:#00e5a015;color:#00e5a0;border:1px solid #00e5a040;border-radius:8px;font-size:17px;cursor:pointer;flex-shrink:0" title="Apply">&#x2714;</button>'
-        +'<button onclick="event.stopPropagation();ignoreTitle('+t.id+')" style="width:36px;height:36px;background:#2a2a1a;color:#888;border:1px solid #44443a;border-radius:8px;font-size:16px;cursor:pointer;flex-shrink:0" title="Ignore">&#x2298;</button>'
-        +'<div class="chev" style="margin-left:2px">'+(isExp?'&#x25b2;':'&#x25bc;')+'</div>'
-        +'</div>';
-    } else {
-      rightSide='<div class="chev">'+(isExp?'&#x25b2;':'&#x25bc;')+'</div>';
-    }
     return '<div class="'+cls+'" id="c-'+t.id+'">'
       +'<div class="cmain" onclick="toggleExp('+t.id+')">'
       +'<div class="cmeta"><div class="ctitle">'+esc(t.name)+'</div>'
       +(changed?'<div class="csugg">&#x2192; '+esc(edit)+'</div>':'')
       +'<div class="csub">'+sub+'</div></div>'
-      +rightSide+'</div>'+exp+'</div>';
+      +'<div class="chev">'+(isExp?'&#x25b2;':'&#x25bc;')+'</div></div>'+exp+'</div>';
   }).join('');
 }
 
@@ -827,23 +623,6 @@ function toggleExp(id){expandId=expandId===id?null:id;if(editId!==id)editId=null
 function startEdit(id){editId=id;renderList();setTimeout(function(){var el=document.getElementById('ef-'+id);if(el)el.focus();},50);}
 function cancelEdit(id){editId=null;var t=items.filter(function(x){return x.id===id;})[0];if(t)edits[id]=t.name;renderList();renderBar();}
 function saveEdit(id,type){var el=document.getElementById('ef-'+id);if(el&&el.value.trim()){edits[id]=el.value.trim();editId=null;}applyOne(id,type);}
-
-function ignoreTitle(id){
-  var t=items.filter(function(x){return x.id===id;})[0];if(!t)return;
-  var sugg=edits[id];
-  ignored[id]=Object.assign({},ignored[id]||{},{title:true,titleSugg:sugg});
-  edits[id]=t.name;
-  saveIgnored();
-  renderList();renderBar();
-}
-function unignoreTitle(id){
-  if(!ignored[id])return;
-  var sugg=ignored[id].titleSugg;
-  delete ignored[id].title;delete ignored[id].titleSugg;
-  if(sugg)edits[id]=sugg;
-  saveIgnored();
-  renderList();renderBar();
-}
 
 function applyOne(id,type,nameOv){
   var t=items.filter(function(x){return x.id===id;})[0];if(!t)return;
@@ -861,10 +640,7 @@ function applyOne(id,type,nameOv){
 }
 
 function applyAll(){
-  var pending=items.filter(function(t){return !(ignored[t.id]&&ignored[t.id].title)&&edits[t.id]&&edits[t.id]!==t.name;});
-  if(!pending.length)return;
-  pending.forEach(function(t){applyOne(t.id,t._type);});
-  setTimeout(function(){takeSnapshot('apply');},pending.length*200+500);
+  items.forEach(function(t){if(edits[t.id]&&edits[t.id]!==t.name)applyOne(t.id,t._type);});
 }
 
 function revertOne(id,type){
@@ -882,18 +658,6 @@ function doRevertAll(){
   });
 }
 
-function clearIgnoredTitles(){
-  Object.keys(ignored).forEach(function(id){
-    if(!ignored[id]||!ignored[id].title)return;
-    var sugg=ignored[id].titleSugg;
-    delete ignored[id].title;delete ignored[id].titleSugg;
-    var t=items.filter(function(x){return x.id===parseInt(id);})[0];
-    if(t&&sugg)edits[parseInt(id)]=sugg;
-  });
-  saveIgnored();
-  renderAll();
-}
-
 // ── REFRESH ───────────────────────────────────────────────────
 function doRefresh(){
   document.getElementById('abar').innerHTML='<span style="color:#00e5a0;padding:11px 4px;font-size:14px">&#x21bb; Refreshing...</span>';
@@ -902,8 +666,7 @@ function doRefresh(){
   .then(function(d){
     if(!d.success)throw new Error(d.detail||'Failed');
     items=Array.isArray(d.data)?d.data:[];
-    statuses={};dupeShowIgnored=false;tagShowIgnored=false;
-    filterType='all';filterTag='all';filterStatus='all';cleanupMode=false;renderAll();
+    statuses={};filterType='all';filterTag='all';filterStatus='all';cleanupMode=false;renderAll();
   })
   .catch(function(e){renderBar();alert('Refresh failed: '+e.message);});
 }
@@ -919,7 +682,7 @@ function doCleanup(){
   var banner=document.getElementById('ai-banner');
   banner.style.display='block';banner.textContent='&#x2728; Deriving titles from file names...';
   document.getElementById('ai-dot').style.display='inline';
-  items.forEach(function(t){if(ignored[t.id]&&ignored[t.id].title)return;edits[t.id]=deriveTitle(t.files,t.name)||t.name;});
+  items.forEach(function(t){edits[t.id]=deriveTitle(t.files,t.name)||t.name;});
   renderList();
   banner.textContent='&#x1f916; AI refining suggestions...';
   var prompt='You are a media library assistant. Suggest clean titles. Strict rules:\n'
@@ -935,7 +698,7 @@ function doCleanup(){
     +'10. If local_suggestion looks correct, return it unchanged.\n'
     +'11. Title casing always.\n'
     +'Return ONLY JSON array: [{"id":1,"suggested":"Title"}]. No other text.\n\n'
-    +'Items:\n'+JSON.stringify(items.filter(function(t){return !(ignored[t.id]&&ignored[t.id].title);}).map(function(t){
+    +'Items:\n'+JSON.stringify(items.map(function(t){
       var mf=mfiles(t.files||[]);
       var src=mf.length?mf:(t.files||[]);
       var anyWords=src.some(function(f){return hasWords(f.name||f.short_name||'');});
@@ -1084,7 +847,7 @@ function deleteSelected(){
       .catch(function(){});
     });
   });
-  chain.then(function(){scanDupes();renderAll();takeSnapshot('delete');});
+  chain.then(function(){scanDupes();renderAll();});
 }
 
 function deleteGroupAll(gi){
@@ -1096,17 +859,17 @@ function deleteGroupAll(gi){
   deleteSelected();
 }
 
-function ignoreDupeGroup(key){
-  ignoredDupeGroups[key]=true;
-  saveIgnored();
-  renderDupes();
+function deleteAllBest(){
+  var totalDupes=0;
+  dupeGroups.forEach(function(pair){
+    var best=bestInGroup(pair[1]);
+    pair[1].forEach(function(t){
+      if(!(t.id===best.id&&t._type===best._type)){dupeSelected[dupeKey(t.id,t._type)]=true;totalDupes++;}
+    });
+  });
+  if(!totalDupes)return;
+  deleteSelected();
 }
-function unignoreDupeGroup(key){
-  delete ignoredDupeGroups[key];
-  saveIgnored();
-  renderDupes();
-}
-function toggleDupeShowIgnored(){dupeShowIgnored=!dupeShowIgnored;renderDupes();}
 
 function renderDupes(){
   var el=document.getElementById('dpanel');
@@ -1137,15 +900,14 @@ function renderDupes(){
   var h='<div class="dsum">';
   h+='<span>'+dupeGroups.length+' duplicate group'+(dupeGroups.length!==1?'s':'')+'</span>';
   if(reclaimSize)h+='<span style="color:#4a9a6a">&#x267b; '+fmtSize(reclaimSize)+' reclaimable</span>';
+  h+='<button class="btn-keepbest" onclick="deleteAllBest()">&#x26a1; Keep Best All Groups</button>';
   if(selCount){
     h+='<span style="color:#ff8888">'+selCount+' selected'+(selSize?' &bull; '+fmtSize(selSize):'')+' </span>';
     h+='<button id="del-sel-btn" class="btn-delbatch" onclick="deleteSelected()">&#x1f5d1; Delete Selected ('+selCount+')</button>';
   }
   h+='</div>';
 
-  var visibleGroups=dupeGroups.filter(function(p){return dupeShowIgnored||!ignoredDupeGroups[p[0]];});
-  var hiddenCount=dupeGroups.length-dupeGroups.filter(function(p){return !ignoredDupeGroups[p[0]];}).length;
-  dupeGroups.filter(function(p){return dupeShowIgnored||!ignoredDupeGroups[p[0]];}).forEach(function(pair,gi){
+  dupeGroups.forEach(function(pair,gi){
     var key=pair[0],group=pair[1];
     var best=bestInGroup(group);
     var groupSelCount=group.filter(function(t){return dupeSelected[dupeKey(t.id,t._type)];}).length;
@@ -1195,14 +957,10 @@ function renderDupes(){
     } else {
       h+='<button class="btn-autosel" onclick="autoSelectGroup('+gi+')">&#x2713; Select Duplicates</button>';
       h+='<button class="btn-keepbest" onclick="deleteGroupAll('+gi+')">&#x26a1; Keep Best &amp; Delete Rest</button>';
-      h+='<button class="btn-g" style="width:auto;padding:10px 14px;font-size:13px" data-key='+JSON.stringify(key)+' onclick="ignoreDupeGroup(JSON.parse(this.dataset.key))">⊘ Ignore Group</button>';
     }
     h+='</div>';
     h+='</div>';
   });
-  if(hiddenCount||dupeShowIgnored){
-    h+='<div style="padding:14px 16px;text-align:center"><button class="btn-g" style="width:auto;padding:10px 18px;font-size:13px" onclick="toggleDupeShowIgnored()">'+(dupeShowIgnored?'&#x25b2; Hide ignored':'&#x25bc; Show '+hiddenCount+' ignored group'+(hiddenCount!==1?'s':''))+'</button></div>';
-  }
 
   el.innerHTML=h;
 }
@@ -1232,18 +990,6 @@ function toggleTagInFinal(id,tag){
   renderTags();
 }
 
-function ignoreTag(id){
-  ignored[id]=Object.assign({},ignored[id]||{},{tag:true});
-  saveIgnored();
-  renderTags();
-}
-function unignoreTag(id){
-  if(ignored[id])delete ignored[id].tag;
-  saveIgnored();
-  renderTags();
-}
-function toggleTagShowIgnored(){tagShowIgnored=!tagShowIgnored;renderTags();}
-
 function renderTags(){
   var el=document.getElementById('tpanel');
   if(!el)return;
@@ -1252,7 +998,6 @@ function renderTags(){
 
   var changed=tagProposals.filter(function(p){
     if(p.status==='done')return false;
-    if(ignored[p.t.id]&&ignored[p.t.id].tag)return false;
     var a=p.current.slice().sort().join(',');
     var b=p.final.slice().sort().join(',');
     return a!==b;
@@ -1260,10 +1005,8 @@ function renderTags(){
   var done=tagProposals.filter(function(p){return p.status==='done';}).length;
   var errs=tagProposals.filter(function(p){return p.status==='error';}).length;
 
-  var ignoredTagCount=tagProposals.filter(function(p){return ignored[p.t.id]&&ignored[p.t.id].tag;}).length;
-  var visibleProposals=tagProposals.filter(function(p){return tagShowIgnored||(!(ignored[p.t.id]&&ignored[p.t.id].tag));});
   var counts={series:0,movies:0,adult:0};
-  visibleProposals.forEach(function(p){counts[p.cat]=(counts[p.cat]||0)+1;});
+  tagProposals.forEach(function(p){counts[p.cat]=(counts[p.cat]||0)+1;});
 
   var h='<div style="padding:14px 16px 8px;display:flex;align-items:center;gap:8px;flex-wrap:wrap">';
   ['series','movies','adult'].forEach(function(k){
@@ -1274,7 +1017,7 @@ function renderTags(){
   h+='</div>';
   if(changed.length)h+='<div style="padding:0 16px 12px"><button class="btn-p" onclick="applyAllTags()">Apply Changes to '+changed.length+' Items</button></div>';
 
-  visibleProposals.forEach(function(p){
+  tagProposals.forEach(function(p){
     var title=edits[p.t.id]||p.t.name;
     var typeBadge='<span class="type-badge '+(p.t._type==='usenet'?'type-usenet':'type-torrent')+'">'+(p.t._type==='usenet'?'Usenet':'Torrent')+'</span>';
     var st=p.status;
@@ -1319,14 +1062,11 @@ function renderTags(){
       +'</div>'
       +(st==='done'?'<span style="color:#00e5a0;font-size:20px;flex-shrink:0;margin-top:2px">&#x2713;</span>'
        :st==='error'?'<span style="color:#ff6b6b;font-size:20px;flex-shrink:0;margin-top:2px">&#x2717;</span>'
-       :(ignored[p.t.id]&&ignored[p.t.id].tag)?'<button class="btn-g" style="width:auto;padding:8px 12px;font-size:12px;flex-shrink:0;color:#00e5a0;border-color:#00e5a040" onclick="unignoreTag('+p.t.id+')">&#x21ba; Un-ignore</button>'
-       :hasDiff?('<div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0"><button class="btn-del" style="background:#1a2030;color:#4488ff;border-color:#2a3a60" onclick="applyOneTag('+p.t.id+',\''+p.t._type+'\',this)">Apply</button><button class="btn-g" style="padding:7px 10px;font-size:12px" onclick="ignoreTag('+p.t.id+')">&#x2298; Ignore</button></div>')
+       :hasDiff?'<button class="btn-del" style="background:#1a2030;color:#4488ff;border-color:#2a3a60;flex-shrink:0" onclick="applyOneTag('+p.t.id+',\''+p.t._type+'\',this)">Apply</button>'
        :'<span style="color:#333;font-size:12px;flex-shrink:0;margin-top:4px">no change</span>')
       +'</div>';
   });
-  if(ignoredTagCount||tagShowIgnored){
-    h+='<div style="padding:12px 16px;text-align:center"><button class="btn-g" style="width:auto;padding:10px 18px;font-size:13px" onclick="toggleTagShowIgnored()">'+(tagShowIgnored?'&#x25b2; Hide ignored':'&#x25bc; Show '+ignoredTagCount+' ignored item'+(ignoredTagCount!==1?'s':''))+'</button></div>';
-  }
+
   el.innerHTML=h;
 }
 
@@ -1344,15 +1084,12 @@ function applyOneTag(id,type,btn){
 }
 
 function applyAllTags(){
-  var pending=tagProposals.filter(function(p){
-    if(p.status==='done')return false;
-    if(ignored[p.t.id]&&ignored[p.t.id].tag)return false;
+  tagProposals.forEach(function(p){
+    if(p.status==='done')return;
     var a=p.current.slice().sort().join(',');
     var b=p.final.slice().sort().join(',');
-    return a!==b;
+    if(a!==b)applyOneTag(p.t.id,p.t._type,null);
   });
-  pending.forEach(function(p){applyOneTag(p.t.id,p.t._type,null);});
-  if(pending.length)setTimeout(function(){takeSnapshot('tags');},pending.length*200+500);
 }
 
 // ── INIT ──────────────────────────────────────────────────────
@@ -1372,49 +1109,6 @@ fetch('/api/torbox/config')
 </script>
 </body>
 </html>`;
-
-// ── SQLITE IGNORES DB ────────────────────────────────────────
-const DB_PATH = (process.env.DATA_DIR || '/app/data') + '/aio.db'
-let _ignDb = null
-function getIgnDb() {
-  if (_ignDb) return _ignDb
-  try {
-    const Database = _require('better-sqlite3')
-    _ignDb = new Database(DB_PATH)
-    // Safe: CREATE IF NOT EXISTS never touches existing tables or data
-    _ignDb.exec(`
-      CREATE TABLE IF NOT EXISTS bw_meta (
-        key   TEXT PRIMARY KEY,
-        value TEXT NOT NULL
-      );
-      INSERT OR IGNORE INTO bw_meta (key, value) VALUES ('app', 'boxwarden');
-      INSERT OR IGNORE INTO bw_meta (key, value) VALUES ('schema_version', '1');
-      CREATE TABLE IF NOT EXISTS bw_ignores (
-        key_hash      TEXT PRIMARY KEY,
-        ignored       TEXT NOT NULL DEFAULT '{}',
-        ignored_dupes TEXT NOT NULL DEFAULT '{}',
-        updated_at    TEXT NOT NULL DEFAULT (datetime('now'))
-      );
-      CREATE TABLE IF NOT EXISTS bw_snapshots (
-        id         INTEGER PRIMARY KEY AUTOINCREMENT,
-        key_hash   TEXT NOT NULL,
-        trigger    TEXT NOT NULL DEFAULT 'manual',
-        item_count INTEGER NOT NULL DEFAULT 0,
-        created_at TEXT NOT NULL DEFAULT (datetime('now')),
-        snapshot   TEXT NOT NULL
-      );
-    `)
-    return _ignDb
-  } catch(e) {
-    console.warn('BoxWarden: SQLite unavailable, ignores will not persist:', e.message)
-    return null
-  }
-}
-function _keyHash(k) {
-  let h = 0
-  for (let i = 0; i < k.length; i++) h = (h * 31 + k.charCodeAt(i)) & 0xfffffff
-  return h.toString(36)
-}
 
 // ── SERVER PLUGIN ────────────────────────────────────────────
 async function plugin(fastify) {
@@ -1530,104 +1224,6 @@ async function plugin(fastify) {
       return res.data
     } catch (e) {
       return reply.status(e.response?.status || 502).send({ success: false, detail: e.response?.data?.detail || e.message })
-    }
-  })
-
-  // ── USER / QUOTA ─────────────────────────────────────────────
-  fastify.get('/api/torbox/user', async (request, reply) => {
-    const key = request.headers['x-torbox-key'] || process.env.TORBOX_API_KEY
-    if (!key) return reply.status(401).send({ success: false, detail: 'No API key' })
-    try {
-      const res = await axios.get(`${TORBOX}/user/me`, {
-        headers: { Authorization: `Bearer ${key}` }
-      })
-      return res.data
-    } catch (e) {
-      return reply.status(e.response?.status || 502).send({ success: false, detail: e.message })
-    }
-  })
-
-  // ── IGNORES (SQLite, keyed by API key hash) ─────────────────
-  fastify.get('/api/torbox/ignores', async (request, reply) => {
-    const key = request.headers['x-torbox-key'] || process.env.TORBOX_API_KEY
-    if (!key) return reply.status(401).send({ success: false })
-    const db = getIgnDb()
-    if (!db) return { success: true, ignored: {}, ignored_dupes: {} }
-    try {
-      const row = db.prepare('SELECT ignored, ignored_dupes FROM bw_ignores WHERE key_hash = ?').get(_keyHash(key))
-      return {
-        success: true,
-        ignored: row ? JSON.parse(row.ignored) : {},
-        ignored_dupes: row ? JSON.parse(row.ignored_dupes) : {}
-      }
-    } catch(e) {
-      return { success: true, ignored: {}, ignored_dupes: {} }
-    }
-  })
-
-  fastify.post('/api/torbox/ignores', async (request, reply) => {
-    const key = request.headers['x-torbox-key'] || process.env.TORBOX_API_KEY
-    if (!key) return reply.status(401).send({ success: false })
-    const db = getIgnDb()
-    if (!db) return { success: false, detail: 'DB unavailable' }
-    try {
-      const { ignored, ignored_dupes } = request.body
-      db.prepare('INSERT OR REPLACE INTO bw_ignores (key_hash, ignored, ignored_dupes) VALUES (?, ?, ?)')
-        .run(_keyHash(key), JSON.stringify(ignored || {}), JSON.stringify(ignored_dupes || {}))
-      return { success: true }
-    } catch(e) {
-      return reply.status(500).send({ success: false, detail: e.message })
-    }
-  })
-
-  // ── SNAPSHOTS ─────────────────────────────────────────────────
-  fastify.post('/api/torbox/snapshot', async (request, reply) => {
-    const key = request.headers['x-torbox-key'] || process.env.TORBOX_API_KEY
-    if (!key) return reply.status(401).send({ success: false })
-    const db = getIgnDb()
-    if (!db) return { success: false, detail: 'DB unavailable' }
-    try {
-      const { trigger, item_count, snapshot } = request.body
-      db.prepare('INSERT INTO bw_snapshots (key_hash, trigger, item_count, snapshot) VALUES (?, ?, ?, ?)')
-        .run(_keyHash(key), trigger || 'manual', item_count || 0, JSON.stringify(snapshot))
-      // Prune to last 7 per account
-      db.prepare(`DELETE FROM bw_snapshots WHERE key_hash = ? AND id NOT IN (
-        SELECT id FROM bw_snapshots WHERE key_hash = ? ORDER BY id DESC LIMIT 7
-      )`).run(_keyHash(key), _keyHash(key))
-      return { success: true }
-    } catch(e) {
-      return reply.status(500).send({ success: false, detail: e.message })
-    }
-  })
-
-  fastify.get('/api/torbox/snapshots', async (request, reply) => {
-    const key = request.headers['x-torbox-key'] || process.env.TORBOX_API_KEY
-    if (!key) return reply.status(401).send({ success: false })
-    const db = getIgnDb()
-    if (!db) return { success: true, snapshots: [] }
-    try {
-      const rows = db.prepare(
-        'SELECT id, trigger, item_count, created_at FROM bw_snapshots WHERE key_hash = ? ORDER BY id DESC'
-      ).all(_keyHash(key))
-      return { success: true, snapshots: rows }
-    } catch(e) {
-      return { success: true, snapshots: [] }
-    }
-  })
-
-  fastify.get('/api/torbox/snapshot/:id', async (request, reply) => {
-    const key = request.headers['x-torbox-key'] || process.env.TORBOX_API_KEY
-    if (!key) return reply.status(401).send({ success: false })
-    const db = getIgnDb()
-    if (!db) return reply.status(503).send({ success: false })
-    try {
-      const row = db.prepare(
-        'SELECT snapshot FROM bw_snapshots WHERE id = ? AND key_hash = ?'
-      ).get(request.params.id, _keyHash(key))
-      if (!row) return reply.status(404).send({ success: false })
-      return { success: true, snapshot: JSON.parse(row.snapshot) }
-    } catch(e) {
-      return reply.status(500).send({ success: false, detail: e.message })
     }
   })
 
