@@ -285,6 +285,16 @@ const schema = `
 
   CREATE INDEX IF NOT EXISTS idx_history_account_ts ON failover_history (account_id, timestamp DESC);
   CREATE INDEX IF NOT EXISTS idx_rules_account ON autopilot_rules (account_id);
+
+  CREATE TABLE IF NOT EXISTS sync_versions (
+    id         TEXT PRIMARY KEY,
+    key_id     TEXT NOT NULL,
+    value      TEXT NOT NULL,
+    password   TEXT,
+    value_len  INTEGER DEFAULT 0,
+    created_at BIGINT
+  );
+  CREATE INDEX IF NOT EXISTS idx_sync_versions_key ON sync_versions (key_id, created_at DESC);
 `
 
 // Execute schema creation
@@ -834,8 +844,8 @@ fastify.post('/api/sync/:id', {
         return { error: 'Missing ID or Password header' }
     }
 
-    // Check existing
-    const row = await db.get('SELECT password FROM kv_store WHERE key = $1', [id])
+    // Check existing (also pull current value so we can archive it before overwrite)
+    const row = await db.get('SELECT password, value FROM kv_store WHERE key = $1', [id])
 
     // SERVER-SIDE TIMESTAMPING (Single Source of Truth)
     const serverTime = new Date().toISOString()
@@ -850,6 +860,34 @@ fastify.post('/api/sync/:id', {
         if (decryptedPassword !== password) {
             reply.status(401);
             return { error: 'Unauthorized: Password mismatch' }
+        }
+
+        // --- VERSIONING: archive the state we are about to replace ---
+        if (row.value) {
+            try {
+                const vid = `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`
+                await db.run(
+                    `INSERT INTO sync_versions (id, key_id, value, password, value_len, created_at)
+                     VALUES ($1, $2, $3, $4, $5, $6)`,
+                    [vid, id, row.value, row.password, String(row.value).length, Date.now()]
+                )
+                // keep only the last 20 versions per account
+                await db.run(
+                    `DELETE FROM sync_versions WHERE key_id = $1 AND id NOT IN (
+                        SELECT id FROM sync_versions WHERE key_id = $2 ORDER BY created_at DESC LIMIT 20
+                    )`,
+                    [id, id]
+                )
+                // soft alarm: large -> tiny push is the classic "wipe" signature
+                const prevLen = String(row.value).length
+                const newLen = String(encryptedVal).length
+                if (prevLen > 2000 && newLen < prevLen * 0.4) {
+                    fastify.log.warn({ category: 'Sync' },
+                        `[${id}] Large shrink on push (${prevLen} -> ${newLen} bytes). Prior state archived as ${vid}.`)
+                }
+            } catch (e) {
+                fastify.log.warn({ category: 'Sync' }, `[${id}] Version archive failed: ${e.message}`)
+            }
         }
 
         // Update (Always Save Encrypted)
@@ -867,6 +905,83 @@ fastify.post('/api/sync/:id', {
     }
 
     return { success: true, syncedAt: serverTime }
+})
+
+// ── SYNC VERSION HISTORY ─────────────────────────────────────
+// List archived versions (metadata only; value stays encrypted)
+fastify.get('/api/sync/:id/versions', async (request, reply) => {
+    const { id } = request.params
+    const password = request.headers['x-sync-password']
+    if (!id || !password) { reply.status(400); return { error: 'Missing ID or Password header' } }
+
+    const row = await db.get('SELECT password FROM kv_store WHERE key = $1', [id])
+    if (!row) { reply.status(404); return { error: 'Not found' } }
+    if (decrypt(row.password, FALLBACK_KEYS) !== password) {
+        reply.status(401); return { error: 'Unauthorized: Invalid Password' }
+    }
+
+    const rows = await db.all(
+        'SELECT id, value_len, created_at FROM sync_versions WHERE key_id = $1 ORDER BY created_at DESC',
+        [id]
+    )
+    return {
+        success: true,
+        versions: rows.map(r => ({
+            id: r.id,
+            bytes: r.value_len,
+            created_at: new Date(Number(r.created_at)).toISOString()
+        }))
+    }
+})
+
+// Restore a previous version. Bumps syncedAt to NOW so the restored state
+// wins the client's timestamp comparison and is mirrored back down on next pull.
+fastify.post('/api/sync/:id/restore', async (request, reply) => {
+    const { id } = request.params
+    const password = request.headers['x-sync-password']
+    const { versionId } = request.body || {}
+    if (!id || !password) { reply.status(400); return { error: 'Missing ID or Password header' } }
+    if (!versionId) { reply.status(400); return { error: 'Missing versionId' } }
+
+    const cur = await db.get('SELECT password, value FROM kv_store WHERE key = $1', [id])
+    if (!cur) { reply.status(404); return { error: 'Not found' } }
+    if (decrypt(cur.password, FALLBACK_KEYS) !== password) {
+        reply.status(401); return { error: 'Unauthorized: Invalid Password' }
+    }
+
+    const ver = await db.get(
+        'SELECT value FROM sync_versions WHERE id = $1 AND key_id = $2',
+        [versionId, id]
+    )
+    if (!ver) { reply.status(404); return { error: 'Version not found' } }
+
+    try {
+        // Decrypt the outer (server) layer, bump syncedAt, re-encrypt.
+        // The inner password-encrypted account blob is never touched.
+        const parsed = JSON.parse(decrypt(ver.value, FALLBACK_KEYS))
+        const serverTime = new Date().toISOString()
+        parsed.syncedAt = serverTime
+        const restoredVal = encrypt(JSON.stringify(parsed), PRIMARY_KEY)
+
+        // Archive the current (pre-restore) state first, so restore is itself undoable.
+        if (cur.value) {
+            const vid = `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`
+            await db.run(
+                `INSERT INTO sync_versions (id, key_id, value, password, value_len, created_at)
+                 VALUES ($1, $2, $3, $4, $5, $6)`,
+                [vid, id, cur.value, cur.password, String(cur.value).length, Date.now()]
+            )
+        }
+
+        await db.run(
+            'UPDATE kv_store SET value = $1, updated_at = $2 WHERE key = $3',
+            [restoredVal, Date.now(), id]
+        )
+        return { success: true, syncedAt: serverTime }
+    } catch (e) {
+        fastify.log.error({ category: 'Sync' }, `[${id}] Restore failed: ${e.message}`)
+        reply.status(500); return { error: 'Restore failed', details: e.message }
+    }
 })
 
 // SYNC: Delete State (Deletion)
