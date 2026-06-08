@@ -11,7 +11,7 @@ import { getTimeAgo } from '@/lib/utils'
 type SyncVersion = { id: string; bytes: number; created_at: string }
 
 export function AccountSection() {
-    const { auth, syncToRemote, syncFromRemote, isSyncing, lastSyncedAt, setDisplayName, serverUrl } = useSyncStore()
+    const { auth, syncToRemote, syncFromRemote, forceMirrorState, isSyncing, lastSyncedAt, setDisplayName, serverUrl } = useSyncStore()
 
     const [copied, setCopied] = useState(false)
 
@@ -92,9 +92,12 @@ export function AccountSection() {
                 const d = await res.json().catch(() => ({} as any))
                 throw new Error(d.error || `Server returned ${res.status}`)
             }
-            toast({ title: "Restored", description: "Pulling the restored data into the app…" })
-            // Pull the restored (now-newest) state down into local stores.
-            await syncFromRemote(false)
+            toast({ title: "Restored", description: "Mirroring the restored data into the app…" })
+            // Strict mirror (ignores timestamps) — re-adds deleted accounts that a
+            // normal pull would skip because the local state looks "newer".
+            await forceMirrorState()
+            // Re-stamp the restored state as current so it durably wins future syncs.
+            await syncToRemote()
             // Refresh the list — the just-replaced state is now archived too.
             await loadVersions()
         } catch (e) {
