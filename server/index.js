@@ -914,23 +914,28 @@ fastify.get('/api/sync/:id/versions', async (request, reply) => {
     const password = request.headers['x-sync-password']
     if (!id || !password) { reply.status(400); return { error: 'Missing ID or Password header' } }
 
-    const row = await db.get('SELECT password FROM kv_store WHERE key = $1', [id])
-    if (!row) { reply.status(404); return { error: 'Not found' } }
-    if (decrypt(row.password, FALLBACK_KEYS) !== password) {
-        reply.status(401); return { error: 'Unauthorized: Invalid Password' }
-    }
+    try {
+        const row = await db.get('SELECT password FROM kv_store WHERE key = $1', [id])
+        if (!row) { reply.status(404); return { error: 'Not found' } }
+        if (decrypt(row.password, FALLBACK_KEYS) !== password) {
+            reply.status(401); return { error: 'Unauthorized: Invalid Password' }
+        }
 
-    const rows = await db.all(
-        'SELECT id, value_len, created_at FROM sync_versions WHERE key_id = $1 ORDER BY created_at DESC',
-        [id]
-    )
-    return {
-        success: true,
-        versions: rows.map(r => ({
-            id: r.id,
-            bytes: r.value_len,
-            created_at: new Date(Number(r.created_at)).toISOString()
-        }))
+        const rows = await db.query(
+            'SELECT id, value_len, created_at FROM sync_versions WHERE key_id = $1 ORDER BY created_at DESC',
+            [id]
+        )
+        return {
+            success: true,
+            versions: rows.map(r => ({
+                id: r.id,
+                bytes: r.value_len,
+                created_at: new Date(Number(r.created_at)).toISOString()
+            }))
+        }
+    } catch (e) {
+        fastify.log.error({ category: 'Sync' }, `[${id}] Versions list failed: ${e.message}`)
+        reply.status(500); return { error: 'Could not list versions', details: e.message }
     }
 })
 
