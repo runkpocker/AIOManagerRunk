@@ -70,6 +70,7 @@ CLAUDE.local.md
 server/data/
 aio.db
 data/
+staging-data/
 *.db
 *.db-shm
 *.db-wal

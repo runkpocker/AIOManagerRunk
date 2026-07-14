@@ -31,6 +31,7 @@ COPY package.json ./
 
 ENV DATA_DIR=/app/data
 ENV NODE_ENV=production
+# PORT defaults to 1610 for self-hosted; Railway/other platforms inject their own PORT env var.
 ENV PORT=1610
 
 EXPOSE 1610

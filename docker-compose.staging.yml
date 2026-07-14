@@ -1,0 +1,19 @@
+services:
+  aiomanager-staging:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: aiomanager-staging
+    restart: unless-stopped
+    ports:
+      - "1611:1610"
+    env_file:
+      - .env.staging
+    volumes:
+      - ./staging-data:/app/data
+    healthcheck:
+      test: [ "CMD", "/nodejs/bin/node", "server/healthcheck.js" ]
+      interval: 1m
+      timeout: 10s
+      retries: 5
+      start_period: 15s
