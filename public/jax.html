@@ -18,7 +18,7 @@
     --r:16px;
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
-  html,body{height:100%}
+  html,body{height:100%;overscroll-behavior-y:contain}
   body{
     font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,sans-serif;
     background:var(--bg);color:var(--paper);min-height:100dvh;display:flex;flex-direction:column;
@@ -165,6 +165,20 @@
   details.parent-panel{margin-top:18px;background:#111720;border:1px solid var(--line);border-radius:13px;padding:0 13px}details.parent-panel summary{cursor:pointer;list-style:none;padding:14px 0;font-size:12px;font-weight:850;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}details.parent-panel summary::-webkit-details-marker{display:none}.parent-body{border-top:1px solid var(--line);padding:12px 0 14px}.parent-warning{font-size:11.5px;color:var(--muted);line-height:1.45;margin-bottom:10px}.parent-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}.parent-actions button{border:1px solid var(--line);background:var(--panel);color:var(--paper);border-radius:9px;padding:10px 8px;font-size:11px;font-weight:800;cursor:pointer}.parent-actions button.danger{border-color:#54313A;color:#FFABB4;background:#211419}
   .sync-note{text-align:center;font-size:11px;color:var(--muted);margin:8px 0 2px}
   @media(max-width:390px){.qual-actions{grid-template-columns:1fr}.qual-metrics{grid-template-columns:repeat(3,1fr)}.qual-metric{padding:8px 5px}.qual-metric .number{font-size:14px}.parent-actions{grid-template-columns:1fr}}
+
+  /* Reusable confirmation modal (start-run + cancel-run) */
+  .modal-overlay{position:fixed;inset:0;z-index:80;background:rgba(6,9,14,.74);backdrop-filter:blur(3px);display:none;align-items:center;justify-content:center;padding:20px}
+  .modal-overlay.show{display:flex;animation:fade .2s ease}
+  .modal-card{width:100%;max-width:400px;background:linear-gradient(180deg,var(--panel),#161D28);border:1px solid var(--line);border-radius:18px;padding:20px 20px 18px;box-shadow:var(--shadow)}
+  .modal-icon{font-size:30px;margin-bottom:8px}
+  .modal-title{font-size:19px;font-weight:850;letter-spacing:-.01em;margin-bottom:8px}
+  .modal-body{font-size:14.5px;line-height:1.55;color:#C2CBD8;margin-bottom:16px}
+  .modal-body b{color:#fff}
+  .modal-actions{display:flex;flex-direction:column;gap:10px}
+  .modal-actions .btn{margin-top:0}
+  .modal-actions .btn.danger{background:var(--stop);color:#210307}
+  .quitBtn{margin-top:14px;width:100%;border:1.5px solid #54313A;background:#211419;color:#FFABB4;border-radius:14px;padding:13px;font-size:14px;font-weight:800;cursor:pointer}
+  .quitBtn:active{transform:scale(.98)}
 </style>
 </head>
 <body>
@@ -209,7 +223,7 @@
       </div>
       <div class="qual-message" id="qualMessage">Synchronizing qualification data…</div>
       <div class="qual-actions">
-        <button class="qual-start" onclick="start('test')">Start qualification run</button>
+        <button class="qual-start" onclick="confirmQualStart()">Start qualification run</button>
         <button class="qual-data" onclick="showQualification()">Performance data</button>
       </div>
     </section>
@@ -220,7 +234,7 @@
       <div class="row"><span class="k">Knowledge-test attempts</span><span class="v">Once per day</span></div>
     </div>
     <div class="menu">
-      <button class="card primary" onclick="start('test')">
+      <button class="card primary" onclick="confirmQualStart()">
         <div class="ic">📝</div>
         <div><div class="t">Full Test</div><div class="d">30 questions with immediate feedback, live scoring, balanced answer positions, and skipped questions returned at the end.</div></div>
       </button>
@@ -258,9 +272,35 @@
       <button class="btn ghost hidden" id="practiceBackBtn" onclick="practiceBack()">← Back</button>
       <button class="btn go hidden" id="practiceNextBtn" onclick="practiceNext()">Next →</button>
     </div>
+    <button class="quitBtn hidden" id="quitBtn" onclick="requestCancelRun()">Quit run</button>
+    <button class="btn ghost hidden" id="exitHomeBtn" onclick="home()">← Back to menu</button>
   </section>
 
   <section class="screen hidden" id="resultScreen"></section>
+</div>
+
+<div class="modal-overlay" id="startConfirm">
+  <div class="modal-card">
+    <div class="modal-icon">⏱️</div>
+    <div class="modal-title">Starting a qualification run</div>
+    <div class="modal-body">This is a real qualification run, Jax. Once you begin, finish it in <b>under one hour</b> and answer all 30 questions in one sitting. Ready?</div>
+    <div class="modal-actions">
+      <button class="btn go" onclick="beginQualRun()">Continue — start run</button>
+      <button class="btn ghost" onclick="closeStartConfirm()">Not now</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="cancelConfirm">
+  <div class="modal-card">
+    <div class="modal-icon">🚪</div>
+    <div class="modal-title">Quit this run?</div>
+    <div class="modal-body">If you quit now, the run is cancelled and saved as <b>incomplete</b> — it will <b>not</b> count as a pass or a fail. You'll go back to the home page.</div>
+    <div class="modal-actions">
+      <button class="btn danger" onclick="confirmCancelRun()">Quit &amp; cancel run</button>
+      <button class="btn ghost" onclick="dismissCancel()">Keep going</button>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -273,8 +313,23 @@ const REF = {
   restraint:{l:"Occupant restraint laws — Alberta.ca",u:"https://www.alberta.ca/occupant-restraint-laws"},
   child:{l:"Child seats — Alberta.ca",u:"https://www.alberta.ca/child-seats"},
   distracted:{l:"Distracted driving — Alberta.ca",u:"https://www.alberta.ca/distracted-driving"},
+  intersections:{l:"Intersection & right-of-way rules — Alberta.ca",u:"https://www.alberta.ca/intersection-rules"},
+  emergency:{l:"Reacting to emergency vehicles — Alberta.ca",u:"https://www.alberta.ca/reacting-to-emergency-vehicles"},
+  roadside:{l:"Roadside worker safety (slow down, move over) — Alberta.ca",u:"https://www.alberta.ca/roadside-worker-safety"},
+  share:{l:"Share the road — Alberta.ca",u:"https://www.alberta.ca/share-the-road"},
+  saferoad:{l:"Road rules & safe driving — Alberta.ca",u:"https://www.alberta.ca/road-rules-and-safe-driving"},
   guide:{l:"Alberta Driver's Guide — Cars and light trucks (2026 PDF)",u:"https://open.alberta.ca/dataset/387f4e8a-6c0a-456a-ab31-995aadaf1f2b/resource/5babee5c-040d-4e41-981a-04f22e839aac/download/tec-drivers-guide-2026.pdf"}
 };
+// When a question only points at the generic guide, fall back to the best
+// topic-specific Alberta.ca page so links land on the relevant rule.
+const TOPIC_REF={gdl:"class7",zones:"zones",signs:"signs",row:"intersections",bus:"zones",emerg:"emergency",park:"saferoad",safe:"share",restr:"restraint"};
+function refFor(q){
+  const r=q&&q.r;
+  if(r&&REF[r]&&r!=='guide')return REF[r];
+  const byTopic=q&&TOPIC_REF[q.t];
+  if(byTopic&&REF[byTopic])return REF[byTopic];
+  return REF[r]||REF.guide;
+}
 const TOPIC = {
   gdl:{name:"GDL & Licence Rules",ref:"gdl"},
   zones:{name:"Speed & Zones",ref:"zones"},
@@ -509,6 +564,52 @@ function refreshMenu(){
   $('studyBtn').disabled=!sl.length;
 }
 
+// ===== Qualification run: start confirmation, cancel, and gesture guards =====
+let testInProgress=false;
+function confirmQualStart(){
+  if(!bankReady){window.alert('The question bank is still loading. Try again in a moment.');return;}
+  $('startConfirm').classList.add('show');
+}
+function closeStartConfirm(){$('startConfirm').classList.remove('show');}
+function beginQualRun(){$('startConfirm').classList.remove('show');start('test');}
+
+// Push a history entry so the mobile back-swipe is trapped instead of exiting.
+function armRunGuard(){try{history.pushState({jaxRun:1},'');}catch(e){}}
+function onPopStateGuard(){
+  if(testInProgress){armRunGuard();requestCancelRun();}
+}
+function onBeforeUnloadGuard(e){
+  if(testInProgress){e.preventDefault();e.returnValue='';return '';}
+}
+window.addEventListener('popstate',onPopStateGuard);
+window.addEventListener('beforeunload',onBeforeUnloadGuard);
+
+// Shows the same cancel page for the Quit button AND for swipe-back / pull-down.
+function requestCancelRun(){
+  if(!testInProgress){home();return;}
+  $('cancelConfirm').classList.add('show');
+}
+function dismissCancel(){$('cancelConfirm').classList.remove('show');}
+function confirmCancelRun(){
+  $('cancelConfirm').classList.remove('show');
+  const correct=session.filter(s=>s.correct).length;
+  const answeredCount=session.length;
+  sendCancelledResult(correct,answeredCount);
+  testInProgress=false;
+  home();
+}
+function sendCancelledResult(correct,answeredCount){
+  const payload={
+    attemptId:currentAttemptId||makeAttemptId(),student:"Jackson",mode:'cancelled',status:'incomplete',
+    programCycle:currentProgramCycle,examLength:examTotal||EXAM_LEN,answered:answeredCount,
+    correct,wrong:answeredCount-correct,percent:answeredCount?Math.round(correct/answeredCount*100):0,passed:false,
+    startedAt:currentStartedAt,completedAt:new Date().toISOString(),weakTopics:[],
+    questionResults:session.map(item=>({questionIndex:item.qi,questionId:BANK[item.qi].id,ruleId:BANK[item.qi].ruleId,topic:TOPIC[BANK[item.qi].t].name,correct:item.correct})),
+    missedQuestions:[]
+  };
+  submitResultPayload(payload).catch(()=>queuePendingResult(payload));
+}
+
 function start(m){
   if(!bankReady){window.alert('The question bank is still loading. Try again in a moment.');return;}
   mode=m; idx=0; answered=false; session=[]; skipped=[]; reviewingSkipped=false; practiceMaxIdx=0;
@@ -526,6 +627,8 @@ function start(m){
   $('startScreen').classList.add('hidden');$('resultScreen').classList.add('hidden');
   $('quizScreen').classList.remove('hidden');$('topbar').classList.remove('hidden');
   $('modeTag').textContent = m==='test'?'Full Test':(m==='weak'?'Weak Spots':'Practice');
+  testInProgress = (m==='test');
+  if(testInProgress)armRunGuard();
   render();
 }
 
@@ -578,6 +681,8 @@ function renderTest(){
   $('nextBtn').classList.add('hidden');
   const canSkip=mode==='test'&&!reviewingSkipped;
   $('skipBtn').classList.toggle('hidden',!canSkip);
+  $('quitBtn').classList.remove('hidden');
+  $('exitHomeBtn').classList.add('hidden');
   window.scrollTo(0,0);
 }
 
@@ -608,7 +713,7 @@ function renderPractice(){
 
   const ex=$('explain');
   if(response){
-    const ref=REF[q.r];
+    const ref=refFor(q);
     ex.className='explain '+(response.correct?'good':'bad');
     ex.innerHTML='<span class="verdict '+(response.correct?'g':'b')+'">'+(response.correct?'Correct':'Incorrect')+'</span>'+q.e+
       '<br><a class="reflink" href="'+ref.u+'" target="_blank" rel="noopener">Read the rule: '+ref.l+'</a>';
@@ -626,6 +731,8 @@ function renderPractice(){
   const canMoveForward=idx<practiceMaxIdx||!!response;
   $('practiceNextBtn').classList.toggle('hidden',!canMoveForward);
   $('practiceNextBtn').textContent=(idx===order.length-1&&response)?'See results':'Next →';
+  $('quitBtn').classList.add('hidden');
+  $('exitHomeBtn').classList.remove('hidden');
   window.scrollTo(0,0);
 }
 function recordTopic(topicKey,wasCorrect){
@@ -665,7 +772,7 @@ function chooseTest(displayIndex){
     else if(bi===displayIndex)b.classList.add('wrong');
     else b.classList.add('dim');
   });
-  const ex=$('explain'), ref=REF[q.r];
+  const ex=$('explain'), ref=refFor(q);
   ex.className='explain '+(wasCorrect?'good':'bad');
   ex.innerHTML='<span class="verdict '+(wasCorrect?'g':'b')+'">'+(wasCorrect?'Correct':'Incorrect')+'</span>'+q.e+
     '<br><a class="reflink" href="'+ref.u+'" target="_blank" rel="noopener">Read the rule: '+ref.l+'</a>';
@@ -741,6 +848,7 @@ function practiceNext(){
 }
 
 function results(){
+  testInProgress=false;
   $('quizScreen').classList.add('hidden');$('topbar').classList.add('hidden');
   const scr=$('resultScreen');scr.classList.remove('hidden');
   const done=session.length;
@@ -768,7 +876,7 @@ function results(){
   let reviewHtml='';
   if(missed.length){
     reviewHtml='<div class="section-h">Review — the ones you missed</div>'+
-      missed.map(s=>{const q=BANK[s.qi];const ref=REF[q.r];
+      missed.map(s=>{const q=BANK[s.qi];const ref=refFor(q);
         return '<div class="rev wrong">'+questionMediaHtml(q,true)+'<div class="rq">'+q.q+'</div>'+
           '<div class="line his">'+q.o[s.chosen]+'</div>'+
           '<div class="line cor">'+q.o[q.a]+'</div>'+
@@ -789,7 +897,7 @@ function results(){
     '<div class="send-status err" id="sendStatus">Synchronizing result…</div>'+
     weakHtml+reviewHtml+
     '<div class="actions">'+
-      '<button class="btn go" onclick="start(\''+mode+'\')">Run it again</button>'+
+      '<button class="btn go" onclick="'+(mode==='test'?'confirmQualStart()':'start(\''+mode+'\')')+'">Run it again</button>'+
       (missTopics.length?'<button class="btn ghost" onclick="start(\'weak\')">Drill weak spots</button>':'')+
       '<button class="btn ghost" onclick="home()">Back to menu</button>'+
     '</div>';
@@ -849,6 +957,7 @@ async function sendResults(r){
 function telemetryCard(value,label){return '<div class="telemetry"><div class="tv">'+escapeHtml(value)+'</div><div class="tl">'+escapeHtml(label)+'</div></div>'}
 function runStatus(run){
   if(run.invalidated)return {cls:'invalid',label:'INVALIDATED'};
+  if(run.mode==='cancelled')return {cls:'invalid',label:'INCOMPLETE — NOT COUNTED'};
   if(run.source==='manual')return {cls:'manual',label:'MANUAL CREDIT'};
   if(run.passed&&run.counted)return {cls:'valid',label:'VALIDATED'};
   if(run.passed)return {cls:'manual',label:'PASSED · NO CREDIT'};
@@ -859,8 +968,8 @@ function renderPerformance(data,offline=false){
   const done=Number(data.qualifyingPasses)||0,target=Number(data.targetPasses)||10;
   const topics=(data.topicPerformance||[]).map(topic=>'<div class="topic-row"><div><div class="topic-name">'+escapeHtml(topic.topic)+'</div><div class="topic-sample">'+topic.correct+' correct of '+topic.total+'</div></div><div class="topic-accuracy">'+topic.accuracy+'%</div></div>').join('')||'<div class="verdict-sub">Topic telemetry appears after completed Full Tests.</div>';
   const runs=(data.runs||data.recentRuns||[]).map(run=>{
-    const status=runStatus(run),score=run.source==='manual'?'Parent-issued qualification credit':(run.score+' / '+run.answered+' · '+(run.accuracy??0)+'%');
-    const reason=run.countReason==='daily_limit_reached'?'Daily credit limit reached':run.countReason==='program_complete'?'Program already complete':run.countReason==='not_passed'?'Pass threshold not reached':run.countReason==='credited'?'Qualification credit awarded':'';
+    const status=runStatus(run),score=run.source==='manual'?'Parent-issued qualification credit':run.mode==='cancelled'?('Quit after '+run.answered+' of 30 answered'):(run.score+' / '+run.answered+' · '+(run.accuracy??0)+'%');
+    const reason=run.countReason==='cancelled'?'Run quit early — no pass or fail recorded':run.countReason==='daily_limit_reached'?'Daily credit limit reached':run.countReason==='program_complete'?'Program already complete':run.countReason==='not_passed'?'Pass threshold not reached':run.countReason==='credited'?'Qualification credit awarded':'';
     const invalidate=!run.invalidated?'<button class="run-action" onclick="parentInvalidateRun(\''+escapeHtml(run.attemptId)+'\')">Invalidate run</button>':'';
     return '<div class="run-row"><div class="run-top"><span class="run-result '+status.cls+'">'+status.label+'</span><span class="run-score">'+escapeHtml(score)+'</span></div><div class="run-meta">'+escapeHtml(formatRunDate(run.completedAt))+(reason?' · '+escapeHtml(reason):'')+'</div>'+(run.note?'<div class="run-note">'+escapeHtml(run.note)+'</div>':'')+invalidate+'</div>';
   }).join('')||'<div class="verdict-sub">No Full Test runs recorded yet.</div>';
@@ -869,7 +978,7 @@ function renderPerformance(data,offline=false){
     '<div class="section-h">Topic telemetry</div>'+topics+
     '<div class="section-h">Run history</div>'+runs+
     '<details class="parent-panel"><summary>Parent controls</summary><div class="parent-body"><div class="parent-warning">Actions require the Railway parent PIN. Qualification resets begin a new tracking cycle; prior records remain in the database but no longer count.</div><div class="parent-diff"><div class="parent-diff-label">Test difficulty — current: <b>'+diffLabel(Number(data.minDifficulty)||1)+'</b></div><div class="parent-actions"><button onclick="parentSetDifficulty(1)">Easy</button><button onclick="parentSetDifficulty(2)">Normal</button><button onclick="parentSetDifficulty(3)">Hard</button></div></div><div class="parent-actions"><button onclick="parentManualCredit()">Add manual credit</button><button onclick="parentResetWeakSpots()">Reset weak spots</button><button class="danger" onclick="parentResetQualification()">Reset qualification</button></div></div></details>'+
-    '<div class="actions"><button class="btn go" onclick="start(\'test\')">Start qualification run</button><button class="btn ghost" onclick="home()">Back to menu</button></div>';
+    '<div class="actions"><button class="btn go" onclick="confirmQualStart()">Start qualification run</button><button class="btn ghost" onclick="home()">Back to menu</button></div>';
   renderSegments(done,target,'performanceSegments');window.scrollTo(0,0);
 }
 async function showQualification(){
@@ -915,7 +1024,7 @@ function showStudy(position=0){
   studyPos=Math.max(0,Math.min(position,sl.length-1));
   const questionId=sl[studyPos], qi=BANK_INDEX_BY_ID.get(questionId);
   if(qi===undefined){save(KEY_STUDY,sl.filter(id=>BANK_INDEX_BY_ID.has(id)));return showStudy(Math.max(0,studyPos-1));}
-  const q=BANK[qi], ref=REF[q.r];
+  const q=BANK[qi], ref=refFor(q);
   const item='<div class="rev wrong">'+questionMediaHtml(q,true)+'<div class="rq">'+q.q+'</div>'+ 
     '<div class="line cor">'+q.o[q.a]+'</div>'+ 
     '<div class="why">'+q.e+'</div>'+ 
@@ -941,7 +1050,8 @@ function resetWeakSpots(){
 }
 
 function home(){
-  skipped=[];reviewingSkipped=false;practiceMaxIdx=0;
+  testInProgress=false;skipped=[];reviewingSkipped=false;practiceMaxIdx=0;
+  $('cancelConfirm').classList.remove('show');$('startConfirm').classList.remove('show');
   $('resultScreen').classList.add('hidden');$('quizScreen').classList.add('hidden');
   $('startScreen').classList.remove('hidden');$('topbar').classList.add('hidden');
   refreshMenu();loadQualificationSummary(true);flushPendingResults();
@@ -1221,7 +1331,7 @@ initializeApp();
     document.body.appendChild(overlay);
     overlay.addEventListener('click',function(e){if(e.target===overlay)closePopup();});
     document.getElementById('jrnSkip').addEventListener('click',closePopup);
-    document.getElementById('jrnStart').addEventListener('click',function(){closePopup();if(window.start)start('test');});
+    document.getElementById('jrnStart').addEventListener('click',function(){closePopup();if(window.confirmQualStart)confirmQualStart();else if(window.start)start('test');});
 
     // bottom strip inside startScreen (auto-hides with it)
     strip=document.createElement('div');strip.className='jrn-strip';
