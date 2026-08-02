@@ -283,13 +283,13 @@ export default async function jaxQualificationPlugin(fastify, options = {}) {
             }
         }
 
-        const mode = ['test', 'practice', 'weak'].includes(body.mode) ? body.mode : null
+        const mode = ['test', 'practice', 'weak', 'cancelled'].includes(body.mode) ? body.mode : null
         if (!mode) {
             reply.code(400)
-            return { error: 'mode must be test, practice, or weak.' }
+            return { error: 'mode must be test, practice, weak, or cancelled.' }
         }
 
-        const examLength = boundedInt(body.examLength, mode === 'test' ? 30 : 0, 0, 500)
+        const examLength = boundedInt(body.examLength, (mode === 'test' || mode === 'cancelled') ? 30 : 0, 0, 500)
         const answered = boundedInt(body.answered ?? body.total, 0, 0, 500)
         const correct = boundedInt(body.correct ?? body.score, 0, 0, 500)
         const wrong = boundedInt(body.wrong, Math.max(0, answered - correct), 0, 500)
@@ -309,13 +309,15 @@ export default async function jaxQualificationPlugin(fastify, options = {}) {
         const cycleHint = boundedInt(body.programCycle, activeCycle, 1, activeCycle)
         const cycle = cycleHint
         const staleCycle = cycle !== activeCycle
-        const passed = mode === 'test'
-            ? correct >= 25 && wrong <= 5
-            : answered > 0 && Math.round((correct / answered) * 100) >= 83
+        const passed = mode === 'cancelled'
+            ? false
+            : mode === 'test'
+                ? correct >= 25 && wrong <= 5
+                : answered > 0 && Math.round((correct / answered) * 100) >= 83
         const percent = answered ? Math.round((correct / answered) * 100) : 0
 
         let counted = 0
-        let countReason = 'not_full_test'
+        let countReason = mode === 'cancelled' ? 'cancelled' : 'not_full_test'
         if (mode === 'test') {
             if (staleCycle) {
                 countReason = 'stale_cycle'
