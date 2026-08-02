@@ -128,6 +128,43 @@
   .rev .why{font-size:13px;color:#C2CBD8;line-height:1.5;margin-top:7px}
   .rev .reflink{margin-top:8px}
   .actions{display:flex;flex-direction:column;gap:10px;margin-top:16px}
+
+  /* BAXTER-07 qualification dashboard — isolated from the test flow. */
+  .qual-panel{position:relative;overflow:hidden;background:linear-gradient(145deg,#111A26,#171F2B 65%,#121923);border:1px solid #33445B;border-radius:18px;padding:16px;margin:0 0 20px;box-shadow:var(--shadow)}
+  .qual-panel::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.22;background-image:linear-gradient(rgba(111,227,196,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(111,227,196,.08) 1px,transparent 1px);background-size:22px 22px;mask-image:linear-gradient(to bottom,black,transparent 80%)}
+  .qual-panel>*{position:relative;z-index:1}
+  .qual-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:15px}
+  .qual-code{font:850 11px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.16em;color:var(--accent2);text-transform:uppercase}
+  .qual-title{font-size:17px;font-weight:850;letter-spacing:-.01em;margin-top:3px}
+  .qual-status{flex:none;border:1px solid var(--line);background:#111721;color:var(--muted);border-radius:6px;padding:6px 8px;font:850 10px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em;text-transform:uppercase}
+  .qual-status.training{border-color:#38587E;color:#8FC1FF;background:#111D2B}.qual-status.authorized{border-color:var(--go-line);color:#87E7BD;background:var(--go-bg)}.qual-status.offline{border-color:#574A24;color:#F2CE70;background:#211D12}
+  .qual-primary{display:flex;justify-content:space-between;align-items:end;gap:12px;margin-bottom:10px}
+  .qual-primary .value{font:900 30px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:-.05em}
+  .qual-primary .label,.qual-metric .label{display:block;margin-bottom:5px;font:800 9px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+  .qual-primary .clearance{text-align:right;font:800 11px/1.3 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--muted)}
+  .qual-primary .clearance strong{display:block;color:var(--paper);font-size:13px}
+  .qual-segments{display:grid;grid-template-columns:repeat(10,1fr);gap:5px;margin:10px 0 14px}
+  .qual-segment{height:9px;border-radius:2px;background:#0B1017;border:1px solid #2B394D;box-shadow:inset 0 0 0 1px rgba(255,255,255,.015)}
+  .qual-segment.on{border-color:#4B9E8A;background:linear-gradient(90deg,var(--accent),var(--accent2));box-shadow:0 0 10px rgba(111,227,196,.25)}
+  .qual-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:13px}
+  .qual-metric{background:rgba(8,12,18,.48);border:1px solid #29374A;border-radius:10px;padding:9px 8px;min-width:0}
+  .qual-metric .number{font-size:16px;font-weight:850;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .qual-message{min-height:18px;color:#AEB9C9;font-size:12px;line-height:1.45;margin-bottom:12px}
+  .qual-actions{display:grid;grid-template-columns:1.25fr 1fr;gap:9px}
+  .qual-actions button{border-radius:10px;padding:11px 9px;font-size:12px;font-weight:850;cursor:pointer;border:1px solid var(--line)}
+  .qual-start{background:var(--accent);border-color:var(--accent)!important;color:#06121F}.qual-data{background:#151D29;color:var(--paper)}
+  .qual-result{border:1px solid #33445B;background:linear-gradient(145deg,#121B27,#171F2B);border-radius:15px;padding:14px 15px;margin:12px 0 4px}
+  .qual-result.good{border-left:4px solid var(--go)}.qual-result.bad{border-left:4px solid var(--stop)}.qual-result.pending{border-left:4px solid var(--gold)}
+  .qual-result .result-code{font:850 10px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+  .qual-result .result-title{font-size:17px;font-weight:900;margin-bottom:7px}.qual-result .result-line{display:flex;justify-content:space-between;gap:15px;font-size:12.5px;padding:4px 0;color:#AEB9C9}.qual-result .result-line strong{color:var(--paper);text-align:right}
+  .performance-head{background:linear-gradient(145deg,#111A26,#171F2B);border:1px solid #33445B;border-radius:16px;padding:16px;margin-bottom:14px}
+  .performance-code{font:850 11px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.15em;color:var(--accent2);text-transform:uppercase}.performance-title{font-size:23px;font-weight:900;margin:5px 0 6px}.performance-sub{font-size:13px;color:var(--muted);line-height:1.45}
+  .telemetry-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.telemetry{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px}.telemetry .tv{font:900 22px/1 ui-monospace,SFMono-Regular,Menlo,monospace}.telemetry .tl{font-size:10px;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.06em;margin-top:6px}
+  .topic-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:11px 12px;margin-bottom:8px}.topic-name{font-size:13px;font-weight:750}.topic-sample{font-size:10px;color:var(--muted);margin-top:3px}.topic-accuracy{font:850 15px/1 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--accent2)}
+  .run-row{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:11px 12px;margin-bottom:8px}.run-top{display:flex;justify-content:space-between;gap:10px;align-items:center}.run-result{font:850 11px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em}.run-result.valid{color:var(--go)}.run-result.fail{color:var(--stop)}.run-result.manual{color:var(--accent)}.run-result.invalid{color:var(--muted)}.run-score{font-size:14px;font-weight:850}.run-meta{font-size:10.5px;color:var(--muted);margin-top:7px;line-height:1.4}.run-note{font-size:11.5px;color:#C9D2DF;margin-top:6px}.run-action{margin-top:9px;border:1px solid #4B3540;background:#24171C;color:#FFACB5;border-radius:8px;padding:7px 9px;font-size:11px;font-weight:800;cursor:pointer}
+  details.parent-panel{margin-top:18px;background:#111720;border:1px solid var(--line);border-radius:13px;padding:0 13px}details.parent-panel summary{cursor:pointer;list-style:none;padding:14px 0;font-size:12px;font-weight:850;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}details.parent-panel summary::-webkit-details-marker{display:none}.parent-body{border-top:1px solid var(--line);padding:12px 0 14px}.parent-warning{font-size:11.5px;color:var(--muted);line-height:1.45;margin-bottom:10px}.parent-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}.parent-actions button{border:1px solid var(--line);background:var(--panel);color:var(--paper);border-radius:9px;padding:10px 8px;font-size:11px;font-weight:800;cursor:pointer}.parent-actions button.danger{border-color:#54313A;color:#FFABB4;background:#211419}
+  .sync-note{text-align:center;font-size:11px;color:var(--muted);margin:8px 0 2px}
+  @media(max-width:390px){.qual-actions{grid-template-columns:1fr}.qual-metrics{grid-template-columns:repeat(3,1fr)}.qual-metric{padding:8px 5px}.qual-metric .number{font-size:14px}.parent-actions{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -154,6 +191,28 @@
       <h1>Let's get you<br>road ready, <span class="name">Jax</span>.</h1>
       <p class="sub">Answer the questions, see exactly what you miss, and the app tracks your weak spots so you can drill them. Pass mark is 25 out of 30.</p>
     </div>
+
+    <section class="qual-panel" id="qualificationPanel" aria-label="BAXTER-07 qualification progress">
+      <div class="qual-top">
+        <div><div class="qual-code">BAXTER-07</div><div class="qual-title">Class 7 Qualification Protocol</div></div>
+        <div class="qual-status" id="qualStatus">SYNCING</div>
+      </div>
+      <div class="qual-primary">
+        <div><span class="label">Qualifying runs</span><div class="value" id="qualRuns">0 / 10</div></div>
+        <div class="clearance">Registry clearance<strong id="qualClearance">LOCKED</strong></div>
+      </div>
+      <div class="qual-segments" id="qualSegments" aria-label="0 of 10 qualification runs completed"></div>
+      <div class="qual-metrics">
+        <div class="qual-metric"><span class="label">Pass rate</span><div class="number" id="qualPassRate">—</div></div>
+        <div class="qual-metric"><span class="label">Best accuracy</span><div class="number" id="qualBest">—</div></div>
+        <div class="qual-metric"><span class="label">Current streak</span><div class="number" id="qualStreak">0</div></div>
+      </div>
+      <div class="qual-message" id="qualMessage">Synchronizing qualification data…</div>
+      <div class="qual-actions">
+        <button class="qual-start" onclick="start('test')">Start qualification run</button>
+        <button class="qual-data" onclick="showQualification()">Performance data</button>
+      </div>
+    </section>
     <div class="info">
       <div class="row"><span class="k">Questions on the real test</span><span class="v">30</span></div>
       <div class="row"><span class="k">Correct answers to pass</span><span class="v">25 &nbsp;(83%)</span></div>
@@ -1627,9 +1686,11 @@ const BANK = [
 ];
 
 const KEY_TOPIC="jax_topic_stats_v1", KEY_STUDY="jax_study_list_v1";
+const KEY_QUAL_CACHE="jax_qualification_cache_v1", KEY_PENDING_RESULTS="jax_pending_results_v1", KEY_WEAK_RESET_VERSION="jax_weak_reset_version_v1";
 let mode='test', order=[], idx=0, answered=false, session=[];
 let optionLayouts={}, skipped=[], reviewingSkipped=false, examTotal=0;
 let practiceMaxIdx=0, studyPos=0;
+let currentAttemptId=null, currentStartedAt=null, currentProgramCycle=null, qualificationData=null, qualificationLoading=false;
 const EXAM_LEN=30, PASS=25, FAIL_AT=6;
 const $=id=>document.getElementById(id);
 function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a}
@@ -1637,6 +1698,82 @@ function load(k,f){try{return JSON.parse(localStorage.getItem(k))||f}catch(e){re
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
 function topicStats(){return load(KEY_TOPIC,{})}
 function studyList(){return load(KEY_STUDY,[])}
+function escapeHtml(value){return String(value??'').replace(/[&<>"]/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[ch]))}
+function makeAttemptId(){
+  if(window.crypto&&typeof window.crypto.randomUUID==='function')return window.crypto.randomUUID();
+  return 'jax-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,12);
+}
+function cachedQualification(){return load(KEY_QUAL_CACHE,null)}
+function pendingResults(){return load(KEY_PENDING_RESULTS,[])}
+function saveQualification(data){qualificationData=data;save(KEY_QUAL_CACHE,data)}
+function savePendingResults(items){save(KEY_PENDING_RESULTS,items)}
+function formatRunDate(value){
+  try{return new Intl.DateTimeFormat('en-CA',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}).format(new Date(value))}catch(e){return value||''}
+}
+function renderSegments(done,target,elementId='qualSegments'){
+  const el=$(elementId);if(!el)return;
+  const count=Math.max(1,Number(target)||10),filled=Math.max(0,Math.min(count,Number(done)||0));
+  el.innerHTML=Array.from({length:count},(_,i)=>'<span class="qual-segment '+(i<filled?'on':'')+'"></span>').join('');
+  el.setAttribute('aria-label',filled+' of '+count+' qualification runs completed');
+}
+function applyWeakResetVersion(version){
+  const incoming=Number(version)||0,local=Number(load(KEY_WEAK_RESET_VERSION,0))||0;
+  if(incoming>local){save(KEY_TOPIC,{});save(KEY_WEAK_RESET_VERSION,incoming);refreshMenu();}
+  else if(incoming===local&&local===0){save(KEY_WEAK_RESET_VERSION,0);}
+}
+function renderQualificationPanel(data,offline=false){
+  if(!data||!$('qualificationPanel'))return;
+  const done=Number(data.qualifyingPasses)||0,target=Number(data.targetPasses)||10,authorized=data.status==='AUTHORIZED';
+  $('qualRuns').textContent=done+' / '+target;
+  $('qualClearance').textContent=authorized?'AUTHORIZED':'LOCKED';
+  $('qualPassRate').textContent=data.totalFullTests?((Number(data.passRate)||0)+'%'):'—';
+  $('qualBest').textContent=data.totalFullTests?((Number(data.bestAccuracy)||0)+'%'):'—';
+  $('qualStreak').textContent=Number(data.currentStreak)||0;
+  renderSegments(done,target);
+  const status=$('qualStatus');
+  status.className='qual-status '+(offline?'offline':(authorized?'authorized':'training'));
+  status.textContent=offline?'OFFLINE':(authorized?'AUTHORIZED':'IN TRAINING');
+  let message='Complete '+target+' validated Full Test runs to authorize registry clearance.';
+  if(authorized)message='Qualification complete. Registry clearance is authorized.';
+  else if(done>0)message=(target-done)+' qualifying run'+(target-done===1?'':'s')+' remaining. Maximum '+data.dailyCreditLimit+' credits per day.';
+  if(offline)message+=' Displaying the last synchronized data.';
+  $('qualMessage').textContent=message;
+}
+async function apiJson(url,options={}){
+  const response=await fetch(url,{...options,headers:{'Content-Type':'application/json',...(options.headers||{})}});
+  let data={};try{data=await response.json()}catch(e){}
+  if(!response.ok){const error=new Error(data.error||('Request failed: '+response.status));error.status=response.status;throw error;}
+  return data;
+}
+async function loadQualificationSummary(force=false){
+  const cached=cachedQualification();if(cached&&!qualificationData){saveQualification(cached);renderQualificationPanel(cached,true);applyWeakResetVersion(cached.weakResetVersion)}
+  if(qualificationLoading&&!force)return qualificationData;
+  qualificationLoading=true;
+  try{
+    const data=await apiJson('/api/jax/qualification');
+    saveQualification(data);renderQualificationPanel(data,false);applyWeakResetVersion(data.weakResetVersion);return data;
+  }catch(error){
+    if(cached||qualificationData)renderQualificationPanel(qualificationData||cached,true);
+    else if($('qualMessage')){$('qualStatus').className='qual-status offline';$('qualStatus').textContent='UNAVAILABLE';$('qualMessage').textContent='Qualification service unavailable. The learner test still works, but progress cannot synchronize yet.';}
+    return qualificationData||cached||null;
+  }finally{qualificationLoading=false;}
+}
+function queuePendingResult(payload){
+  const items=pendingResults();if(!items.some(item=>item.attemptId===payload.attemptId)){items.push(payload);savePendingResults(items)}
+}
+async function submitResultPayload(payload){
+  const data=await apiJson('/api/jax/results',{method:'POST',body:JSON.stringify(payload)});
+  if(data.qualification){saveQualification(data.qualification);renderQualificationPanel(data.qualification,false);applyWeakResetVersion(data.qualification.weakResetVersion)}
+  return data;
+}
+async function flushPendingResults(){
+  let items=pendingResults();if(!items.length)return;
+  const remaining=[];
+  for(const payload of items){
+    try{await submitResultPayload(payload)}catch(error){if(!error.status||error.status>=500)remaining.push(payload)}
+  }
+  savePendingResults(remaining);
+}
 
 function balancedCorrectPositions(count){
   const positions=[];
@@ -1684,6 +1821,7 @@ refreshMenu();
 
 function start(m){
   mode=m; idx=0; answered=false; session=[]; skipped=[]; reviewingSkipped=false; practiceMaxIdx=0;
+  currentAttemptId=makeAttemptId();currentStartedAt=new Date().toISOString();currentProgramCycle=Number((qualificationData||cachedQualification()||{}).cycle)||null;
   if(m==='test') order=shuffle(BANK.map((q,i)=>i)).slice(0,EXAM_LEN);
   else if(m==='practice') order=shuffle(BANK.map((q,i)=>i));
   else if(m==='weak'){
@@ -1955,7 +2093,8 @@ function results(){
       '<div class="stat r"><div class="n">'+wrong+'</div><div class="l">Wrong</div></div>'+
       '<div class="stat"><div class="n">'+(mode==='test'?PASS:'83%')+'</div><div class="l">To pass</div></div>'+
     '</div>'+
-    '<div class="send-status err" id="sendStatus">Saving results…</div>'+
+    '<div id="qualificationResult"></div>'+
+    '<div class="send-status err" id="sendStatus">Synchronizing result…</div>'+
     weakHtml+reviewHtml+
     '<div class="actions">'+
       '<button class="btn go" onclick="start(\''+mode+'\')">Run it again</button>'+
@@ -1966,21 +2105,106 @@ function results(){
   sendResults({correct,total:done,pct,passed,mode,missTopics});
 }
 
-function sendResults(r){
+function renderQualificationResult(data,payload){
+  const box=$('qualificationResult');if(!box||payload.mode!=='test')return;
+  const q=data.qualification||qualificationData||{};
+  const done=Number(q.qualifyingPasses)||0,target=Number(q.targetPasses)||10;
+  let cls='bad',title='QUALIFICATION RUN REJECTED',detail='No qualification credit awarded.';
+  if(payload.passed&&data.countsTowardGoal){
+    cls='good';title=q.status==='AUTHORIZED'?'CLASS 7 QUALIFICATION COMPLETE':'QUALIFICATION RUN VALIDATED';
+    detail=q.status==='AUTHORIZED'?'Registry clearance authorized.':'Qualification credit awarded.';
+  }else if(payload.passed&&data.countReason==='daily_limit_reached'){
+    cls='pending';title='RUN PASSED — CREDIT LIMIT REACHED';detail='The result is recorded, but today’s two qualification credits are already used.';
+  }else if(payload.passed&&data.countReason==='program_complete'){
+    cls='good';title='RUN PASSED';detail='Registry clearance was already authorized.';
+  }
+  box.innerHTML='<div class="qual-result '+cls+'">'+
+    '<div class="result-code">BAXTER-07 · AFTER-ACTION REPORT</div>'+
+    '<div class="result-title">'+title+'</div>'+
+    '<div class="result-line"><span>Result</span><strong>'+payload.correct+' correct · '+payload.wrong+' wrong</strong></div>'+
+    '<div class="result-line"><span>Qualifying runs</span><strong>'+done+' / '+target+'</strong></div>'+
+    '<div class="result-line"><span>Registry clearance</span><strong>'+(q.status==='AUTHORIZED'?'AUTHORIZED':'LOCKED')+'</strong></div>'+
+    '<div class="sync-note">'+detail+'</div></div>';
+}
+function renderPendingQualification(payload){
+  const box=$('qualificationResult');if(!box||payload.mode!=='test')return;
+  box.innerHTML='<div class="qual-result pending"><div class="result-code">BAXTER-07 · PENDING SYNC</div><div class="result-title">RESULT AWAITING VALIDATION</div><div class="result-line"><span>Local result</span><strong>'+payload.correct+' correct · '+payload.wrong+' wrong</strong></div><div class="sync-note">Saved on this device. Qualification status will update when the connection returns.</div></div>';
+}
+async function sendResults(r){
+  const completedAt=new Date().toISOString();
   const payload={
-    student:"Jax", mode:r.mode, score:r.correct, total:r.total, percent:r.pct, passed:r.passed,
+    attemptId:currentAttemptId||makeAttemptId(),student:"Jackson",mode:r.mode,programCycle:currentProgramCycle,
+    examLength:examTotal,answered:r.total,correct:r.correct,wrong:r.total-r.correct,percent:r.pct,passed:r.passed,
+    startedAt:currentStartedAt,completedAt,
     weakTopics:r.missTopics.map(t=>TOPIC[t].name),
-    missedQuestions:session.filter(s=>!s.correct).map(s=>({
-      question:BANK[s.qi].q, topic:TOPIC[BANK[s.qi].t].name,
-      chosen:BANK[s.qi].o[s.chosen], correct:BANK[s.qi].o[BANK[s.qi].a]
-    })),
-    takenAt:new Date().toISOString()
+    questionResults:session.map(item=>({questionIndex:item.qi,topic:TOPIC[BANK[item.qi].t].name,correct:item.correct})),
+    missedQuestions:session.filter(item=>!item.correct).map(item=>({
+      questionIndex:item.qi,question:BANK[item.qi].q,topic:TOPIC[BANK[item.qi].t].name,
+      chosen:BANK[item.qi].o[item.chosen],correct:BANK[item.qi].o[BANK[item.qi].a]
+    }))
   };
-  fetch('/api/results',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
-    .then(res=>{const el=$('sendStatus');if(!el)return;
-      if(res.ok){el.className='send-status ok';el.textContent='✓ Results sent to parent';}
-      else{el.className='send-status err';el.textContent='Results saved on this device (send unavailable).';}})
-    .catch(()=>{const el=$('sendStatus');if(el){el.className='send-status err';el.textContent='Results saved on this device (offline).';}});
+  const el=$('sendStatus');
+  try{
+    const data=await submitResultPayload(payload);
+    if(el){el.className='send-status ok';el.textContent=data.duplicate?'✓ Result already synchronized':'✓ Result synchronized';}
+    renderQualificationResult(data,payload);
+  }catch(error){
+    queuePendingResult(payload);
+    if(el){el.className='send-status err';el.textContent='Result saved on this device — waiting to synchronize.';}
+    renderPendingQualification(payload);
+  }
+}
+function telemetryCard(value,label){return '<div class="telemetry"><div class="tv">'+escapeHtml(value)+'</div><div class="tl">'+escapeHtml(label)+'</div></div>'}
+function runStatus(run){
+  if(run.invalidated)return {cls:'invalid',label:'INVALIDATED'};
+  if(run.source==='manual')return {cls:'manual',label:'MANUAL CREDIT'};
+  if(run.passed&&run.counted)return {cls:'valid',label:'VALIDATED'};
+  if(run.passed)return {cls:'manual',label:'PASSED · NO CREDIT'};
+  return {cls:'fail',label:'REJECTED'};
+}
+function renderPerformance(data,offline=false){
+  const scr=$('resultScreen');
+  const done=Number(data.qualifyingPasses)||0,target=Number(data.targetPasses)||10;
+  const topics=(data.topicPerformance||[]).map(topic=>'<div class="topic-row"><div><div class="topic-name">'+escapeHtml(topic.topic)+'</div><div class="topic-sample">'+topic.correct+' correct of '+topic.total+'</div></div><div class="topic-accuracy">'+topic.accuracy+'%</div></div>').join('')||'<div class="verdict-sub">Topic telemetry appears after completed Full Tests.</div>';
+  const runs=(data.runs||data.recentRuns||[]).map(run=>{
+    const status=runStatus(run),score=run.source==='manual'?'Parent-issued qualification credit':(run.score+' / '+run.answered+' · '+(run.accuracy??0)+'%');
+    const reason=run.countReason==='daily_limit_reached'?'Daily credit limit reached':run.countReason==='program_complete'?'Program already complete':run.countReason==='not_passed'?'Pass threshold not reached':run.countReason==='credited'?'Qualification credit awarded':'';
+    const invalidate=!run.invalidated?'<button class="run-action" onclick="parentInvalidateRun(\''+escapeHtml(run.attemptId)+'\')">Invalidate run</button>':'';
+    return '<div class="run-row"><div class="run-top"><span class="run-result '+status.cls+'">'+status.label+'</span><span class="run-score">'+escapeHtml(score)+'</span></div><div class="run-meta">'+escapeHtml(formatRunDate(run.completedAt))+(reason?' · '+escapeHtml(reason):'')+'</div>'+(run.note?'<div class="run-note">'+escapeHtml(run.note)+'</div>':'')+invalidate+'</div>';
+  }).join('')||'<div class="verdict-sub">No Full Test runs recorded yet.</div>';
+  scr.innerHTML='<div class="performance-head"><div class="performance-code">BAXTER-07</div><div class="performance-title">Performance Data</div><div class="performance-sub">Server-validated qualification telemetry for Jackson.'+(offline?' Last synchronized data is shown.':'')+'</div><div class="qual-segments" id="performanceSegments"></div></div>'+
+    '<div class="telemetry-grid">'+telemetryCard(done+' / '+target,'Qualifying runs')+telemetryCard((data.passRate||0)+'%','Pass rate')+telemetryCard((data.bestAccuracy||0)+'%','Best accuracy')+telemetryCard(data.currentStreak||0,'Current streak')+telemetryCard(data.totalFullTests||0,'Full test attempts')+telemetryCard((data.averagePassingAccuracy||0)+'%','Average pass accuracy')+'</div>'+
+    '<div class="section-h">Topic telemetry</div>'+topics+
+    '<div class="section-h">Run history</div>'+runs+
+    '<details class="parent-panel"><summary>Parent controls</summary><div class="parent-body"><div class="parent-warning">Actions require the Railway parent PIN. Qualification resets begin a new tracking cycle; prior records remain in the database but no longer count.</div><div class="parent-actions"><button onclick="parentManualCredit()">Add manual credit</button><button onclick="parentResetWeakSpots()">Reset weak spots</button><button class="danger" onclick="parentResetQualification()">Reset qualification</button></div></div></details>'+
+    '<div class="actions"><button class="btn go" onclick="start(\'test\')">Start qualification run</button><button class="btn ghost" onclick="home()">Back to menu</button></div>';
+  renderSegments(done,target,'performanceSegments');window.scrollTo(0,0);
+}
+async function showQualification(){
+  $('startScreen').classList.add('hidden');$('quizScreen').classList.add('hidden');$('topbar').classList.add('hidden');
+  const scr=$('resultScreen');scr.classList.remove('hidden');scr.innerHTML='<div class="performance-head"><div class="performance-code">BAXTER-07</div><div class="performance-title">Loading performance data…</div></div>';
+  await flushPendingResults();
+  try{const data=await apiJson('/api/jax/history');saveQualification(data);applyWeakResetVersion(data.weakResetVersion);renderPerformance(data,false)}
+  catch(error){const cached=qualificationData||cachedQualification();if(cached)renderPerformance(cached,true);else scr.innerHTML='<div class="performance-head"><div class="performance-code">BAXTER-07</div><div class="performance-title">Performance data unavailable</div><div class="performance-sub">The qualification service could not be reached.</div></div><div class="actions"><button class="btn ghost" onclick="home()">Back to menu</button></div>';}
+}
+function getParentPin(){const pin=window.prompt('Enter parent PIN');return pin===null?null:pin}
+async function parentRequest(path,body={}){const parentPin=getParentPin();if(parentPin===null)return null;return apiJson(path,{method:'POST',body:JSON.stringify({...body,parentPin})})}
+async function parentResetQualification(){
+  if(!window.confirm('Reset BAXTER-07 qualification progress to 0 / 10?'))return;
+  try{const data=await parentRequest('/api/jax/admin/reset');if(!data)return;saveQualification(data.qualification);renderPerformance({...data.qualification,runs:[]},false)}catch(error){window.alert(error.message)}
+}
+async function parentManualCredit(){
+  const note=window.prompt('Reason for manual qualification credit','Parent-approved prior run');if(note===null)return;
+  try{const data=await parentRequest('/api/jax/admin/credit',{note});if(!data)return;saveQualification(data.qualification);await showQualification()}catch(error){window.alert(error.message)}
+}
+async function parentInvalidateRun(attemptId){
+  if(!window.confirm('Invalidate this run? Any qualification credit from it will be removed.'))return;
+  const reason=window.prompt('Reason for invalidating this run','Invalid or accidental result');if(reason===null)return;
+  try{const data=await parentRequest('/api/jax/admin/invalidate',{attemptId,reason});if(!data)return;saveQualification(data.qualification);await showQualification()}catch(error){window.alert(error.message)}
+}
+async function parentResetWeakSpots(){
+  if(!window.confirm('Reset weak-spot history on all devices when they next synchronize? The Study List is not cleared.'))return;
+  try{const data=await parentRequest('/api/jax/admin/reset-weak-spots');if(!data)return;save(KEY_TOPIC,{});save(KEY_WEAK_RESET_VERSION,data.weakResetVersion);refreshMenu();if($('resultScreen')&&!$('resultScreen').classList.contains('hidden'))await showQualification();else window.alert('Weak-spot history reset.')}catch(error){window.alert(error.message)}
 }
 
 function showStudy(position=0){
@@ -2016,17 +2240,18 @@ function resetWeakSpots(){
   const st=topicStats();
   const hasWeak=Object.keys(st).some(t=>st[t]&&st[t].wrong>0);
   if(!hasWeak)return;
-  if(!window.confirm('Reset all weak-spot history? This will not clear the Study List.'))return;
-  save(KEY_TOPIC,{});
-  refreshMenu();
+  parentResetWeakSpots();
 }
 
 function home(){
   skipped=[];reviewingSkipped=false;practiceMaxIdx=0;
   $('resultScreen').classList.add('hidden');$('quizScreen').classList.add('hidden');
   $('startScreen').classList.remove('hidden');$('topbar').classList.add('hidden');
-  refreshMenu();
+  refreshMenu();loadQualificationSummary(true);flushPendingResults();
 }
+window.addEventListener('online',()=>{flushPendingResults().then(()=>loadQualificationSummary(true))});
+loadQualificationSummary();
+flushPendingResults().then(()=>loadQualificationSummary(true));
 </script>
 </body>
 </html>
