@@ -5,358 +5,472 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Jax's License Arc — Alberta Class 7</title>
+<title>Class 7 Practice — Jax</title>
 <style>
   :root{
-    --bg:#0B0F2A;
-    --bg2:#141A3D;
-    --panel:#1A2150;
-    --panel-2:#232C63;
-    --paper:#F5F6FF;
-    --pink:#FF5D9E;      /* anime magenta */
-    --cyan:#38E1FF;      /* electric cyan */
-    --violet:#9D6BFF;
-    --gold:#FFD23F;
-    --go:#2BE38A;
-    --go-bg:#123A2C;
-    --stop:#FF5A6E;
-    --stop-bg:#3A1420;
-    --muted:#8A93C8;
-    --shadow:0 12px 34px rgba(0,0,0,.45);
-    --glow:0 0 22px rgba(56,225,255,.35);
-    --r:20px;
+    --bg:#0C1017; --bg2:#141A24; --panel:#1A2230; --panel2:#232D3E;
+    --paper:#EEF2F8; --muted:#8592A6; --line:#2A3547;
+    --accent:#4C9AFF; --accent2:#6FE3C4;
+    --go:#35C98A; --go-bg:#12281F; --go-line:#1E4D38;
+    --stop:#FF6B7A; --stop-bg:#2A1519; --stop-line:#5A2730;
+    --gold:#F4C13B;
+    --shadow:0 10px 30px rgba(0,0,0,.4);
+    --r:16px;
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
   html,body{height:100%}
   body{
     font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,sans-serif;
-    color:var(--paper);
-    min-height:100dvh;display:flex;flex-direction:column;
-    padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
-    overflow-x:hidden;position:relative;
-    background:var(--bg);
+    background:var(--bg);color:var(--paper);min-height:100dvh;display:flex;flex-direction:column;
+    padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);overflow-x:hidden;
+    background-image:radial-gradient(90% 60% at 50% -10%, #16202E 0%, var(--bg) 60%);
   }
-  /* anime speed-line / aurora backdrop */
-  body::before{
-    content:"";position:fixed;inset:0;z-index:-2;
-    background:
-      radial-gradient(90% 60% at 20% -5%, rgba(157,107,255,.35), transparent 60%),
-      radial-gradient(80% 55% at 90% 0%, rgba(255,93,158,.30), transparent 55%),
-      radial-gradient(120% 90% at 50% 110%, rgba(56,225,255,.20), transparent 60%),
-      linear-gradient(180deg,#0B0F2A,#070A1E);
-  }
-  body::after{
-    content:"";position:fixed;inset:-50% -50%;z-index:-1;opacity:.05;
-    background:repeating-linear-gradient(115deg,#fff 0 2px,transparent 2px 22px);
-    animation:drift 12s linear infinite;
-  }
-  @keyframes drift{to{transform:translateX(-22px)}}
-  .wrap{width:100%;max-width:520px;margin:0 auto;flex:1;display:flex;flex-direction:column;padding:16px 16px 26px}
-
-  /* ---- HUD top bar ---- */
-  .topbar{display:flex;align-items:center;gap:10px;margin-bottom:16px;min-height:30px}
-  .lvl{
-    font-size:11px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;
-    color:var(--bg);background:linear-gradient(90deg,var(--cyan),var(--violet));
-    padding:5px 10px;border-radius:8px;white-space:nowrap;box-shadow:var(--glow);
-  }
-  .lane{flex:1;height:10px;border-radius:99px;background:#0A0E28;position:relative;overflow:hidden;border:1px solid rgba(255,255,255,.08)}
-  .lane-fill{position:absolute;inset:0 auto 0 0;width:0%;border-radius:99px;
-    background:linear-gradient(90deg,var(--pink),var(--gold));transition:width .4s cubic-bezier(.4,0,.2,1);box-shadow:0 0 12px rgba(255,210,63,.6)}
-  .count{font-size:13px;font-weight:800;color:var(--cyan);white-space:nowrap}
-  .streak{font-size:13px;font-weight:900;color:var(--gold);white-space:nowrap;min-width:34px;text-align:right}
-
-  .screen{flex:1;display:flex;flex-direction:column;animation:rise .35s ease}
-  @keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+  .wrap{width:100%;max-width:540px;margin:0 auto;flex:1;display:flex;flex-direction:column;padding:16px 16px 28px}
+  .topbar{display:flex;align-items:center;gap:10px;margin-bottom:18px;min-height:28px}
+  .tag{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);white-space:nowrap}
+  .bar{flex:1;height:7px;border-radius:99px;background:#0A0E15;overflow:hidden;border:1px solid var(--line)}
+  .bar-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .35s ease}
+  .count{font-size:13px;font-weight:700;color:var(--muted);white-space:nowrap}
+  .screen{flex:1;display:flex;flex-direction:column;animation:fade .3s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
   .hidden{display:none!important}
-
-  /* ---- START ---- */
-  .crest{
-    width:132px;height:132px;margin:6px auto 16px;position:relative;display:flex;align-items:center;justify-content:center;
-    animation:float 3s ease-in-out infinite;
-  }
-  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-  .crest .ring{position:absolute;inset:0;border-radius:50%;
-    background:conic-gradient(from 0deg,var(--pink),var(--violet),var(--cyan),var(--gold),var(--pink));
-    filter:blur(2px);opacity:.9;animation:spin 8s linear infinite}
-  @keyframes spin{to{transform:rotate(360deg)}}
-  .crest .core{position:absolute;inset:8px;border-radius:50%;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:52px;box-shadow:inset 0 0 30px rgba(0,0,0,.6)}
-  .eyebrow{text-align:center;font-size:12px;font-weight:900;letter-spacing:.24em;text-transform:uppercase;
-    background:linear-gradient(90deg,var(--cyan),var(--pink));-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:8px}
-  h1{font-size:32px;line-height:1.05;font-weight:900;letter-spacing:-.02em;text-align:center;margin-bottom:10px}
-  h1 .name{background:linear-gradient(90deg,var(--pink),var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent}
-  .sub{text-align:center;color:#C3C9F5;font-size:15px;line-height:1.55;margin:0 auto 20px;max-width:350px}
-  .quest{
-    background:linear-gradient(180deg,rgba(157,107,255,.16),rgba(56,225,255,.06));
-    border:1px solid rgba(157,107,255,.35);border-radius:var(--r);padding:16px 18px;margin-bottom:22px;
-  }
-  .quest .qh{font-size:12px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:var(--cyan);margin-bottom:12px}
-  .quest .row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;font-size:14px}
-  .quest .row+.row{border-top:1px solid rgba(255,255,255,.08)}
-  .quest .k{color:#C3C9F5}.quest .v{font-weight:900;color:#fff}
-  .modes{display:flex;flex-direction:column;gap:12px}
-  .mode{text-align:left;border:none;cursor:pointer;position:relative;overflow:hidden;
-    border-radius:var(--r);padding:16px 18px;box-shadow:var(--shadow);display:flex;align-items:center;gap:14px;
-    color:#fff;transition:transform .12s ease}
-  .mode:active{transform:scale(.98)}
-  .mode.exam{background:linear-gradient(120deg,#7A1F52,#B7245F)}
-  .mode.practice{background:linear-gradient(120deg,#1F5A6E,#2C8FB7)}
-  .mode .ic{width:46px;height:46px;border-radius:13px;flex:none;display:flex;align-items:center;justify-content:center;font-size:24px;background:rgba(255,255,255,.14)}
-  .mode .t{font-size:18px;font-weight:900}
-  .mode .d{font-size:13px;color:rgba(255,255,255,.82);margin-top:2px;line-height:1.35}
-  .foot{text-align:center;font-size:11.5px;color:#5B639B;margin-top:20px;line-height:1.5}
-
-  /* ---- QUESTION ---- */
-  .q-tag{font-size:12px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:var(--pink);margin-bottom:10px}
-  .q-text{font-size:21px;line-height:1.34;font-weight:800;letter-spacing:-.01em;margin-bottom:20px}
-  .opts{display:flex;flex-direction:column;gap:11px;flex:1}
-  .opt{text-align:left;cursor:pointer;width:100%;background:var(--panel);color:var(--paper);
-    border:2px solid rgba(255,255,255,.08);border-radius:16px;padding:15px 16px;font-size:16px;font-weight:600;line-height:1.35;
-    display:flex;align-items:center;gap:13px;box-shadow:0 4px 16px rgba(0,0,0,.3);transition:transform .1s ease,border-color .15s ease,background .15s}
+  .head{margin:6px 0 18px}
+  .eyebrow{font-size:12px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
+  h1{font-size:28px;line-height:1.12;font-weight:850;letter-spacing:-.02em;margin-bottom:10px}
+  .sub{color:#AEB9C9;font-size:15px;line-height:1.55}
+  .info{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;margin-bottom:20px}
+  .info .row{display:flex;justify-content:space-between;padding:8px 0;font-size:14px}
+  .info .row+.row{border-top:1px solid var(--line)}
+  .info .k{color:#AEB9C9}.info .v{font-weight:800}
+  .menu{display:flex;flex-direction:column;gap:11px}
+  .card{text-align:left;border:1px solid var(--line);cursor:pointer;background:var(--panel);color:var(--paper);
+    border-radius:var(--r);padding:15px 16px;display:flex;align-items:center;gap:14px;box-shadow:var(--shadow);transition:transform .1s,border-color .15s}
+  .card:active{transform:scale(.985)}
+  .card:disabled{opacity:.45;cursor:default}
+  .card .ic{width:42px;height:42px;border-radius:11px;flex:none;display:flex;align-items:center;justify-content:center;font-size:21px;background:var(--panel2)}
+  .card .t{font-size:16px;font-weight:800}
+  .card .d{font-size:13px;color:var(--muted);margin-top:2px;line-height:1.35}
+  .card .n{margin-left:auto;font-size:13px;font-weight:800;color:var(--gold);flex:none}
+  .card.primary{border-color:var(--accent);background:linear-gradient(180deg,rgba(76,154,255,.12),transparent)}
+  .foot{text-align:center;font-size:11.5px;color:#586576;margin-top:20px;line-height:1.6}
+  .foot a{color:#6E7E92}
+  .qtag{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
+  .qtopic{font-size:11px;font-weight:700;color:var(--muted);margin-bottom:12px}
+  .qtext{font-size:20px;line-height:1.35;font-weight:800;letter-spacing:-.01em;margin-bottom:18px}
+  .opts{display:flex;flex-direction:column;gap:10px;flex:1}
+  .opt{text-align:left;cursor:pointer;width:100%;background:var(--panel);color:var(--paper);border:2px solid var(--line);
+    border-radius:14px;padding:14px 15px;font-size:15.5px;font-weight:600;line-height:1.35;display:flex;align-items:center;gap:12px;transition:transform .1s,border-color .15s,background .15s}
   .opt:active{transform:scale(.985)}
-  .opt .key{width:28px;height:28px;flex:none;border-radius:8px;background:var(--panel-2);color:var(--cyan);
-    display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px}
+  .opt .key{width:26px;height:26px;flex:none;border-radius:7px;background:var(--panel2);color:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px}
   .opt.correct{border-color:var(--go);background:var(--go-bg)}.opt.correct .key{background:var(--go);color:#04140C}
   .opt.wrong{border-color:var(--stop);background:var(--stop-bg)}.opt.wrong .key{background:var(--stop);color:#210307}
-  .opt.dim{opacity:.45}.opt[disabled]{cursor:default}
-  .explain{margin-top:16px;background:var(--bg2);border:1px solid rgba(255,255,255,.1);border-left:4px solid var(--cyan);
-    border-radius:14px;padding:14px 16px;font-size:14.5px;line-height:1.55;color:#DDE2FF}
+  .opt.dim{opacity:.4}.opt[disabled]{cursor:default}
+  .explain{margin-top:14px;background:var(--bg2);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:12px;padding:13px 15px;font-size:14.5px;line-height:1.55;color:#D3DBE6}
   .explain.good{border-left-color:var(--go)}.explain.bad{border-left-color:var(--stop)}
   .explain b{color:#fff}
-  .toast{font-weight:900;font-size:13px;letter-spacing:.04em;margin-bottom:6px;display:block}
-  .toast.g{color:var(--go)}.toast.b{color:var(--stop)}
-  .next{margin-top:16px;width:100%;border:none;cursor:pointer;color:var(--bg);font-weight:900;font-size:17px;
-    padding:16px;border-radius:16px;box-shadow:var(--shadow);background:linear-gradient(90deg,var(--gold),var(--pink));transition:transform .1s ease}
-  .next:active{transform:scale(.98)}
-
-  /* ---- RESULTS ---- */
-  .rank-badge{width:150px;height:150px;margin:8px auto 14px;border-radius:24px;display:flex;flex-direction:column;
-    align-items:center;justify-content:center;position:relative;box-shadow:var(--shadow);color:var(--bg);font-weight:900}
-  .rank-badge .rk{font-size:56px;line-height:1}
-  .rank-badge .rl{font-size:12px;letter-spacing:.14em;text-transform:uppercase;margin-top:4px}
-  .result-ring{width:170px;height:170px;margin:8px auto 16px;border-radius:50%;display:flex;flex-direction:column;
-    align-items:center;justify-content:center;box-shadow:var(--shadow);color:var(--bg);font-weight:900}
-  .result-ring .pct{font-size:44px;line-height:1}
-  .result-ring .lab{font-size:13px;letter-spacing:.1em;text-transform:uppercase;margin-top:4px;opacity:.85}
-  .verdict{text-align:center;font-size:25px;font-weight:900;margin-bottom:6px}
-  .verdict-sub{text-align:center;color:#C3C9F5;font-size:15px;line-height:1.55;margin:0 auto 22px;max-width:360px}
-  .stats{display:flex;gap:12px;margin-bottom:22px}
-  .stat{flex:1;background:var(--panel);border:1px solid rgba(255,255,255,.09);border-radius:16px;padding:14px;text-align:center}
-  .stat .n{font-size:26px;font-weight:900}.stat .l{font-size:12px;color:var(--muted);margin-top:2px;font-weight:700}
-  .stat.g .n{color:var(--go)}.stat.r .n{color:var(--stop)}.stat.y .n{color:var(--gold)}
-  .review-note{font-size:13px;color:var(--muted);text-align:center;margin-bottom:14px;font-weight:700}
-  .miss{background:var(--bg2);border:1px solid rgba(255,255,255,.09);border-radius:14px;padding:13px 15px;margin-bottom:10px}
-  .miss .mq{font-size:14px;font-weight:800;line-height:1.4;margin-bottom:6px}
-  .miss .ma{font-size:13.5px;color:var(--go);font-weight:800}.miss .ma::before{content:"✓ "}
-  .actions{display:flex;flex-direction:column;gap:11px;margin-top:8px}
-  .btn-primary{border:none;cursor:pointer;color:var(--bg);font-weight:900;font-size:17px;padding:16px;border-radius:16px;box-shadow:var(--shadow);background:linear-gradient(90deg,var(--cyan),var(--violet))}
-  .btn-primary:active{transform:scale(.98)}
-  .btn-ghost{border:1.5px solid rgba(255,255,255,.22);cursor:pointer;background:transparent;color:var(--paper);font-weight:800;font-size:16px;padding:15px;border-radius:16px}
-  .btn-ghost:active{transform:scale(.98)}
+  .explain .verdict{display:block;font-weight:800;font-size:13px;margin-bottom:5px}
+  .explain .verdict.g{color:var(--go)}.explain .verdict.b{color:var(--stop)}
+  .reflink{display:inline-block;margin-top:9px;font-size:12.5px;font-weight:700;color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(76,154,255,.4);padding-bottom:1px}
+  .btn{margin-top:14px;width:100%;border:none;cursor:pointer;font-weight:800;font-size:16px;padding:15px;border-radius:14px;box-shadow:var(--shadow);transition:transform .1s}
+  .btn:active{transform:scale(.98)}
+  .btn.go{background:var(--accent);color:#04121F}
+  .btn.ghost{background:transparent;border:1.5px solid var(--line);color:var(--paper);box-shadow:none}
+  .score{width:150px;height:150px;margin:6px auto 14px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:var(--shadow)}
+  .score .pct{font-size:42px;font-weight:850;line-height:1}
+  .score .lab{font-size:12px;letter-spacing:.1em;text-transform:uppercase;margin-top:4px;opacity:.9}
+  .verdict-big{text-align:center;font-size:23px;font-weight:850;margin-bottom:6px}
+  .verdict-sub{text-align:center;color:#AEB9C9;font-size:14.5px;line-height:1.55;margin:0 auto 18px;max-width:400px}
+  .stats{display:flex;gap:10px;margin-bottom:8px}
+  .stat{flex:1;background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:12px;text-align:center}
+  .stat .n{font-size:24px;font-weight:850}.stat .l{font-size:11.5px;color:var(--muted);margin-top:2px;font-weight:700}
+  .stat.g .n{color:var(--go)}.stat.r .n{color:var(--stop)}
+  .send-status{text-align:center;font-size:12.5px;margin:12px 0 4px;font-weight:700}
+  .send-status.ok{color:var(--go)}.send-status.err{color:var(--muted)}
+  .section-h{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:22px 0 12px}
+  .weak{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:6px}
+  .chip{background:var(--stop-bg);border:1px solid var(--stop-line);color:#FFB3BB;font-size:12.5px;font-weight:700;padding:6px 11px;border-radius:99px}
+  .chip.clear{background:var(--go-bg);border-color:var(--go-line);color:#8CE9C0}
+  .rev{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:13px 15px;margin-bottom:10px}
+  .rev.wrong{border-left:3px solid var(--stop)}.rev.right{border-left:3px solid var(--go)}
+  .rev .rq{font-size:14px;font-weight:800;line-height:1.4;margin-bottom:9px}
+  .rev .line{font-size:13.5px;line-height:1.4;margin:3px 0}
+  .rev .his{color:var(--stop)}.rev .his::before{content:"Your answer: ";color:var(--muted);font-weight:400}
+  .rev .cor{color:var(--go)}.rev .cor::before{content:"Correct: ";color:var(--muted);font-weight:400}
+  .rev .why{font-size:13px;color:#C2CBD8;line-height:1.5;margin-top:7px}
+  .rev .reflink{margin-top:8px}
+  .actions{display:flex;flex-direction:column;gap:10px;margin-top:16px}
 </style>
 </head>
 <body>
 <div class="wrap">
-
-  <div class="topbar" id="topbar" style="visibility:hidden">
-    <span class="lvl" id="modeBadge">Exam Run</span>
-    <div class="lane"><div class="lane-fill" id="laneFill"></div></div>
+  <div class="topbar hidden" id="topbar">
+    <span class="tag" id="modeTag">Test</span>
+    <div class="bar"><div class="bar-fill" id="barFill"></div></div>
     <span class="count" id="count">0/30</span>
-    <span class="streak" id="streak">🔥0</span>
   </div>
 
-  <!-- START -->
   <section class="screen" id="startScreen">
-    <div class="crest"><div class="ring"></div><div class="core">🏍️</div></div>
-    <div class="eyebrow">Alberta Class 7 · Learner Arc</div>
-    <h1><span class="name">Jax's</span> License Quest</h1>
-    <p class="sub">Third time's the clear, Jax. Grind these questions like XP — every wrong answer just levels you up. Beat the boss (the registry test) and unlock the open road. 🛣️</p>
-
-    <div class="quest">
-      <div class="qh">◆ Boss Fight Intel</div>
-      <div class="row"><span class="k">Questions in the real test</span><span class="v">30</span></div>
-      <div class="row"><span class="k">Correct to clear</span><span class="v">25 &nbsp;(83%)</span></div>
-      <div class="row"><span class="k">Arena</span><span class="v">Registry office</span></div>
-      <div class="row"><span class="k">Respawn after a loss</span><span class="v">24 hrs</span></div>
+    <div class="head">
+      <div class="eyebrow">Alberta Class 7 Knowledge Test</div>
+      <h1>Practice test</h1>
+      <p class="sub">Answer, see what you miss, and the app tracks your weak spots so you can drill them. Pass mark is 25 out of 30.</p>
     </div>
-
-    <div class="modes">
-      <button class="mode exam" onclick="start('exam')">
-        <div class="ic">⚔️</div>
-        <div><div class="t">Boss Run</div><div class="d">30 questions, real rules. Clear at 25 right — wipe at 6 wrong. Get your rank.</div></div>
+    <div class="info">
+      <div class="row"><span class="k">Questions on the real test</span><span class="v">30</span></div>
+      <div class="row"><span class="k">Correct answers to pass</span><span class="v">25 &nbsp;(83%)</span></div>
+      <div class="row"><span class="k">Question bank here</span><span class="v" id="bankCount">103</span></div>
+      <div class="row"><span class="k">Retake after a fail</span><span class="v">24 hours</span></div>
+    </div>
+    <div class="menu">
+      <button class="card primary" onclick="start('test')">
+        <div class="ic">📝</div>
+        <div><div class="t">Full Test</div><div class="d">30 questions, real conditions. Pass at 25, fail at 6 wrong.</div></div>
       </button>
-      <button class="mode practice" onclick="start('practice')">
+      <button class="card" onclick="start('practice')">
+        <div class="ic">📖</div>
+        <div><div class="t">Practice All</div><div class="d">Work through the whole bank, no fail limit.</div></div>
+      </button>
+      <button class="card" id="weakBtn" onclick="start('weak')">
         <div class="ic">🎯</div>
-        <div><div class="t">Training Arc</div><div class="d">All 44 questions. Learn the "why" behind every move. No pressure.</div></div>
+        <div><div class="t">Retest Weak Spots</div><div class="d">Only the topics you keep missing.</div></div>
+        <span class="n" id="weakCount"></span>
+      </button>
+      <button class="card" id="studyBtn" onclick="showStudy()">
+        <div class="ic">📌</div>
+        <div><div class="t">Study List</div><div class="d">Every question you've gotten wrong, with answers.</div></div>
+        <span class="n" id="studyCount"></span>
       </button>
     </div>
-    <p class="foot">Real facts from the Alberta Driver's Guide + GDL rules. Study tool only — the official test happens at a registry agent.</p>
+    <p class="foot">Questions based on the Alberta Driver's Guide and GDL rules. Study tool only — the official test is at a registry agent office.</p>
   </section>
 
-  <!-- QUESTION -->
   <section class="screen hidden" id="quizScreen">
-    <div class="q-tag" id="qTag">Question 1</div>
-    <div class="q-text" id="qText"></div>
+    <div class="qtag" id="qtag">Question 1</div>
+    <div class="qtopic" id="qtopic"></div>
+    <div class="qtext" id="qtext"></div>
     <div class="opts" id="opts"></div>
     <div class="explain hidden" id="explain"></div>
-    <button class="next hidden" id="nextBtn" onclick="next()">Next →</button>
+    <button class="btn go hidden" id="nextBtn" onclick="next()">Next</button>
   </section>
 
-  <!-- RESULTS -->
   <section class="screen hidden" id="resultScreen"></section>
 </div>
 
 <script>
-/* ---- QUESTION BANK — verified vs Alberta Driver's Guide / GDL rules ---- */
+const REF = {
+  gdl:{l:"Alberta GDL program (PDF)",u:"https://www.transportation.alberta.ca/content/doctype47/production/graduateddriverlic.pdf"},
+  test:{l:"Driver's knowledge test — Alberta.ca",u:"https://www.alberta.ca/drivers-knowledge-test"},
+  zones:{l:"School & playground zones — Alberta.ca",u:"https://www.alberta.ca/school-and-playground-zones"},
+  signs:{l:"Traffic sign catalogue — Alberta.ca",u:"https://www.alberta.ca/traffic-sign-catalogue"},
+  child:{l:"Child seats & seatbelts — Alberta.ca",u:"https://www.alberta.ca/child-seats"},
+  guide:{l:"Alberta Driver's Guide (PDF)",u:"https://open.alberta.ca/dataset/ddca813d-5463-4daa-afc9-093807a1bb6a/resource/d4670a18-1a24-4b9f-a4d2-0932907d66e6/download/trans-drivers-guide-cars-light-trucks-2020-07.pdf"}
+};
+const TOPIC = {
+  gdl:{name:"GDL & Licence Rules",ref:"gdl"},
+  zones:{name:"Speed & Zones",ref:"zones"},
+  signs:{name:"Signs & Signals",ref:"signs"},
+  row:{name:"Right of Way",ref:"guide"},
+  bus:{name:"School Buses",ref:"zones"},
+  emerg:{name:"Emergency Vehicles",ref:"guide"},
+  park:{name:"Parking & Stopping",ref:"guide"},
+  safe:{name:"Safe Driving",ref:"guide"},
+  restr:{name:"Seatbelts & Passengers",ref:"child"}
+};
 const BANK = [
-  {q:"What is the minimum score needed to pass the Alberta Class 7 knowledge test?",o:["20 out of 30","23 out of 30","25 out of 30","28 out of 30"],a:2,e:"You need <b>25 out of 30</b> (83%) correct to clear it."},
-  {q:"As a Class 7 learner, what blood alcohol level are you allowed while driving?",o:["Under 0.05","Under 0.08","0.00 — zero","One drink is fine"],a:2,e:"Class 7 learners must be at <b>zero (0.00)</b>. Same zero rule covers cannabis and other drugs."},
-  {q:"A Class 7 learner must be accompanied by a supervising driver who is:",o:["Any licensed driver","Fully licensed, 18 or older, in the front passenger seat","A GDL driver in the back seat","At least 16 years old"],a:1,e:"Your supervisor must be a <b>fully licensed (non-GDL) driver, 18+, seated beside you</b> up front."},
-  {q:"At how many demerit points is a Class 7 learner's licence suspended?",o:["6 points","8 points","12 points","15 points"],a:1,e:"GDL drivers get suspended at <b>8 demerit points</b> — lower than the 15 for full licences."},
-  {q:"How many passengers may a Class 7 learner carry?",o:["No passengers at all","Only family members","No more than the number of seatbelts","Up to 4 friends"],a:2,e:"<b>No more passengers than working seatbelts</b> in the vehicle."},
-  {q:"What is the speed limit in a school zone unless otherwise posted?",o:["20 km/h","30 km/h","40 km/h","50 km/h"],a:1,e:"School zones are <b>30 km/h</b> (urban and rural) unless a sign says otherwise."},
-  {q:"What is the speed limit in a playground zone when in effect?",o:["25 km/h","30 km/h","40 km/h","50 km/h"],a:1,e:"Playground zones are <b>30 km/h</b> unless posted otherwise."},
-  {q:"When are playground zone speed limits in effect?",o:["Only on school days","8:30 a.m. until 1 hour after sunset, every day","Only 3 p.m.–6 p.m.","24 hours a day"],a:1,e:"Playground zones run <b>every day, 8:30 a.m. to one hour after sunset</b>."},
-  {q:"The default speed limit in an urban area (no posted sign) is:",o:["30 km/h","40 km/h","50 km/h","60 km/h"],a:2,e:"Unless posted otherwise, urban default is <b>50 km/h</b>."},
-  {q:"A school bus ahead has its RED lights flashing. You must:",o:["Slow down and pass carefully","Stop, whether approaching or following it","Honk to warn children","Keep your speed if no kids are visible"],a:1,e:"<b>Stop</b> for flashing red lights from either direction. Exception: the bus is across a physically divided (median) highway."},
-  {q:"A school bus ahead turns on its flashing AMBER (yellow) lights. This means:",o:["The bus is speeding up","Be prepared to stop — red lights are coming","You may pass now","Ignore it, amber isn't a stop signal"],a:1,e:"Amber flashing = warning: <b>get ready to stop</b>. Red comes next as it stops."},
-  {q:"An emergency vehicle approaches with lights and siren on a two-way road. You should:",o:["Speed up to clear the area","Pull as far right as possible and stop","Stop immediately in your lane","Turn left to get out of the way"],a:1,e:"Pull <b>to the right and stop</b>, clearing a path — no matter the direction it's coming from."},
-  {q:"How closely may you follow an emergency vehicle running its lights and siren?",o:["No closer than 60 m","No closer than 150 m","No closer than 500 m","You may follow directly behind"],a:1,e:"Stay at least <b>150 metres</b> back from a responding emergency vehicle."},
-  {q:"You fail the knowledge test. How soon can you retake it?",o:["Same day","After 24 hours","After 1 week","After 30 days"],a:1,e:"Respawn after <b>24 hours</b> (once per day), paying the fee again."},
-  {q:"A Class 7 learner is NOT permitted to drive between:",o:["10 p.m. and 6 a.m.","Midnight and 5 a.m.","11 p.m. and 4 a.m.","Sunset and sunrise"],a:1,e:"No driving <b>midnight to 5 a.m.</b>"},
-  {q:"An eight-sided (octagon) red sign always means:",o:["Yield","Stop","Do not enter","Construction ahead"],a:1,e:"A red <b>octagon is STOP</b> — that shape belongs to it alone."},
-  {q:"A downward-pointing triangle sign means:",o:["Stop","Yield","No passing","School zone"],a:1,e:"The upside-down triangle is <b>YIELD</b> — give right of way."},
-  {q:"A yellow diamond-shaped sign is used to:",o:["Give an order you must obey","Warn you of a hazard ahead","Show route numbers","Mark parking rules"],a:1,e:"Yellow diamonds are <b>warning signs</b> — hazard or road change ahead."},
-  {q:"When must you turn your headlights on?",o:["Only in full darkness","One hour before sunset until one hour after sunrise, or in poor visibility","Only during rain","Never in the city"],a:1,e:"Headlights from <b>1 hr before sunset to 1 hr after sunrise</b>, plus any low-visibility time. Daytime running lights leave your rear dark."},
-  {q:"What is a safe following distance in good conditions?",o:["Half a car length","At least a 2-second gap","One car length at any speed","5 metres"],a:1,e:"Keep at least a <b>2-second gap</b> (more in bad weather) for reaction time."},
-  {q:"You are stopped at a red light and want to turn right. You may:",o:["Turn right without stopping","Turn right after a full stop, if the way is clear and it's not prohibited","Never turn on red","Turn only if a green arrow shows"],a:1,e:"Right on red is fine <b>after a complete stop</b>, when clear and not signed 'no turn on red'."},
-  {q:"A flashing red traffic light means:",o:["Slow down and proceed","Come to a full stop, then go when safe","Stop and wait for green","Speed up to clear the intersection"],a:1,e:"Flashing red = treat like a <b>stop sign</b>: full stop, then go when safe."},
-  {q:"A flashing amber (yellow) traffic light means:",o:["Stop completely","Slow down and proceed with caution","The light is broken — ignore it","Same as a red light"],a:1,e:"Flashing amber = <b>slow down, proceed carefully</b>."},
-  {q:"You may pass another vehicle in a school or playground zone when the zone is in effect:",o:["Yes, if you're under the speed limit","Never — passing is not allowed","Only school buses","Only on the left"],a:1,e:"<b>No passing</b> in a school or playground zone while the limit is active."},
-  {q:"Who must wear a seatbelt in the vehicle?",o:["Only the driver","Only front-seat riders","The driver and every passenger","Only passengers under 16"],a:2,e:"<b>Driver and all passengers</b> must be buckled up."},
-  {q:"When two vehicles reach an uncontrolled intersection at the same time, who yields?",o:["The faster vehicle","The vehicle on the left yields to the one on the right","The larger vehicle","Whoever honks first"],a:1,e:"Yield to the vehicle <b>on your right</b> when you arrive together with no signs or lights."},
-  {q:"Can a Class 7 learner upgrade to a commercial licence (Class 1, 2, 3 or 4)?",o:["Yes, anytime","No — not while in GDL","Yes, after passing a test","Only Class 4"],a:1,e:"GDL drivers <b>can't</b> hold or upgrade to a commercial licence."},
-  {q:"On a slippery or icy road, you should:",o:["Brake hard to stop quickly","Slow down and increase your following distance","Drive at the normal speed limit","Follow closely to see better"],a:1,e:"Slow down and <b>leave extra following distance</b> — stopping takes way longer on ice."},
-  {q:"If your vehicle starts to skid, you should:",o:["Brake hard and steer away","Ease off the gas and steer where you want to go","Accelerate through it","Close your eyes and hold on"],a:1,e:"<b>Ease off the gas</b> and steer where you want the front to go. Don't slam the brakes."},
-  {q:"When approaching a railway crossing with flashing red lights, you must:",o:["Speed across before the train","Stop and wait until the lights stop and it's safe","Slow to 30 km/h and continue","Stop only if you see a train"],a:1,e:"<b>Stop and wait</b> until lights stop and it's clear — never try to beat a train."},
-  {q:"A solid yellow line on your side of the road centre means:",o:["Passing is allowed","Do not pass","Two-way traffic ends","Bike lane"],a:1,e:"Solid yellow on your side = <b>no passing</b>."},
-  {q:"What should you check before changing lanes?",o:["Just your mirrors","Mirrors, signal, and shoulder-check the blind spot","Only the vehicle ahead","Nothing if the road looks empty"],a:1,e:"Mirror, signal, then <b>shoulder-check the blind spot</b> before moving."},
-  {q:"Large trucks and buses have big blind spots. The safest thing to do is:",o:["Drive in the blind spot to stay close","Avoid lingering beside them; if you can't see the driver's mirrors, they can't see you","Pass on the right only","Tailgate so they know you're there"],a:1,e:"Stay out of the 'No-Zones'. <b>Can't see the driver in their mirror? They can't see you.</b>"},
-  {q:"You want to make a left turn at a plain green light. You should:",o:["Turn immediately, you have right of way","Yield to oncoming traffic and pedestrians, then turn when clear","Speed up before oncoming cars arrive","Wait for a red light"],a:1,e:"On a plain green, a left turn must <b>yield to oncoming traffic and pedestrians</b> first."},
-  {q:"A pedestrian is waiting at a marked crosswalk. You should:",o:["Continue — cars have right of way","Stop and let them cross","Honk so they wait","Slow only if they've stepped out"],a:1,e:"<b>Yield and stop</b> for pedestrians at a crosswalk."},
-  {q:"To exit the GDL program and get a full Class 5 licence, you must first:",o:["Just turn 18","Be suspension-free and pass the required road test","Pay a fee only","Drive for 6 months"],a:1,e:"Be <b>suspension-free</b> for the required period and pass the road test to graduate GDL."},
-  {q:"'Nighttime' in the Alberta Basic Licence Driver's Guide is defined as:",o:["Sunset to sunrise","One hour after sunset to one hour before sunrise","9 p.m. to 6 a.m.","When streetlights are on"],a:1,e:"Officially: <b>1 hr after sunset to 1 hr before sunrise</b>."},
-  {q:"You approach an intersection as the light turns yellow. You should:",o:["Always speed up to get through","Stop if you can do so safely","Stop instantly no matter what","Cover the horn"],a:1,e:"Yellow = red is next. <b>Stop if you can do so safely</b>."},
-  {q:"The penalty for illegally passing a school bus with red lights flashing includes:",o:["A warning only","A fine plus 6 demerit points","1 demerit point","Loss of licence for a year"],a:1,e:"Serious offence: a fine <b>plus 6 demerit points</b>."},
-  {q:"When can a Class 7 learner drive alone?",o:["After 6 months","Never — a supervisor is always required","On quiet roads only","During daytime"],a:1,e:"<b>Never solo</b> — a qualified supervisor must always ride beside you."},
-  {q:"Before starting to drive, your first action should be to:",o:["Turn up the music","Fasten your seatbelt and adjust mirrors","Rev the engine","Check your phone"],a:1,e:"Buckle up and <b>adjust seat and mirrors</b> before you move."},
-  {q:"A white sign with black or coloured lettering (regulatory sign) means:",o:["A suggestion","A law you must obey","A warning only","Tourist information"],a:1,e:"White regulatory signs are <b>laws you must obey</b> (like speed limits)."},
-  {q:"In a roundabout (traffic circle), you should:",o:["Enter fast to merge","Yield to traffic already in the circle, then enter","Always stop first","Drive clockwise"],a:1,e:"<b>Yield to vehicles already in the roundabout</b>, then enter on a safe gap."},
-  {q:"Using a hand-held cellphone while driving in Alberta is:",o:["Allowed at red lights","Illegal (distracted driving)","Fine if you're a learner","Only illegal on highways"],a:1,e:"Hand-held phone use is <b>distracted driving</b> — illegal, fine + demerits."}
+{q:"What is the minimum score needed to pass the Alberta Class 7 knowledge test?",o:["20 out of 30","23 out of 30","25 out of 30","28 out of 30"],a:2,t:"gdl",e:"You need 25 out of 30 (83%) correct."},
+{q:"As a Class 7 learner, what blood alcohol level are you allowed while driving?",o:["Under 0.05","Under 0.08","0.00 — zero","One drink is fine"],a:2,t:"gdl",e:"Class 7 learners must be at zero (0.00). The same zero rule covers cannabis and other drugs."},
+{q:"A Class 7 learner must be accompanied by a supervising driver who is:",o:["Any licensed driver","Fully licensed, 18 or older, in the front passenger seat","A GDL driver in the back seat","At least 16 years old"],a:1,t:"gdl",e:"Your supervisor must be a fully licensed (non-GDL) driver, 18+, seated beside you in front."},
+{q:"At how many demerit points is a Class 7 learner's licence suspended?",o:["6 points","8 points","12 points","15 points"],a:1,t:"gdl",e:"GDL drivers are suspended at 8 demerit points — lower than the 15 for fully licensed drivers."},
+{q:"A Class 7 learner is NOT permitted to drive between:",o:["10 p.m. and 6 a.m.","Midnight and 5 a.m.","11 p.m. and 4 a.m.","Sunset and sunrise"],a:1,t:"gdl",e:"Learners may not drive between midnight and 5 a.m."},
+{q:"You fail the knowledge test. How soon can you retake it?",o:["Same day","After 24 hours","After 1 week","After 30 days"],a:1,t:"gdl",e:"You may retake after 24 hours (once per day), paying the fee again."},
+{q:"Can a Class 7 learner upgrade to a commercial licence (Class 1, 2, 3 or 4)?",o:["Yes, anytime","No — not while in GDL","Yes, after passing a test","Only Class 4"],a:1,t:"gdl",e:"GDL drivers cannot hold or upgrade to a commercial licence."},
+{q:"When can a Class 7 learner drive alone?",o:["After 6 months","Never — a supervisor is always required","On quiet roads only","During daytime only"],a:1,t:"gdl",e:"A Class 7 learner can never drive alone; a qualified supervisor must always be beside you."},
+{q:"To exit the GDL program and get a full Class 5 licence, you must first:",o:["Just turn 18","Be suspension-free and pass the required road test","Pay a fee only","Drive for 6 months"],a:1,t:"gdl",e:"You must be suspension-free for the required period and pass the road test."},
+{q:"What is the minimum age to get a Class 7 learner's licence in Alberta?",o:["12","14","16","18"],a:1,t:"gdl",e:"You can get a Class 7 licence at 14 (with parent/guardian consent if under 18)."},
+{q:"If you are under 18, what else do you need to apply for a Class 7 licence?",o:["A job","Parent or guardian consent","A vehicle of your own","Two references"],a:1,t:"gdl",e:"Applicants under 18 need written parental or guardian consent."},
+{q:"Can a Class 7 learner act as the supervising driver for another learner?",o:["Yes","No","Only a family member","Only in daytime"],a:1,t:"gdl",e:"A GDL driver cannot supervise another learner — the supervisor must be fully licensed."},
+{q:"The Class 7 knowledge test also requires you to pass a:",o:["Hearing test","Vision test","Physical fitness test","Written essay"],a:1,t:"gdl",e:"You must pass a vision test along with the knowledge test."},
+{q:"Besides alcohol, the zero-tolerance rule for Class 7 learners also covers:",o:["Coffee","Cannabis and other impairing drugs","Energy drinks","Prescription vitamins"],a:1,t:"gdl",e:"Zero tolerance applies to cannabis and other impairing drugs too, not just alcohol."},
+{q:"What is the speed limit in a school zone unless otherwise posted?",o:["20 km/h","30 km/h","40 km/h","50 km/h"],a:1,t:"zones",e:"School zones are 30 km/h (urban and rural) unless a sign posts otherwise."},
+{q:"What is the speed limit in a playground zone when in effect?",o:["25 km/h","30 km/h","40 km/h","50 km/h"],a:1,t:"zones",e:"Playground zones are 30 km/h unless otherwise posted."},
+{q:"When are playground zone speed limits in effect?",o:["Only on school days","8:30 a.m. until 1 hour after sunset, every day","Only 3 p.m.–6 p.m.","24 hours a day"],a:1,t:"zones",e:"Playground zones apply every day, 8:30 a.m. to one hour after sunset."},
+{q:"The default speed limit in an urban area (no posted sign) is:",o:["30 km/h","40 km/h","50 km/h","60 km/h"],a:2,t:"zones",e:"Unless posted otherwise, the urban default is 50 km/h."},
+{q:"You may pass another vehicle in a school or playground zone when the zone is in effect:",o:["Yes, if under the speed limit","Never — passing is not allowed","Only school buses","Only on the left"],a:1,t:"zones",e:"You must not pass another vehicle in a school or playground zone while the limit is in effect."},
+{q:"A school zone speed limit applies:",o:["24 hours a day","On school days during posted hours","Only in winter","Only when a crossing guard is present"],a:1,t:"zones",e:"School zone limits apply on school days during the posted hours."},
+{q:"You see a playground sign with no speed limit attached. This means:",o:["Speed up","You are entering a playground area — use caution, children may be near","Parking allowed","The zone has ended"],a:1,t:"zones",e:"A playground sign without a speed sign warns you're entering a playground area; drive with caution."},
+{q:"If you are caught speeding in a construction zone with workers present, penalties are usually:",o:["Reduced","Doubled / increased","Waived","Only a warning"],a:1,t:"zones",e:"Fines are typically increased in construction zones when workers are present."},
+{q:"On most open rural highways in Alberta, the speed limit is commonly:",o:["50 km/h","60 km/h","80–100 km/h","120 km/h"],a:2,t:"zones",e:"Rural highways are commonly 80 to 100 km/h, depending on the road and posted signs."},
+{q:"An eight-sided (octagon) red sign always means:",o:["Yield","Stop","Do not enter","Construction ahead"],a:1,t:"signs",e:"A red octagon is a STOP sign — the shape belongs to it alone."},
+{q:"A downward-pointing triangle sign means:",o:["Stop","Yield","No passing","School zone"],a:1,t:"signs",e:"The inverted triangle is a YIELD sign — give the right of way."},
+{q:"A yellow diamond-shaped sign is used to:",o:["Give an order you must obey","Warn you of a hazard ahead","Show route numbers","Mark parking rules"],a:1,t:"signs",e:"Yellow diamonds are warning signs — a hazard or road change is ahead."},
+{q:"Orange signs on a roadway indicate:",o:["A hospital","A construction or work zone","A rest stop","A wildlife reserve"],a:1,t:"signs",e:"Orange signs mark construction and work zones."},
+{q:"A five-sided (pentagon) sign usually marks:",o:["A hospital","A school zone or crossing","A no-parking area","A ferry"],a:1,t:"signs",e:"The pentagon shape marks school zones and crossings."},
+{q:"A white rectangular sign with black lettering (like a speed limit) is a:",o:["Warning sign","Regulatory sign — a law you must obey","Guide sign","Service sign"],a:1,t:"signs",e:"White regulatory signs give rules you must obey by law."},
+{q:"A green sign on a highway most often gives:",o:["A warning","Direction, distance, and destination info","A speed limit","A hazard alert"],a:1,t:"signs",e:"Green guide signs show directions, distances and destinations."},
+{q:"A blue sign with a white 'H' means:",o:["Highway entrance","Hospital nearby","Hotel","Bus stop"],a:1,t:"signs",e:"A blue 'H' sign points to a nearby hospital."},
+{q:"A flashing red traffic light means:",o:["Slow down and proceed","Come to a full stop, then go when safe","Stop and wait for green","Speed up to clear the intersection"],a:1,t:"signs",e:"Treat a flashing red like a stop sign: full stop, then go when safe."},
+{q:"A flashing amber (yellow) traffic light means:",o:["Stop completely","Slow down and proceed with caution","The light is broken — ignore it","Same as a red light"],a:1,t:"signs",e:"A flashing amber means slow down and proceed carefully."},
+{q:"You approach an intersection as the light turns yellow. You should:",o:["Always speed up to get through","Stop if you can do so safely","Stop instantly no matter what","Cover the horn"],a:1,t:"signs",e:"A yellow means red is coming — stop if you can do so safely."},
+{q:"A solid yellow line on your side of the road centre means:",o:["Passing is allowed","Do not pass","Two-way traffic ends","Bike lane"],a:1,t:"signs",e:"A solid yellow line on your side means no passing."},
+{q:"A red circle with a red line through a symbol means:",o:["The action is required","The action is prohibited","Caution ahead","Parking allowed"],a:1,t:"signs",e:"A red circle with a slash means the action shown is not allowed."},
+{q:"A 'U-turn' symbol inside a red circle with a slash means:",o:["U-turns encouraged","U-turns are not permitted here","Roundabout ahead","Detour"],a:1,t:"signs",e:"That sign prohibits U-turns at that location."},
+{q:"A white sign with a red circle and a horizontal white bar means:",o:["One way","Do not enter — road closed to you","Yield","Merge"],a:1,t:"signs",e:"A red circle with a white bar means the road ahead is closed to traffic in your direction (do not enter)."},
+{q:"A green light means:",o:["Go, but yield to traffic and pedestrians still in the intersection","Speed through","Stop","Turn only"],a:0,t:"signs",e:"On green you may go, but must yield to anyone still lawfully in the intersection and to pedestrians."},
+{q:"A steady green arrow pointing left means:",o:["Left turn is protected — oncoming traffic is stopped","Yield to oncoming traffic","Do not turn","No entry"],a:0,t:"signs",e:"A green arrow gives a protected turn in that direction; oncoming traffic is held."},
+{q:"Diamond-shaped white pavement markings on a lane usually indicate:",o:["A passing lane","A reserved lane (e.g. HOV / bus / bike)","A parking lane","A turning lane"],a:1,t:"signs",e:"Diamond markings indicate a reserved lane, such as HOV, bus, or bike use."},
+{q:"When two vehicles reach an uncontrolled intersection at the same time, who yields?",o:["The faster vehicle","The vehicle on the left yields to the one on the right","The larger vehicle","Whoever honks first"],a:1,t:"row",e:"Yield to the vehicle on your right when you arrive together with no signs or lights."},
+{q:"You want to make a left turn at a plain green light. You should:",o:["Turn immediately, you have right of way","Yield to oncoming traffic and pedestrians, then turn when clear","Speed up before oncoming cars arrive","Wait for a red light"],a:1,t:"row",e:"On a plain green, a left turn must yield to oncoming traffic and pedestrians first."},
+{q:"A pedestrian is waiting at a marked crosswalk. You should:",o:["Continue — cars have right of way","Stop and let them cross","Honk so they wait","Slow only if they've stepped out"],a:1,t:"row",e:"Yield and stop for pedestrians at a crosswalk."},
+{q:"At a four-way stop, right of way goes to:",o:["The biggest vehicle","Whoever arrived and stopped first","The vehicle turning left","The fastest to react"],a:1,t:"row",e:"The vehicle that stops first goes first; if tied, yield to the right."},
+{q:"In a roundabout (traffic circle), you should:",o:["Enter fast to merge","Yield to traffic already in the circle, then enter","Always stop first","Drive clockwise"],a:1,t:"row",e:"Yield to vehicles already in the roundabout, then enter on a safe gap."},
+{q:"You're turning left into a driveway across oncoming traffic. You must yield to:",o:["Nobody","Oncoming traffic and any pedestrians","Only large trucks","Only cyclists"],a:1,t:"row",e:"A left turn must yield to oncoming traffic and to pedestrians where you're turning."},
+{q:"When entering a highway from an on-ramp, you should:",o:["Stop at the end of the ramp","Match the speed of traffic and merge into a safe gap","Force your way in","Drive on the shoulder"],a:1,t:"row",e:"Use the ramp to reach traffic speed, then merge smoothly into a gap."},
+{q:"A funeral procession is passing through an intersection. You should:",o:["Cut through a gap","Wait and let the procession continue","Honk","Follow closely behind"],a:1,t:"row",e:"Yield to a funeral procession and don't break into it."},
+{q:"You reach a stop sign at the same time as a pedestrian starting to cross. You should:",o:["Go first","Let the pedestrian cross","Wave them back","Edge forward"],a:1,t:"row",e:"Pedestrians in or entering the crosswalk have the right of way."},
+{q:"When a vehicle ahead is stopped to let a pedestrian cross, drivers behind should:",o:["Pass it","Also stop and not pass","Honk","Change lanes and speed up"],a:1,t:"row",e:"Never pass a vehicle stopped for a pedestrian — someone may be crossing you can't see."},
+{q:"A school bus ahead has its RED lights flashing. You must:",o:["Slow down and pass carefully","Stop, whether approaching or following it","Honk to warn children","Keep going if no kids are visible"],a:1,t:"bus",e:"Stop for flashing red lights from either direction. Exception: the bus is across a physically divided (median) highway."},
+{q:"A school bus ahead turns on its flashing AMBER (yellow) lights. This means:",o:["The bus is speeding up","Be prepared to stop — red lights are coming","You may pass now","Ignore it"],a:1,t:"bus",e:"Amber flashing lights are a warning: get ready to stop. Red lights come next as it stops."},
+{q:"When do you NOT have to stop for a school bus with flashing red lights?",o:["Never — always stop","When it's across a physically divided (median) highway from you","When you're in a hurry","When it's raining"],a:1,t:"bus",e:"The only exception is when the bus is on the opposite side of a highway divided by a physical median."},
+{q:"The penalty for illegally passing a school bus with red lights flashing includes:",o:["A warning only","A fine plus demerit points","1 demerit point only","Loss of licence for a year"],a:1,t:"bus",e:"It's a serious offence carrying a fine plus demerit points."},
+{q:"After a school bus's red lights stop flashing, you may:",o:["Only reverse","Proceed with caution","Never move","Pass at high speed"],a:1,t:"bus",e:"Proceed only once the red lights stop flashing, watching for children still nearby."},
+{q:"Even when a school bus has no lights flashing, you should:",o:["Ignore it","Watch for children who may be crossing","Always pass immediately","Tailgate it"],a:1,t:"bus",e:"Stay alert for children loading, unloading, or crossing even if lights aren't flashing."},
+{q:"An emergency vehicle approaches with lights and siren on a two-way road. You should:",o:["Speed up to clear the area","Pull as far right as possible and stop","Stop immediately in your lane","Turn left to get out of the way"],a:1,t:"emerg",e:"Pull to the right and stop, clearing a path — no matter which direction it comes from."},
+{q:"How closely may you follow an emergency vehicle running its lights and siren?",o:["No closer than 60 m","No closer than 150 m","No closer than 500 m","You may follow directly behind"],a:1,t:"emerg",e:"Stay at least 150 metres back from a responding emergency vehicle."},
+{q:"You approach a stopped emergency vehicle with flashing lights on the roadside. You should:",o:["Maintain speed","Slow down and, if safe, move over to give it room","Stop in the lane","Speed past quickly"],a:1,t:"emerg",e:"Slow down and move over a lane if you safely can, to protect responders."},
+{q:"If an emergency vehicle approaches while you're stopped in an intersection, you should:",o:["Stay put and block it","Clear the intersection when safe, then pull right and stop","Reverse into traffic","Speed through the red light"],a:1,t:"emerg",e:"Clear the intersection safely, then pull to the right and stop to let it pass."},
+{q:"How far from a fire hydrant must you park (Alberta rules of the road)?",o:["1 metre","At least 5 metres","At least 15 metres","No restriction"],a:1,t:"park",e:"Do not park within 5 metres of a fire hydrant."},
+{q:"How close to a marked crosswalk may you park?",o:["Right up to it","No nearer than 5 metres","Anywhere","Only 1 metre"],a:1,t:"park",e:"Do not park within 5 metres of the near side of a marked crosswalk."},
+{q:"You may not park within how far of a stop sign or the corner of an intersection?",o:["1 metre","5 metres","20 metres","No limit"],a:1,t:"park",e:"Keep at least 5 metres from a stop/yield sign and from the corner at an intersection."},
+{q:"Parking on a bridge or in an underpass/subway is:",o:["Allowed if brief","Not permitted","Fine at night","Allowed with flashers"],a:1,t:"park",e:"You may not park on a bridge or in a subway/underpass or on their approaches."},
+{q:"Before opening your car door into traffic, you should:",o:["Open quickly","Check for cyclists, traffic and pedestrians first","Rely on your mirror only","Honk"],a:1,t:"park",e:"Always check that it's safe — watch for cyclists and passing traffic — before opening a door."},
+{q:"You may not park within about how far of an access to a driveway or private road?",o:["1.5 metres","10 metres","25 metres","No restriction"],a:0,t:"park",e:"Do not park within 1.5 metres of a driveway or private road access."},
+{q:"When parking facing downhill with a curb, you should turn your front wheels:",o:["Toward the curb","Away from the curb","Straight ahead","It doesn't matter"],a:0,t:"park",e:"Downhill, turn wheels toward the curb so the car rolls into it if the brakes slip."},
+{q:"When you leave your parked vehicle, you should:",o:["Leave it running","Set the parking brake and remove the key","Leave the door open","Leave it in neutral"],a:1,t:"park",e:"Set the parking brake, shift to park, remove the key, and lock up."},
+{q:"What is a safe following distance in good conditions?",o:["Half a car length","At least a 2-second gap","One car length at any speed","5 metres"],a:1,t:"safe",e:"Keep at least a 2-second gap — more in poor weather — so you have time to react."},
+{q:"In rain, snow, or fog you should increase your following distance to:",o:["Still 2 seconds","3 to 4 seconds or more","1 second","Half a second"],a:1,t:"safe",e:"Bad conditions need a larger gap — 3 to 4 seconds or more."},
+{q:"When must you turn your headlights on?",o:["Only in full darkness","One hour before sunset until one hour after sunrise, or in poor visibility","Only during rain","Never in the city"],a:1,t:"safe",e:"Use headlights from one hour before sunset to one hour after sunrise, plus any low-visibility time. Daytime running lights leave your rear dark."},
+{q:"If your vehicle starts to skid, you should:",o:["Brake hard and steer away","Ease off the gas and steer where you want to go","Accelerate through it","Close your eyes and hold on"],a:1,t:"safe",e:"Ease off the accelerator and steer where you want the front to go; avoid slamming the brakes."},
+{q:"On a slippery or icy road, you should:",o:["Brake hard to stop quickly","Slow down and increase your following distance","Drive at the normal speed limit","Follow closely to see better"],a:1,t:"safe",e:"Slow down and leave extra distance — stopping takes much longer on ice."},
+{q:"'Hydroplaning' happens when:",o:["Your engine overheats","Tires ride up on water and lose grip","You brake too gently","You use high beams"],a:1,t:"safe",e:"Hydroplaning is when tires lose contact by riding on a film of water; ease off the gas and don't brake hard."},
+{q:"To reduce the chance of hydroplaning, you should:",o:["Speed up","Slow down and keep tires properly inflated","Brake hard often","Turn sharply"],a:1,t:"safe",e:"Lower speed and good tires reduce hydroplaning risk."},
+{q:"What should you check before changing lanes?",o:["Just your mirrors","Mirrors, signal, and shoulder-check the blind spot","Only the vehicle ahead","Nothing if it looks empty"],a:1,t:"safe",e:"Mirror, signal, then shoulder-check your blind spot before moving over."},
+{q:"Large trucks and buses have big blind spots. The safest approach is:",o:["Drive in the blind spot to stay close","Avoid lingering beside them; if you can't see their mirrors, they can't see you","Pass on the right only","Tailgate so they see you"],a:1,t:"safe",e:"Stay out of the 'No-Zones'. If you can't see the driver in their mirror, they can't see you."},
+{q:"If you feel drowsy while driving, the safest thing is to:",o:["Open a window and push on","Pull over somewhere safe and rest","Drive faster to arrive sooner","Turn up the music"],a:1,t:"safe",e:"Fatigue impairs driving — pull over and rest; music and air don't fix drowsiness."},
+{q:"Using a hand-held cellphone while driving in Alberta is:",o:["Allowed at red lights","Illegal (distracted driving)","Fine for learners","Only illegal on highways"],a:1,t:"safe",e:"Hand-held phone use is distracted driving — illegal, with a fine and demerit points."},
+{q:"When approaching a railway crossing with flashing red lights, you must:",o:["Speed across before the train","Stop and wait until the lights stop and it's safe","Slow to 30 and continue","Stop only if you see a train"],a:1,t:"safe",e:"Stop and wait until the lights stop flashing and the way is clear — never try to beat a train."},
+{q:"Before starting to drive, your first actions should be to:",o:["Turn up the music","Fasten your seatbelt and adjust your seat and mirrors","Rev the engine","Check your phone"],a:1,t:"safe",e:"Buckle up and adjust your seat and mirrors before you move."},
+{q:"The safest way to handle a tailgater behind you is to:",o:["Brake-check them","Move over when safe and let them pass","Speed up a lot","Ignore your mirrors"],a:1,t:"safe",e:"Let a tailgater pass when you safely can; don't brake-check or race."},
+{q:"When driving in fog, you should use:",o:["High beams","Low beams","No lights","Hazard lights while moving normally"],a:1,t:"safe",e:"Low beams work better in fog; high beams reflect back and reduce visibility."},
+{q:"The recommended way to steer in normal driving is:",o:["One finger","Both hands, around the 9 and 3 (or 8 and 4) positions","One hand at the top","With your knees"],a:1,t:"safe",e:"Keep both hands on the wheel at balanced positions for control."},
+{q:"'Nighttime' in the Alberta Basic Licence Driver's Guide is defined as:",o:["Sunset to sunrise","One hour after sunset to one hour before sunrise","9 p.m. to 6 a.m.","When streetlights are on"],a:1,t:"safe",e:"Officially, nighttime is one hour after sunset to one hour before sunrise."},
+{q:"You're being passed by another vehicle. You should:",o:["Speed up","Keep a steady speed and let them complete the pass","Brake suddenly","Move left"],a:1,t:"safe",e:"Hold your speed (or ease off slightly) so they can pass safely."},
+{q:"Cruise control is best avoided on:",o:["Dry highways","Wet, icy, or slippery roads","Long straight roads","Flat ground"],a:1,t:"safe",e:"Avoid cruise control on slippery roads where you may need full control."},
+{q:"When you plan to turn, you should signal:",o:["As you turn","Well before the turn to warn others","Only if cars are near","Never"],a:1,t:"safe",e:"Signal early, before slowing, to give others time to react."},
+{q:"If your brakes suddenly fail, one thing you can try is:",o:["Turn off the engine at speed","Pump the pedal and downshift to slow down","Steer into oncoming traffic","Close your eyes"],a:1,t:"safe",e:"Pump the pedal, shift to a lower gear, and use the parking brake gently; steer to a safe spot."},
+{q:"Your right wheels drift onto a soft shoulder. You should:",o:["Yank the wheel back hard","Ease off the gas and steer back gently once slowed","Brake hard immediately","Speed up"],a:1,t:"safe",e:"Don't jerk the wheel — slow down, then ease back onto the road smoothly."},
+{q:"When you approach a curve, you should:",o:["Speed up through it","Slow down before the curve, then accelerate gently through","Brake hard mid-curve","Coast in neutral"],a:1,t:"safe",e:"Reduce speed before the curve, then power gently through for control."},
+{q:"The best defence against another driver's mistake is to:",o:["Drive faster","Stay alert and keep space around your vehicle","Follow closely","Use your horn often"],a:1,t:"safe",e:"Defensive driving — space, attention, anticipating others — prevents most collisions."},
+{q:"On a multi-lane road, slower traffic should generally keep:",o:["Left","Right","Centre","Any lane"],a:1,t:"safe",e:"Keep right except to pass; leave the left lane for passing."},
+{q:"When you're the first to arrive at a collision scene, you should:",o:["Drive away","Stop if safe, call for help, and warn oncoming traffic","Move injured people immediately","Take photos and leave"],a:1,t:"safe",e:"Stop if safe, call 911, and warn traffic; don't move the injured unless there's danger."},
+{q:"How many passengers may a Class 7 learner carry?",o:["No passengers at all","Only family members","No more than the number of seatbelts","Up to 4 friends"],a:2,t:"restr",e:"No more passengers than there are working seatbelts in the vehicle."},
+{q:"Who must wear a seatbelt in the vehicle?",o:["Only the driver","Only front-seat riders","The driver and every passenger","Only passengers under 16"],a:2,t:"restr",e:"The driver and all passengers must be properly buckled up."},
+{q:"Who is legally responsible for making sure passengers under 16 are buckled up?",o:["The passengers themselves","The driver","The parents at home","No one"],a:1,t:"restr",e:"The driver is responsible for ensuring passengers under 16 are properly secured."},
+{q:"In Alberta, a child must ride rear-facing until at least:",o:["6 months","2 years of age (or the seat's limit)","5 years","They can walk"],a:1,t:"restr",e:"Children ride rear-facing until at least age 2 or the seat's stated height/weight limit."},
+{q:"A forward-facing child car seat is required for children who are:",o:["Any age","Under 6 years and under 18 kg (40 lb)","Over 10","Taller than an adult"],a:1,t:"restr",e:"Children under 6 and under 18 kg (40 lb) must use a proper child car seat."},
+{q:"Booster seats in Alberta are:",o:["Required by law for all kids","Strongly recommended but not legally required","Illegal","Only for infants"],a:1,t:"restr",e:"Booster seats aren't legally required in Alberta but are strongly recommended until the belt fits properly."},
+{q:"The safest place for children under 13 to ride is:",o:["Front seat","Back seat","The trunk","On a lap"],a:1,t:"restr",e:"Children are safest in the back seat, especially with front airbags."},
+{q:"A seatbelt should be worn:",o:["Under the arm","Across the chest and low across the hips","Behind the back","Loosely"],a:1,t:"restr",e:"Wear the shoulder belt across the chest and the lap belt low and snug across the hips."}
 ];
 
-/* ---- streak hype lines ---- */
-const HYPE=["Nice.","Clean hit.","Combo!","On fire 🔥","Unstoppable ⚡","Boss energy 💪","Big brain 🧠","Perfect read 🎯"];
-
-let mode='exam', order=[], idx=0, correct=0, wrong=0, answered=false, misses=[], streak=0, best=0;
+const KEY_TOPIC="jax_topic_stats_v1", KEY_STUDY="jax_study_list_v1";
+let mode='test', order=[], idx=0, answered=false, session=[];
 const EXAM_LEN=30, PASS=25, FAIL_AT=6;
 const $=id=>document.getElementById(id);
 function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a}
+function load(k,f){try{return JSON.parse(localStorage.getItem(k))||f}catch(e){return f}}
+function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+function topicStats(){return load(KEY_TOPIC,{})}
+function studyList(){return load(KEY_STUDY,[])}
+
+function refreshMenu(){
+  $('bankCount').textContent=BANK.length;
+  const st=topicStats();
+  const weakTopics=Object.keys(st).filter(t=>st[t].wrong>0);
+  const weakQs=BANK.map((q,i)=>i).filter(i=>weakTopics.includes(BANK[i].t));
+  $('weakCount').textContent=weakTopics.length?weakQs.length:'';
+  $('weakBtn').disabled=!weakTopics.length;
+  const sl=studyList();
+  $('studyCount').textContent=sl.length?sl.length:'';
+  $('studyBtn').disabled=!sl.length;
+}
+refreshMenu();
 
 function start(m){
-  mode=m; idx=0; correct=0; wrong=0; misses=[]; streak=0; best=0;
-  order=shuffle([...BANK.keys()]);
-  if(mode==='exam') order=order.slice(0,EXAM_LEN);
+  mode=m; idx=0; answered=false; session=[];
+  if(m==='test'){order=shuffle(BANK.map((q,i)=>i)).slice(0,EXAM_LEN);}
+  else if(m==='practice'){order=shuffle(BANK.map((q,i)=>i));}
+  else if(m==='weak'){
+    const st=topicStats();const weak=Object.keys(st).filter(t=>st[t].wrong>0);
+    order=shuffle(BANK.map((q,i)=>i).filter(i=>weak.includes(BANK[i].t)));
+    if(!order.length){order=shuffle(BANK.map((q,i)=>i)).slice(0,EXAM_LEN);}
+  }
   $('startScreen').classList.add('hidden');$('resultScreen').classList.add('hidden');
-  $('quizScreen').classList.remove('hidden');$('topbar').style.visibility='visible';
-  $('modeBadge').textContent = mode==='exam'?'Boss Run':'Training';
+  $('quizScreen').classList.remove('hidden');$('topbar').classList.remove('hidden');
+  $('modeTag').textContent = m==='test'?'Full Test':(m==='weak'?'Weak Spots':'Practice');
   render();
 }
+
 function render(){
   answered=false;
-  const q=BANK[order[idx]];const total=mode==='exam'?EXAM_LEN:order.length;
+  const q=BANK[order[idx]];const total=order.length;
   $('count').textContent=(idx+1)+'/'+total;
-  $('streak').textContent='🔥'+streak;
-  $('laneFill').style.width=((idx)/total*100)+'%';
-  $('qTag').textContent='Question '+(idx+1);
-  $('qText').textContent=q.q;
+  $('barFill').style.width=(idx/total*100)+'%';
+  $('qtag').textContent='Question '+(idx+1);
+  $('qtopic').textContent=TOPIC[q.t].name;
+  $('qtext').textContent=q.q;
   const box=$('opts');box.innerHTML='';const keys=['A','B','C','D'];
   q.o.forEach((text,i)=>{const b=document.createElement('button');b.className='opt';
-    b.innerHTML='<span class="key">'+keys[i]+'</span><span>'+text+'</span>';b.onclick=()=>choose(i,b);box.appendChild(b);});
+    b.innerHTML='<span class="key">'+keys[i]+'</span><span>'+text+'</span>';b.onclick=()=>choose(i);box.appendChild(b);});
   $('explain').classList.add('hidden');$('nextBtn').classList.add('hidden');window.scrollTo(0,0);
 }
-function choose(i,btn){
+
+function recordTopic(topicKey,wasCorrect){
+  const st=topicStats();
+  if(!st[topicKey])st[topicKey]={wrong:0,seen:0};
+  st[topicKey].seen++;
+  if(!wasCorrect)st[topicKey].wrong++;
+  else if(st[topicKey].wrong>0)st[topicKey].wrong--;
+  save(KEY_TOPIC,st);
+}
+function addStudy(qi){const sl=studyList();if(!sl.includes(qi)){sl.push(qi);save(KEY_STUDY,sl);}}
+function removeStudy(qi){let sl=studyList().filter(x=>x!==qi);save(KEY_STUDY,sl);}
+
+function choose(i){
   if(answered)return;answered=true;
-  const q=BANK[order[idx]];const buttons=[...$('opts').children];
+  const qi=order[idx], q=BANK[qi], wasCorrect=(i===q.a);
+  session.push({qi,chosen:i,correct:wasCorrect});
+  recordTopic(q.t,wasCorrect);
+  if(wasCorrect) removeStudy(qi); else addStudy(qi);
+  const buttons=[...$('opts').children];
   buttons.forEach((b,bi)=>{b.setAttribute('disabled','');
     if(bi===q.a)b.classList.add('correct');else if(bi===i)b.classList.add('wrong');else b.classList.add('dim');});
-  const ex=$('explain');
-  if(i===q.a){
-    correct++;streak++;if(streak>best)best=streak;
-    const hype=streak>=3?HYPE[Math.min(streak,HYPE.length-1)]:'Correct.';
-    ex.className='explain good';
-    ex.innerHTML='<span class="toast g">✓ '+hype+(streak>=3?' · '+streak+' streak':'')+'</span>'+q.e;
-  }else{
-    wrong++;streak=0;misses.push(q);
-    ex.className='explain bad';
-    ex.innerHTML='<span class="toast b">✗ Take the hit — now you own this one</span>'+q.e;
-  }
+  const ex=$('explain');const ref=REF[TOPIC[q.t].ref];
+  ex.className='explain '+(wasCorrect?'good':'bad');
+  ex.innerHTML='<span class="verdict '+(wasCorrect?'g':'b')+'">'+(wasCorrect?'Correct':'Incorrect')+'</span>'+q.e+
+    '<br><a class="reflink" href="'+ref.u+'" target="_blank" rel="noopener">Read the rule: '+ref.l+'</a>';
   ex.classList.remove('hidden');
-  $('streak').textContent='🔥'+streak;
-  const last=idx>=order.length-1;
-  const examEnd=mode==='exam'&&(correct>=PASS||wrong>=FAIL_AT);
-  $('nextBtn').textContent=(last||examEnd)?'See your rank →':'Next →';
+  const total=order.length;const last=idx>=total-1;
+  const examEnd=mode==='test'&&(session.filter(s=>s.correct).length>=PASS||session.filter(s=>!s.correct).length>=FAIL_AT);
+  $('nextBtn').textContent=(last||examEnd)?'See results':'Next';
   $('nextBtn').classList.remove('hidden');
-  $('laneFill').style.width=((idx+1)/(mode==='exam'?EXAM_LEN:order.length)*100)+'%';
+  $('barFill').style.width=((idx+1)/total*100)+'%';
+  refreshMenu();
 }
+
 function next(){
-  const examEnd=mode==='exam'&&(correct>=PASS||wrong>=FAIL_AT);
+  const examEnd=mode==='test'&&(session.filter(s=>s.correct).length>=PASS||session.filter(s=>!s.correct).length>=FAIL_AT);
   if(idx>=order.length-1||examEnd){results();return;}
   idx++;render();
 }
+
 function results(){
-  $('quizScreen').classList.add('hidden');$('topbar').style.visibility='hidden';
+  $('quizScreen').classList.add('hidden');$('topbar').classList.add('hidden');
   const scr=$('resultScreen');scr.classList.remove('hidden');
-  const done=correct+wrong;const pct=Math.round(correct/done*100);
-  let passed = mode==='exam'? correct>=PASS : pct>=83;
-
-  // anime-style rank
-  let rank,rankGrad;
-  if(pct>=97){rank='S';rankGrad='linear-gradient(135deg,#FFD23F,#FF5D9E)';}
-  else if(pct>=90){rank='A';rankGrad='linear-gradient(135deg,#38E1FF,#9D6BFF)';}
-  else if(pct>=83){rank='B';rankGrad='linear-gradient(135deg,#2BE38A,#38E1FF)';}
-  else if(pct>=70){rank='C';rankGrad='linear-gradient(135deg,#9D6BFF,#5566DD)';}
-  else{rank='D';rankGrad='linear-gradient(135deg,#FF5A6E,#7A1F52)';}
-
-  const verdict = passed ? (mode==='exam'?'BOSS CLEARED! 🏆':'Nailed it! 🎉') : 'Not cleared… yet ⚡';
+  const done=session.length;
+  const correct=session.filter(s=>s.correct).length;
+  const wrong=done-correct;
+  const pct=Math.round(correct/done*100);
+  const passed = mode==='test' ? correct>=PASS : pct>=83;
+  const missTopics=[...new Set(session.filter(s=>!s.correct).map(s=>BANK[s.qi].t))];
+  const ringC=passed?'var(--go-bg)':'var(--stop-bg)';
+  const ringT=passed?'var(--go)':'var(--stop)';
+  const verdict = mode==='test' ? (passed?'Passed':'Not passed') : (passed?'Great score':'Keep practising');
   const vsub = passed
-    ? (mode==='exam'?'That clears the real Class 7 test, Jax. Run it again to make it muscle memory.':'Clear score. Take the Boss Run to feel the real pressure.')
-    : 'You need 25/30 to clear. Study the misses below — each retry makes it stick harder. You got this.';
-
-  let missHtml='';
-  if(misses.length){
-    missHtml='<div class="review-note">◆ Enemies that got you — learn their pattern:</div>'+
-      misses.map(m=>'<div class="miss"><div class="mq">'+m.q+'</div><div class="ma">'+m.o[m.a]+'</div></div>').join('');
+    ? 'That clears the pass mark. Run it again to stay sharp, or drill weak spots.'
+    : 'You need 25 out of 30. Focus on the topics below, then run it again.';
+  let weakHtml='';
+  if(missTopics.length){
+    weakHtml='<div class="section-h">Focus areas</div><div class="weak">'+
+      missTopics.map(t=>'<span class="chip">'+TOPIC[t].name+'</span>').join('')+'</div>';
+  }else{
+    weakHtml='<div class="section-h">Focus areas</div><div class="weak"><span class="chip clear">No misses — nice work</span></div>';
+  }
+  const missed=session.filter(s=>!s.correct);
+  let reviewHtml='';
+  if(missed.length){
+    reviewHtml='<div class="section-h">Review — the ones you missed</div>'+
+      missed.map(s=>{const q=BANK[s.qi];const ref=REF[TOPIC[q.t].ref];
+        return '<div class="rev wrong"><div class="rq">'+q.q+'</div>'+
+          '<div class="line his">'+q.o[s.chosen]+'</div>'+
+          '<div class="line cor">'+q.o[q.a]+'</div>'+
+          '<div class="why">'+q.e+'</div>'+
+          '<a class="reflink" href="'+ref.u+'" target="_blank" rel="noopener">'+ref.l+'</a></div>';
+      }).join('');
   }
   scr.innerHTML=
-    '<div class="rank-badge" style="background:'+rankGrad+'"><div class="rk">'+rank+'</div><div class="rl">Rank</div></div>'+
-    '<div class="verdict" style="color:'+(passed?'var(--go)':'var(--stop)')+'">'+verdict+'</div>'+
+    '<div class="score" style="background:'+ringC+';color:'+ringT+'"><div class="pct">'+pct+'%</div><div class="lab">'+correct+' / '+done+'</div></div>'+
+    '<div class="verdict-big" style="color:'+ringT+'">'+verdict+'</div>'+
     '<div class="verdict-sub">'+vsub+'</div>'+
     '<div class="stats">'+
       '<div class="stat g"><div class="n">'+correct+'</div><div class="l">Correct</div></div>'+
       '<div class="stat r"><div class="n">'+wrong+'</div><div class="l">Wrong</div></div>'+
-      '<div class="stat y"><div class="n">🔥'+best+'</div><div class="l">Best streak</div></div>'+
+      '<div class="stat"><div class="n">'+(mode==='test'?PASS:'83%')+'</div><div class="l">To pass</div></div>'+
     '</div>'+
-    missHtml+
+    '<div class="send-status err" id="sendStatus">Saving results…</div>'+
+    weakHtml+reviewHtml+
     '<div class="actions">'+
-      '<button class="btn-primary" onclick="start(\''+mode+'\')">Run it back</button>'+
-      '<button class="btn-ghost" onclick="home()">Back to menu</button>'+
+      '<button class="btn go" onclick="start(\''+mode+'\')">Run it again</button>'+
+      (missTopics.length?'<button class="btn ghost" onclick="start(\'weak\')">Drill weak spots</button>':'')+
+      '<button class="btn ghost" onclick="home()">Back to menu</button>'+
     '</div>';
   window.scrollTo(0,0);
+  sendResults({correct,total:done,pct,passed,mode,missTopics});
 }
+
+function sendResults(r){
+  const payload={
+    student:"Jax", mode:r.mode, score:r.correct, total:r.total, percent:r.pct, passed:r.passed,
+    weakTopics:r.missTopics.map(t=>TOPIC[t].name),
+    missedQuestions:session.filter(s=>!s.correct).map(s=>({
+      question:BANK[s.qi].q, topic:TOPIC[BANK[s.qi].t].name,
+      chosen:BANK[s.qi].o[s.chosen], correct:BANK[s.qi].o[BANK[s.qi].a]
+    })),
+    takenAt:new Date().toISOString()
+  };
+  fetch('/api/results',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
+    .then(res=>{const el=$('sendStatus');if(!el)return;
+      if(res.ok){el.className='send-status ok';el.textContent='✓ Results sent to parent';}
+      else{el.className='send-status err';el.textContent='Results saved on this device (send unavailable).';}})
+    .catch(()=>{const el=$('sendStatus');if(el){el.className='send-status err';el.textContent='Results saved on this device (offline).';}});
+}
+
+function showStudy(){
+  const sl=studyList();
+  $('startScreen').classList.add('hidden');
+  const scr=$('resultScreen');scr.classList.remove('hidden');
+  if(!sl.length){
+    scr.innerHTML='<div class="section-h">Study list</div><div class="verdict-sub">Nothing here yet. Questions you miss will be saved for you to review.</div><div class="actions"><button class="btn ghost" onclick="home()">Back to menu</button></div>';
+    window.scrollTo(0,0);return;
+  }
+  const items=sl.map(qi=>{const q=BANK[qi];const ref=REF[TOPIC[q.t].ref];
+    return '<div class="rev wrong"><div class="rq">'+q.q+'</div>'+
+      '<div class="line cor">'+q.o[q.a]+'</div>'+
+      '<div class="why">'+q.e+'</div>'+
+      '<a class="reflink" href="'+ref.u+'" target="_blank" rel="noopener">'+ref.l+'</a></div>';
+  }).join('');
+  scr.innerHTML='<div class="section-h">Study list — '+sl.length+' saved</div>'+items+
+    '<div class="actions">'+
+    '<button class="btn go" onclick="start(\'weak\')">Retest these topics</button>'+
+    '<button class="btn ghost" onclick="clearStudy()">Clear study list</button>'+
+    '<button class="btn ghost" onclick="home()">Back to menu</button></div>';
+  window.scrollTo(0,0);
+}
+function clearStudy(){save(KEY_STUDY,[]);refreshMenu();home();}
+
 function home(){
   $('resultScreen').classList.add('hidden');$('quizScreen').classList.add('hidden');
-  $('startScreen').classList.remove('hidden');$('topbar').style.visibility='hidden';
+  $('startScreen').classList.remove('hidden');$('topbar').classList.add('hidden');
+  refreshMenu();
 }
 </script>
 </body>
