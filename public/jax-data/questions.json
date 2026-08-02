@@ -1,5 +1,5 @@
 {
-  "version": "2026.08.02-1",
+  "version": "2026.08.02-2",
   "edition": "Alberta Driver’s Guide: Cars and light trucks (2026)",
   "questionCount": 280,
   "ruleCount": 147,
@@ -81,7 +81,7 @@
       "e": "GDL drivers are suspended at 8 demerit points — lower than the 15 for fully licensed drivers.",
       "id": "GDL-004-A",
       "ruleId": "GDL-004",
-      "difficulty": 2,
+      "difficulty": 3,
       "type": "scenario",
       "source": {
         "edition": "2026",
@@ -1188,7 +1188,7 @@
       "e": "The only exception is when the bus is on the opposite side of a highway divided by a physical median.",
       "id": "BUS-003-A",
       "ruleId": "BUS-003",
-      "difficulty": 2,
+      "difficulty": 3,
       "type": "scenario",
       "source": {
         "edition": "2026",
@@ -1398,7 +1398,7 @@
       "e": "Keep at least 5 metres from a stop/yield sign and from the corner at an intersection.",
       "id": "PRK-003-A",
       "ruleId": "PRK-003",
-      "difficulty": 2,
+      "difficulty": 3,
       "type": "scenario",
       "source": {
         "edition": "2026",
@@ -1461,7 +1461,7 @@
       "e": "Do not park within 1.5 metres of a driveway or private road access.",
       "id": "PRK-006-A",
       "ruleId": "PRK-006",
-      "difficulty": 2,
+      "difficulty": 3,
       "type": "scenario",
       "source": {
         "edition": "2026",
@@ -1545,7 +1545,7 @@
       "e": "Bad conditions need a larger gap — 3 to 4 seconds or more.",
       "id": "SAF-002-A",
       "ruleId": "SAF-002",
-      "difficulty": 2,
+      "difficulty": 3,
       "type": "scenario",
       "source": {
         "edition": "2026",
@@ -2133,7 +2133,7 @@
       "e": "Children ride rear-facing until at least age 2 or the seat's stated height/weight limit.",
       "id": "RST-004-A",
       "ruleId": "RST-004",
-      "difficulty": 2,
+      "difficulty": 3,
       "type": "scenario",
       "source": {
         "edition": "2026",
@@ -2427,7 +2427,7 @@
       "e": "When parallel parked, the wheels nearest the curb should be no more than 50 centimetres from it.",
       "id": "PRK-009-A",
       "ruleId": "PRK-009",
-      "difficulty": 2,
+      "difficulty": 3,
       "type": "scenario",
       "source": {
         "edition": "2026",
@@ -2763,7 +2763,7 @@
       "e": "Looking about 12 to 15 seconds ahead helps a driver identify hazards early and plan smoothly.",
       "id": "SAF-038-A",
       "ruleId": "SAF-038",
-      "difficulty": 2,
+      "difficulty": 3,
       "type": "scenario",
       "source": {
         "edition": "2026",
@@ -2847,7 +2847,7 @@
       "e": "Dim high beams when following another vehicle within 150 metres so glare does not interfere with the other driver.",
       "id": "SAF-041-A",
       "ruleId": "SAF-041",
-      "difficulty": 2,
+      "difficulty": 3,
       "type": "scenario",
       "source": {
         "edition": "2026",
@@ -2931,7 +2931,7 @@
       "e": "Dim high beams when an approaching vehicle is within 300 metres to avoid blinding the other driver.",
       "id": "SAF-042-A",
       "ruleId": "SAF-042",
-      "difficulty": 2,
+      "difficulty": 3,
       "type": "scenario",
       "source": {
         "edition": "2026",
@@ -2994,7 +2994,7 @@
       "e": "A driver emerging from a parking lot, alley, or driveway must stop before crossing the sidewalk or entering the roadway and yield as required.",
       "id": "ROW-020-A",
       "ruleId": "ROW-020",
-      "difficulty": 2,
+      "difficulty": 3,
       "type": "scenario",
       "source": {
         "edition": "2026",
@@ -3015,7 +3015,7 @@
       "e": "Stop at least 5 metres from the nearest rail and wait until the warning stops and the crossing is safe.",
       "id": "SAF-045-A",
       "ruleId": "SAF-045",
-      "difficulty": 2,
+      "difficulty": 3,
       "type": "scenario",
       "source": {
         "edition": "2026",
@@ -3057,7 +3057,7 @@
       "e": "When angle parked, the front wheel should be no more than 50 centimetres from the curb.",
       "id": "PRK-012-A",
       "ruleId": "PRK-012",
-      "difficulty": 2,
+      "difficulty": 3,
       "type": "scenario",
       "source": {
         "edition": "2026",
@@ -3246,7 +3246,7 @@
       "e": "Learners may not drive between midnight and 5 a.m.",
       "id": "GDL-005-B",
       "ruleId": "GDL-005",
-      "difficulty": 2,
+      "difficulty": 3,
       "type": "variant",
       "source": {
         "edition": "2026",
@@ -3330,7 +3330,7 @@
       "e": "To exit GDL, you must be at least 18, complete the required probationary period, and be suspension- and demerit-free for the last 12 months. An advanced road test is no longer required.",
       "id": "GDL-009-B",
       "ruleId": "GDL-009",
-      "difficulty": 2,
+      "difficulty": 3,
       "type": "variant",
       "source": {
         "edition": "2026",
@@ -3477,7 +3477,7 @@
       "e": "Rural highways are commonly 80 to 100 km/h, depending on the road and posted signs.",
       "id": "ZON-009-B",
       "ruleId": "ZON-009",
-      "difficulty": 2,
+      "difficulty": 3,
       "type": "variant",
       "source": {
         "edition": "2026",
@@ -3855,7 +3855,7 @@
       "e": "Stay at least 150 metres back from a responding emergency vehicle.",
       "id": "EMG-002-B",
       "ruleId": "EMG-002",
-      "difficulty": 2,
+      "difficulty": 3,
       "type": "variant",
       "source": {
         "edition": "2026",
@@ -3960,7 +3960,7 @@
       "e": "Keep at least 5 metres from a stop/yield sign and from the corner at an intersection.",
       "id": "PRK-003-B",
       "ruleId": "PRK-003",
-      "difficulty": 2,
+      "difficulty": 3,
       "type": "variant",
       "source": {
         "edition": "2026",
@@ -4023,7 +4023,7 @@
       "e": "Do not park within 1.5 metres of a driveway or private road access.",
       "id": "PRK-006-B",
       "ruleId": "PRK-006",
-      "difficulty": 2,
+      "difficulty": 3,
       "type": "variant",
       "source": {
         "edition": "2026",
@@ -4800,7 +4800,7 @@
       "e": "Unless a sign sets a different limit, the default maximum on a primary highway outside an urban area is 100 km/h.",
       "id": "ZON-010-B",
       "ruleId": "ZON-010",
-      "difficulty": 2,
+      "difficulty": 3,
       "type": "variant",
       "source": {
         "edition": "2026",
@@ -4863,7 +4863,7 @@
       "e": "A fully licensed driver is normally suspended at 15 demerit points. GDL drivers have a lower threshold.",
       "id": "GDL-015-B",
       "ruleId": "GDL-015",
-      "difficulty": 2,
+      "difficulty": 3,
       "type": "variant",
       "source": {
         "edition": "2026",
@@ -5262,7 +5262,7 @@
       "e": "Unless otherwise posted, the standard school-zone periods are 8:00–9:30 a.m., 11:30 a.m.–1:30 p.m., and 3:00–4:30 p.m. on school days.",
       "id": "ZON-012-B",
       "ruleId": "ZON-012",
-      "difficulty": 2,
+      "difficulty": 3,
       "type": "variant",
       "source": {
         "edition": "2026",
@@ -5409,7 +5409,7 @@
       "e": "Dim high beams when following another vehicle within 150 metres so glare does not interfere with the other driver.",
       "id": "SAF-041-B",
       "ruleId": "SAF-041",
-      "difficulty": 2,
+      "difficulty": 3,
       "type": "variant",
       "source": {
         "edition": "2026",
@@ -5493,7 +5493,7 @@
       "e": "Dim high beams when an approaching vehicle is within 300 metres to avoid blinding the other driver.",
       "id": "SAF-042-B",
       "ruleId": "SAF-042",
-      "difficulty": 2,
+      "difficulty": 3,
       "type": "variant",
       "source": {
         "edition": "2026",
