@@ -1,1 +1,5945 @@
-
+{
+  "version": "2026.08.02-1",
+  "edition": "Alberta Driver’s Guide: Cars and light trucks (2026)",
+  "questionCount": 280,
+  "ruleCount": 147,
+  "questions": [
+    {
+      "q": "What is the minimum score needed to pass the Alberta Class 7 knowledge test?",
+      "o": [
+        "20 out of 30",
+        "23 out of 30",
+        "25 out of 30",
+        "28 out of 30"
+      ],
+      "a": 2,
+      "t": "gdl",
+      "r": "test",
+      "e": "You need 25 out of 30 (83%) correct.",
+      "id": "GDL-001-A",
+      "ruleId": "GDL-001",
+      "difficulty": 1,
+      "type": "recall",
+      "source": {
+        "edition": "2026",
+        "reference": "test"
+      }
+    },
+    {
+      "q": "As a Class 7 learner, what blood alcohol level are you allowed while driving?",
+      "o": [
+        "Under 0.05",
+        "Under 0.08",
+        "0.00 — zero",
+        "One drink is fine"
+      ],
+      "a": 2,
+      "t": "gdl",
+      "r": "class7",
+      "e": "Class 7 learners must be at zero (0.00). The same zero rule covers cannabis and other drugs.",
+      "id": "GDL-002-A",
+      "ruleId": "GDL-002",
+      "difficulty": 1,
+      "type": "recall",
+      "source": {
+        "edition": "2026",
+        "reference": "class7"
+      }
+    },
+    {
+      "q": "A Class 7 learner must be accompanied by a supervising driver who is:",
+      "o": [
+        "Any licensed driver",
+        "Fully licensed, 18 or older, in the front passenger seat",
+        "A GDL driver in the back seat",
+        "At least 16 years old"
+      ],
+      "a": 1,
+      "t": "gdl",
+      "r": "class7",
+      "e": "Your supervisor must be a fully licensed (non-GDL) driver, 18+, seated beside you in front.",
+      "id": "GDL-003-A",
+      "ruleId": "GDL-003",
+      "difficulty": 1,
+      "type": "recall",
+      "source": {
+        "edition": "2026",
+        "reference": "class7"
+      }
+    },
+    {
+      "q": "At how many demerit points is a Class 7 learner's licence suspended?",
+      "o": [
+        "6 points",
+        "8 points",
+        "12 points",
+        "15 points"
+      ],
+      "a": 1,
+      "t": "gdl",
+      "r": "demerit",
+      "e": "GDL drivers are suspended at 8 demerit points — lower than the 15 for fully licensed drivers.",
+      "id": "GDL-004-A",
+      "ruleId": "GDL-004",
+      "difficulty": 2,
+      "type": "scenario",
+      "source": {
+        "edition": "2026",
+        "reference": "demerit"
+      }
+    },
+    {
+      "q": "A Class 7 learner is NOT permitted to drive between:",
+      "o": [
+        "10 p.m. and 6 a.m.",
+        "Midnight and 5 a.m.",
+        "11 p.m. and 4 a.m.",
+        "Sunset and sunrise"
+      ],
+      "a": 1,
+      "t": "gdl",
+      "r": "class7",
+      "e": "Learners may not drive between midnight and 5 a.m.",
+      "id": "GDL-005-A",
+      "ruleId": "GDL-005",
+      "difficulty": 1,
+      "type": "recall",
+      "source": {
+        "edition": "2026",
+        "reference": "class7"
+      }
+    },
+    {
+      "q": "How often may you attempt the Alberta driver knowledge test?",
+      "o": [
+        "Twice in a 24-hour period",
+        "Once per day",
+        "Once every 7 days",
+        "Three times per calendar month"
+      ],
+      "a": 1,
+      "t": "gdl",
+      "r": "test",
+      "e": "The knowledge test may be taken once per day, and the fee must be paid for each attempt.",
+      "id": "GDL-006-A",
+      "ruleId": "GDL-006",
+      "difficulty": 1,
+      "type": "recall",
+      "source": {
+        "edition": "2026",
+        "reference": "test"
+      }
+    },
+    {
+      "q": "Can a Class 7 learner upgrade to a commercial licence (Class 1, 2, 3 or 4)?",
+      "o": [
+        "Yes, anytime",
+        "No — not while in GDL",
+        "Yes, after passing a test",
+        "Only Class 4"
+      ],
+      "a": 1,
+      "t": "gdl",
+      "r": "class7",
+      "e": "GDL drivers cannot hold or upgrade to a commercial licence.",
+      "id": "GDL-007-A",
+      "ruleId": "GDL-007",
+      "difficulty": 1,
+      "type": "recall",
+      "source": {
+        "edition": "2026",
+        "reference": "class7"
+      }
+    },
+    {
+      "q": "When can a Class 7 learner drive alone?",
+      "o": [
+        "After holding the licence for 6 months",
+        "Never — a qualified supervising driver is required",
+        "After turning 16, but only during daylight hours",
+        "After completing an approved driver-training course"
+      ],
+      "a": 1,
+      "t": "gdl",
+      "r": "class7",
+      "e": "A Class 7 learner can never drive alone; a qualified supervisor must always be beside you.",
+      "id": "GDL-008-A",
+      "ruleId": "GDL-008",
+      "difficulty": 2,
+      "type": "scenario",
+      "source": {
+        "edition": "2026",
+        "reference": "class7"
+      }
+    },
+    {
+      "q": "To exit the GDL program and get a full Class 5 licence, you must first:",
+      "o": [
+        "Be at least 18, complete the required probationary period, and be suspension- and demerit-free for the last 12 months",
+        "Pass an advanced road test after holding a Class 5-GDL licence for one year",
+        "Hold a Class 7 licence for 24 months without taking a Class 5 road test",
+        "Complete a commercial driver-training course and turn 18"
+      ],
+      "a": 0,
+      "t": "gdl",
+      "r": "class7",
+      "e": "To exit GDL, you must be at least 18, complete the required probationary period, and be suspension- and demerit-free for the last 12 months. An advanced road test is no longer required.",
+      "id": "GDL-009-A",
+      "ruleId": "GDL-009",
+      "difficulty": 1,
+      "type": "recall",
+      "source": {
+        "edition": "2026",
+        "reference": "class7"
+      }
+    },
+    {
+      "q": "What is the minimum age to get a Class 7 learner's licence in Alberta?",
+      "o": [
+        "12",
+        "14",
+        "16",
+        "18"
+      ],
+      "a": 1,
+      "t": "gdl",
+      "r": "class7",
+      "e": "You can get a Class 7 licence at 14 (with parent/guardian consent if under 18).",
+      "id": "GDL-010-A",
+      "ruleId": "GDL-010",
+      "difficulty": 1,
+      "type": "recall",
+      "source": {
+        "edition": "2026",
+        "reference": "class7"
+      }
+    },
+    {
+      "q": "If you are under 18, what else do you need to apply for a Class 7 licence?",
+      "o": [
+        "A job",
+        "Parent or guardian consent",
+        "A vehicle of your own",
+        "Two references"
+      ],
+      "a": 1,
+      "t": "gdl",
+      "r": "class7",
+      "e": "Applicants under 18 need written parental or guardian consent.",
+      "id": "GDL-011-A",
+      "ruleId": "GDL-011",
+      "difficulty": 2,
+      "type": "scenario",
+      "source": {
+        "edition": "2026",
+        "reference": "class7"
+      }
+    },
+    {
+      "q": "Can a Class 7 learner act as the supervising driver for another learner?",
+      "o": [
+        "Yes",
+        "No",
+        "Only a family member",
+        "Only in daytime"
+      ],
+      "a": 1,
+      "t": "gdl",
+      "r": "class7",
+      "e": "A GDL driver cannot supervise another learner — the supervisor must be fully licensed.",
+      "id": "GDL-012-A",
+      "ruleId": "GDL-012",
+      "difficulty": 1,
+      "type": "recall",
+      "source": {
+        "edition": "2026",
+        "reference": "class7"
+      }
+    },
+    {
+      "q": "The Class 7 knowledge test also requires you to pass a:",
+      "o": [
+        "Hearing test",
+        "Vision test",
+        "Physical fitness test",
+        "Written essay"
+      ],
+      "a": 1,
+      "t": "gdl",
+      "r": "class7",
+      "e": "You must pass a vision test along with the knowledge test.",
+      "id": "GDL-013-A",
+      "ruleId": "GDL-013",
+      "difficulty": 1,
+      "type": "recall",
+      "source": {
+        "edition": "2026",
+        "reference": "class7"
+      }
+    },
+    {
+      "q": "Besides alcohol, the zero-tolerance rule for Class 7 learners also covers:",
+      "o": [
+        "Coffee",
+        "Cannabis and other impairing drugs",
+        "Energy drinks",
+        "Prescription vitamins"
+      ],
+      "a": 1,
+      "t": "gdl",
+      "r": "class7",
+      "e": "Zero tolerance applies to cannabis and other impairing drugs too, not just alcohol.",
+      "id": "GDL-014-A",
+      "ruleId": "GDL-014",
+      "difficulty": 1,
+      "type": "recall",
+      "source": {
+        "edition": "2026",
+        "reference": "class7"
+      }
+    },
+    {
+      "q": "What is the speed limit in a school zone unless otherwise posted?",
+      "o": [
+        "20 km/h",
+        "30 km/h",
+        "40 km/h",
+        "50 km/h"
+      ],
+      "a": 1,
+      "t": "zones",
+      "r": "zones",
+      "e": "School zones are 30 km/h (urban and rural) unless a sign posts otherwise.",
+      "img": "assets/signs/school-zone.png",
+      "imgAlt": "Official Alberta school zone sign with maximum 30 km/h",
+      "id": "ZON-001-A",
+      "ruleId": "ZON-001",
+      "difficulty": 1,
+      "type": "visual",
+      "source": {
+        "edition": "2026",
+        "reference": "zones"
+      }
+    },
+    {
+      "q": "What is the speed limit in a playground zone when in effect?",
+      "o": [
+        "25 km/h",
+        "30 km/h",
+        "40 km/h",
+        "50 km/h"
+      ],
+      "a": 1,
+      "t": "zones",
+      "r": "zones",
+      "e": "Playground zones are 30 km/h unless otherwise posted.",
+      "img": "assets/signs/playground-zone.png",
+      "imgAlt": "Official Alberta playground zone sign with maximum 30 km/h",
+      "id": "ZON-002-A",
+      "ruleId": "ZON-002",
+      "difficulty": 1,
+      "type": "visual",
+      "source": {
+        "edition": "2026",
+        "reference": "zones"
+      }
+    },
+    {
+      "q": "When are playground zone speed limits in effect?",
+      "o": [
+        "Only on school days during the hours posted below the sign",
+        "Every day from 8:30 a.m. until one hour after sunset, unless local signs state different hours",
+        "Every day from 7:30 a.m. until 9:00 p.m. throughout Alberta",
+        "At all times, unless an end-of-zone sign is posted"
+      ],
+      "a": 1,
+      "t": "zones",
+      "r": "zones",
+      "e": "Playground zones apply every day, 8:30 a.m. to one hour after sunset.",
+      "img": "assets/signs/playground-zone.png",
+      "imgAlt": "Official Alberta playground zone sign with maximum 30 km/h",
+      "id": "ZON-003-A",
+      "ruleId": "ZON-003",
+      "difficulty": 2,
+      "type": "visual",
+      "source": {
+        "edition": "2026",
+        "reference": "zones"
+      }
+    },
+    {
+      "q": "The default speed limit in an urban area (no posted sign) is:",
+      "o": [
+        "30 km/h",
+        "40 km/h",
+        "50 km/h",
+        "60 km/h"
+      ],
+      "a": 2,
+      "t": "zones",
+      "r": "guide",
+      "e": "Unless posted otherwise, the urban default is 50 km/h.",
+      "id": "ZON-004-A",
+      "ruleId": "ZON-004",
+      "difficulty": 1,
+      "type": "recall",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "You may pass another vehicle in a school or playground zone when the zone is in effect:",
+      "o": [
+        "Only when both vehicles are below 30 km/h",
+        "Never — passing a vehicle travelling in the same direction is not allowed",
+        "Only when the vehicle ahead is turning right",
+        "Only when there are two marked lanes in your direction"
+      ],
+      "a": 1,
+      "t": "zones",
+      "r": "zones",
+      "e": "You must not pass another vehicle in a school or playground zone while the limit is in effect.",
+      "img": "assets/signs/playground-zone.png",
+      "imgAlt": "Official Alberta playground zone sign with maximum 30 km/h",
+      "id": "ZON-005-A",
+      "ruleId": "ZON-005",
+      "difficulty": 2,
+      "type": "visual",
+      "source": {
+        "edition": "2026",
+        "reference": "zones"
+      }
+    },
+    {
+      "q": "A school zone speed limit applies:",
+      "o": [
+        "24 hours a day",
+        "On school days during posted hours",
+        "Only in winter",
+        "Only when a crossing guard is present"
+      ],
+      "a": 1,
+      "t": "zones",
+      "r": "zones",
+      "e": "School zone limits apply on school days during the posted hours.",
+      "img": "assets/signs/school-zone.png",
+      "imgAlt": "Official Alberta school zone sign with maximum 30 km/h",
+      "id": "ZON-006-A",
+      "ruleId": "ZON-006",
+      "difficulty": 1,
+      "type": "visual",
+      "source": {
+        "edition": "2026",
+        "reference": "zones"
+      }
+    },
+    {
+      "q": "You see a playground sign with no speed limit attached. This means:",
+      "o": [
+        "You are entering a 30 km/h playground zone immediately",
+        "You are entering a playground area — use caution because children may be nearby",
+        "The reduced speed applies only during school hours",
+        "You have reached the end of a playground zone"
+      ],
+      "a": 1,
+      "t": "zones",
+      "r": "zones",
+      "e": "A playground sign without a speed sign warns you're entering a playground area; drive with caution.",
+      "img": "assets/signs/playground-area.png",
+      "imgAlt": "Official Alberta playground area warning sign",
+      "id": "ZON-007-A",
+      "ruleId": "ZON-007",
+      "difficulty": 2,
+      "type": "visual",
+      "source": {
+        "edition": "2026",
+        "reference": "zones"
+      }
+    },
+    {
+      "q": "If you are caught speeding in a construction zone with workers present, penalties are usually:",
+      "o": [
+        "The same as elsewhere unless a flag person is present",
+        "Doubled or otherwise increased",
+        "Reduced when traffic is light",
+        "Applied only if the temporary speed is below 50 km/h"
+      ],
+      "a": 1,
+      "t": "zones",
+      "r": "guide",
+      "e": "Fines are typically increased in construction zones when workers are present.",
+      "img": "assets/signs/construction.png",
+      "imgAlt": "Official Alberta road work warning sign",
+      "id": "ZON-008-A",
+      "ruleId": "ZON-008",
+      "difficulty": 2,
+      "type": "visual",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "On most open rural highways in Alberta, the speed limit is commonly:",
+      "o": [
+        "50 km/h",
+        "60 km/h",
+        "80–100 km/h",
+        "120 km/h"
+      ],
+      "a": 2,
+      "t": "zones",
+      "r": "guide",
+      "e": "Rural highways are commonly 80 to 100 km/h, depending on the road and posted signs.",
+      "id": "ZON-009-A",
+      "ruleId": "ZON-009",
+      "difficulty": 1,
+      "type": "recall",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "What must a driver do at this sign?",
+      "o": [
+        "Slow and yield only when traffic is present",
+        "Come to a complete stop and proceed only when safe",
+        "Stop only if another road user has the right of way",
+        "Reduce speed and continue without stopping if the intersection is clear"
+      ],
+      "a": 1,
+      "t": "signs",
+      "r": "signs",
+      "e": "A STOP sign requires a complete stop. Proceed only after yielding and confirming the way is safe.",
+      "img": "assets/signs/stop.png",
+      "imgAlt": "Official Alberta STOP sign",
+      "id": "SGN-001-A",
+      "ruleId": "SGN-001",
+      "difficulty": 1,
+      "type": "visual",
+      "source": {
+        "edition": "2026",
+        "reference": "signs"
+      }
+    },
+    {
+      "q": "What must a driver do when approaching this sign?",
+      "o": [
+        "Always come to a complete stop before continuing",
+        "Yield the right-of-way, slowing or stopping when necessary",
+        "Continue because traffic on this approach has priority",
+        "Stop only when a pedestrian is present"
+      ],
+      "a": 1,
+      "t": "signs",
+      "r": "signs",
+      "e": "A YIELD sign requires you to give the right-of-way. Slow down and stop when necessary before entering.",
+      "img": "assets/signs/yield.png",
+      "imgAlt": "Official Alberta yield sign",
+      "id": "SGN-002-A",
+      "ruleId": "SGN-002",
+      "difficulty": 1,
+      "type": "visual",
+      "source": {
+        "edition": "2026",
+        "reference": "signs"
+      }
+    },
+    {
+      "q": "What category of information does this sign provide?",
+      "o": [
+        "A regulation that must always be obeyed",
+        "Advance warning of a road condition or hazard",
+        "Directions, routes, or distances to a destination",
+        "The location of a service available to drivers"
+      ],
+      "a": 1,
+      "t": "signs",
+      "r": "signs",
+      "e": "Yellow diamond signs warn of road conditions or hazards ahead. This example warns of a sharp right turn.",
+      "img": "assets/signs/warning-diamond.png",
+      "imgAlt": "Official Alberta sharp right turn warning sign",
+      "id": "SGN-003-A",
+      "ruleId": "SGN-003",
+      "difficulty": 1,
+      "type": "visual",
+      "source": {
+        "edition": "2026",
+        "reference": "signs"
+      }
+    },
+    {
+      "q": "What does this orange sign warn drivers about?",
+      "o": [
+        "A permanent change in the highway alignment",
+        "Construction or maintenance work ahead",
+        "A school or playground crossing",
+        "A route reserved for slow-moving vehicles"
+      ],
+      "a": 1,
+      "t": "signs",
+      "r": "signs",
+      "e": "Orange signs are temporary warning signs used for construction, maintenance, and work zones.",
+      "img": "assets/signs/construction.png",
+      "imgAlt": "Official Alberta road work warning sign",
+      "id": "SGN-004-A",
+      "ruleId": "SGN-004",
+      "difficulty": 1,
+      "type": "visual",
+      "source": {
+        "edition": "2026",
+        "reference": "signs"
+      }
+    },
+    {
+      "q": "What does this five-sided sign warn drivers about?",
+      "o": [
+        "A hospital or emergency service entrance",
+        "A school area or school crossing",
+        "A playground zone that is always 30 km/h",
+        "A pedestrian crossing controlled by traffic lights"
+      ],
+      "a": 1,
+      "t": "signs",
+      "r": "signs",
+      "e": "The five-sided school sign warns that children may be walking along or crossing the road.",
+      "img": "assets/signs/school-area.png",
+      "imgAlt": "Official Alberta school area sign",
+      "id": "SGN-005-A",
+      "ruleId": "SGN-005",
+      "difficulty": 1,
+      "type": "visual",
+      "source": {
+        "edition": "2026",
+        "reference": "signs"
+      }
+    },
+    {
+      "q": "What type of sign is shown?",
+      "o": [
+        "Warning sign describing a possible hazard",
+        "Regulatory sign stating a rule that must be obeyed",
+        "Guide sign showing destinations and distances",
+        "Service sign identifying facilities for drivers"
+      ],
+      "a": 1,
+      "t": "signs",
+      "r": "signs",
+      "e": "White rectangular signs such as maximum-speed signs are regulatory signs and state rules that drivers must obey.",
+      "img": "assets/signs/regulatory-speed.png",
+      "imgAlt": "Official Alberta maximum speed regulatory sign",
+      "id": "SGN-006-A",
+      "ruleId": "SGN-006",
+      "difficulty": 1,
+      "type": "visual",
+      "source": {
+        "edition": "2026",
+        "reference": "signs"
+      }
+    },
+    {
+      "q": "What information does this green highway sign provide?",
+      "o": [
+        "Advance warning of a road hazard or curve",
+        "Directions, distances, routes, or destinations",
+        "A regulatory rule such as a maximum speed",
+        "Information about construction and temporary detours"
+      ],
+      "a": 1,
+      "t": "signs",
+      "r": "signs",
+      "e": "Green guide signs provide route, direction, destination, and distance information.",
+      "img": "assets/signs/guide-green.png",
+      "imgAlt": "Official Alberta green destination and distance sign",
+      "imgWide": true,
+      "id": "SGN-007-A",
+      "ruleId": "SGN-007",
+      "difficulty": 1,
+      "type": "visual",
+      "source": {
+        "edition": "2026",
+        "reference": "signs"
+      }
+    },
+    {
+      "q": "What service does this green sign indicate?",
+      "o": [
+        "A highway information centre",
+        "A hospital",
+        "A hotel or lodging area",
+        "A helicopter landing area"
+      ],
+      "a": 1,
+      "t": "signs",
+      "r": "signs",
+      "e": "The white H service symbol indicates a hospital. In the Alberta driver's guide, it is shown on a green service sign.",
+      "img": "assets/signs/hospital.png",
+      "imgAlt": "Official Alberta hospital service sign",
+      "id": "SGN-008-A",
+      "ruleId": "SGN-008",
+      "difficulty": 1,
+      "type": "visual",
+      "source": {
+        "edition": "2026",
+        "reference": "signs"
+      }
+    },
+    {
+      "q": "What must a driver do at this flashing signal?",
+      "o": [
+        "Yield without stopping when the intersection appears clear",
+        "Come to a full stop, then proceed when safe",
+        "Remain stopped until the signal changes to steady green",
+        "Stop only when cross traffic is present"
+      ],
+      "a": 1,
+      "t": "signs",
+      "r": "guide",
+      "e": "Treat a flashing red signal like a stop sign: make a full stop, yield, and proceed only when safe.",
+      "img": "assets/signs/flashing-red.png",
+      "imgAlt": "Official Alberta flashing red traffic signal illustration",
+      "imgWide": true,
+      "id": "SGN-009-A",
+      "ruleId": "SGN-009",
+      "difficulty": 1,
+      "type": "visual",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "What must a driver do at this flashing signal?",
+      "o": [
+        "Stop, then proceed as at a four-way stop",
+        "Slow down and proceed with caution",
+        "Continue at the posted speed because you have priority",
+        "Yield only to vehicles approaching from the right"
+      ],
+      "a": 1,
+      "t": "signs",
+      "r": "guide",
+      "e": "A flashing amber signal means slow down, check the intersection, and proceed cautiously.",
+      "img": "assets/signs/flashing-amber.png",
+      "imgAlt": "Official Alberta flashing amber traffic signal illustration",
+      "imgWide": true,
+      "id": "SGN-010-A",
+      "ruleId": "SGN-010",
+      "difficulty": 1,
+      "type": "visual",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "The traffic signal changes to the steady yellow indication shown. What should you do?",
+      "o": [
+        "Accelerate if you believe you can enter before the red light",
+        "Stop if you can do so safely",
+        "Brake immediately even if an abrupt stop may cause a collision",
+        "Continue at the same speed because yellow gives full right-of-way"
+      ],
+      "a": 1,
+      "t": "signs",
+      "r": "guide",
+      "e": "A steady yellow signal warns that red is coming. Stop before entering if you can do so safely.",
+      "img": "assets/signs/steady-yellow.png",
+      "imgAlt": "Official Alberta steady yellow traffic signal illustration",
+      "imgWide": true,
+      "id": "SGN-011-A",
+      "ruleId": "SGN-011",
+      "difficulty": 2,
+      "type": "visual",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "What do the solid yellow centre lines shown mean?",
+      "o": [
+        "Passing is permitted in either direction when the road is clear",
+        "Passing is not permitted in either direction",
+        "Traffic on both sides travels in the same direction",
+        "The space between the lines is a two-way left-turn lane"
+      ],
+      "a": 1,
+      "t": "signs",
+      "r": "guide",
+      "e": "Single or double solid yellow centre lines separate opposing traffic and indicate that passing is not permitted.",
+      "img": "assets/signs/solid-yellow-line.png",
+      "imgAlt": "Official Alberta solid yellow centre line illustration",
+      "imgWide": true,
+      "id": "SGN-012-A",
+      "ruleId": "SGN-012",
+      "difficulty": 1,
+      "type": "visual",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "What does the red circle and diagonal slash on this sign mean?",
+      "o": [
+        "The movement shown is mandatory",
+        "The movement shown is prohibited",
+        "The movement is allowed after yielding",
+        "The restriction applies only during posted hours"
+      ],
+      "a": 1,
+      "t": "signs",
+      "r": "signs",
+      "e": "A red circle and diagonal slash mean the action or movement shown is prohibited.",
+      "img": "assets/signs/prohibited-symbol.png",
+      "imgAlt": "Official Alberta prohibited left turn sign",
+      "id": "SGN-013-A",
+      "ruleId": "SGN-013",
+      "difficulty": 1,
+      "type": "visual",
+      "source": {
+        "edition": "2026",
+        "reference": "signs"
+      }
+    },
+    {
+      "q": "What does this sign prohibit?",
+      "o": [
+        "Turning left at the intersection",
+        "Making a U-turn",
+        "Entering a divided roadway",
+        "Using the intersection to reverse direction only during heavy traffic"
+      ],
+      "a": 1,
+      "t": "signs",
+      "r": "signs",
+      "e": "This sign prohibits U-turns at that location.",
+      "img": "assets/signs/no-u-turn.png",
+      "imgAlt": "Official Alberta no U-turn sign",
+      "id": "SGN-014-A",
+      "ruleId": "SGN-014",
+      "difficulty": 1,
+      "type": "visual",
+      "source": {
+        "edition": "2026",
+        "reference": "signs"
+      }
+    },
+    {
+      "q": "What does this sign mean?",
+      "o": [
+        "Traffic may travel in one direction only",
+        "Do not enter from your direction",
+        "Yield before entering the roadway",
+        "The road is closed only to commercial vehicles"
+      ],
+      "a": 1,
+      "t": "signs",
+      "r": "signs",
+      "e": "The red circle with the horizontal white bar means do not enter from your direction.",
+      "img": "assets/signs/do-not-enter.png",
+      "imgAlt": "Official Alberta do not enter sign",
+      "id": "SGN-015-A",
+      "ruleId": "SGN-015",
+      "difficulty": 1,
+      "type": "visual",
+      "source": {
+        "edition": "2026",
+        "reference": "signs"
+      }
+    },
+    {
+      "q": "What may a driver do at the steady green signal shown?",
+      "o": [
+        "Proceed when safe, yielding to pedestrians and traffic still lawfully in the intersection",
+        "Proceed immediately because all other road users must stop",
+        "Proceed straight only; every turn requires a green arrow",
+        "Enter only after stopping and checking both directions"
+      ],
+      "a": 0,
+      "t": "signs",
+      "r": "guide",
+      "e": "A steady green permits you to proceed when safe, but you must still yield to pedestrians and anyone lawfully in the intersection.",
+      "img": "assets/signs/steady-green.png",
+      "imgAlt": "Official Alberta steady green traffic signal illustration",
+      "imgWide": true,
+      "id": "SGN-016-A",
+      "ruleId": "SGN-016",
+      "difficulty": 1,
+      "type": "visual",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "What does the green left arrow shown permit?",
+      "o": [
+        "A protected left turn in the arrow's direction",
+        "A left turn after yielding to oncoming traffic",
+        "A left turn only after coming to a full stop",
+        "A U-turn but not a left turn"
+      ],
+      "a": 0,
+      "t": "signs",
+      "r": "guide",
+      "e": "A green arrow permits a protected movement in the arrow's direction. Conflicting traffic is stopped.",
+      "img": "assets/signs/green-left-arrow.png",
+      "imgAlt": "Official Alberta green left arrow traffic signal illustration",
+      "imgWide": true,
+      "id": "SGN-017-A",
+      "ruleId": "SGN-017",
+      "difficulty": 1,
+      "type": "visual",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "What does the white diamond pavement marking shown usually indicate?",
+      "o": [
+        "A lane intended primarily for passing",
+        "A reserved lane, such as an HOV, bus, or bicycle lane",
+        "A lane where curbside parking is permitted",
+        "A lane that must be used by turning vehicles"
+      ],
+      "a": 1,
+      "t": "signs",
+      "r": "guide",
+      "e": "White diamond pavement markings indicate a reserved lane. Nearby signs specify which vehicles and times apply.",
+      "img": "assets/signs/diamond-lane.png",
+      "imgAlt": "Official Alberta white diamond reserved-lane pavement marking",
+      "id": "SGN-018-A",
+      "ruleId": "SGN-018",
+      "difficulty": 1,
+      "type": "visual",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "When two vehicles reach an uncontrolled intersection at the same time, who yields?",
+      "o": [
+        "The vehicle on the right yields to the vehicle on the left",
+        "The vehicle on the left yields to the vehicle on the right",
+        "The vehicle turning right yields to the vehicle travelling straight",
+        "The vehicle on the narrower road has the right of way"
+      ],
+      "a": 1,
+      "t": "row",
+      "r": "guide",
+      "e": "Yield to the vehicle on your right when you arrive together with no signs or lights.",
+      "id": "ROW-001-A",
+      "ruleId": "ROW-001",
+      "difficulty": 2,
+      "type": "scenario",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "You want to make a left turn at a plain green light. You should:",
+      "o": [
+        "Begin the turn before oncoming traffic enters the intersection",
+        "Yield to oncoming traffic and pedestrians, then turn when clear",
+        "Wait in the crosswalk until the signal turns yellow",
+        "Turn at the same time as opposing right-turning traffic"
+      ],
+      "a": 1,
+      "t": "row",
+      "r": "guide",
+      "e": "On a plain green, a left turn must yield to oncoming traffic and pedestrians first.",
+      "id": "ROW-002-A",
+      "ruleId": "ROW-002",
+      "difficulty": 2,
+      "type": "scenario",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "A pedestrian is waiting at a marked crosswalk. You should:",
+      "o": [
+        "Continue if the pedestrian has not stepped off the curb",
+        "Stop and allow the pedestrian to cross",
+        "Slow down but continue if your lane is clear",
+        "Stop only when the pedestrian reaches your half of the roadway"
+      ],
+      "a": 1,
+      "t": "row",
+      "r": "guide",
+      "e": "Yield and stop for pedestrians at a crosswalk.",
+      "id": "ROW-003-A",
+      "ruleId": "ROW-003",
+      "difficulty": 2,
+      "type": "scenario",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "At a four-way stop, right of way goes to:",
+      "o": [
+        "The biggest vehicle",
+        "Whoever arrived and stopped first",
+        "The vehicle turning left",
+        "The fastest to react"
+      ],
+      "a": 1,
+      "t": "row",
+      "r": "guide",
+      "e": "The vehicle that stops first goes first; if tied, yield to the right.",
+      "id": "ROW-004-A",
+      "ruleId": "ROW-004",
+      "difficulty": 2,
+      "type": "scenario",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "In a roundabout (traffic circle), you should:",
+      "o": [
+        "Enter at traffic speed because vehicles inside must yield",
+        "Yield to traffic already circulating, then enter when a safe gap is available",
+        "Come to a full stop before entering, even when the circle is empty",
+        "Enter to the left and travel clockwise around the centre island"
+      ],
+      "a": 1,
+      "t": "row",
+      "r": "guide",
+      "e": "Yield to vehicles already in the roundabout, then enter on a safe gap.",
+      "id": "ROW-005-A",
+      "ruleId": "ROW-005",
+      "difficulty": 2,
+      "type": "scenario",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "You're turning left into a driveway across oncoming traffic. You must yield to:",
+      "o": [
+        "Nobody",
+        "Oncoming traffic and any pedestrians",
+        "Only large trucks",
+        "Only cyclists"
+      ],
+      "a": 1,
+      "t": "row",
+      "r": "guide",
+      "e": "A left turn must yield to oncoming traffic and to pedestrians where you're turning.",
+      "id": "ROW-006-A",
+      "ruleId": "ROW-006",
+      "difficulty": 1,
+      "type": "recall",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "When entering a highway from an on-ramp, you should:",
+      "o": [
+        "Enter below highway speed and accelerate after changing lanes",
+        "Match the speed of traffic and merge into a safe gap",
+        "Stop near the end of the acceleration lane until both lanes are clear",
+        "Continue along the shoulder until another driver creates a gap"
+      ],
+      "a": 1,
+      "t": "row",
+      "r": "guide",
+      "e": "Use the ramp to reach traffic speed, then merge smoothly into a gap.",
+      "id": "ROW-007-A",
+      "ruleId": "ROW-007",
+      "difficulty": 2,
+      "type": "scenario",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "A funeral procession is passing through an intersection. You should:",
+      "o": [
+        "Enter through a large gap if your light is green",
+        "Wait and allow the procession to continue",
+        "Join the procession briefly to cross the intersection",
+        "Proceed when the lead vehicle has passed, regardless of following vehicles"
+      ],
+      "a": 1,
+      "t": "row",
+      "r": "guide",
+      "e": "Yield to a funeral procession and don't break into it.",
+      "id": "ROW-008-A",
+      "ruleId": "ROW-008",
+      "difficulty": 2,
+      "type": "scenario",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "You reach a stop sign at the same time as a pedestrian starting to cross. You should:",
+      "o": [
+        "Go first",
+        "Let the pedestrian cross",
+        "Wave them back",
+        "Edge forward"
+      ],
+      "a": 1,
+      "t": "row",
+      "r": "guide",
+      "e": "Pedestrians in or entering the crosswalk have the right of way.",
+      "id": "ROW-009-A",
+      "ruleId": "ROW-009",
+      "difficulty": 2,
+      "type": "scenario",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "When a vehicle ahead is stopped to let a pedestrian cross, drivers behind should:",
+      "o": [
+        "Pass only after changing to the lane farthest from the pedestrian",
+        "Also stop and not pass the stopped vehicle",
+        "Proceed slowly if the pedestrian is not visible",
+        "Pass when the stopped driver signals that the lane is clear"
+      ],
+      "a": 1,
+      "t": "row",
+      "r": "guide",
+      "e": "Never pass a vehicle stopped for a pedestrian — someone may be crossing you can't see.",
+      "id": "ROW-010-A",
+      "ruleId": "ROW-010",
+      "difficulty": 2,
+      "type": "scenario",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "A school bus ahead has its RED lights flashing. You must:",
+      "o": [
+        "Stop only when you are travelling behind the bus",
+        "Stop whether approaching or following, unless separated by a physical median",
+        "Slow to 30 km/h and pass when no children are visible",
+        "Stop only while the bus door is open"
+      ],
+      "a": 1,
+      "t": "bus",
+      "r": "guide",
+      "e": "Stop for flashing red lights from either direction. Exception: the bus is across a physically divided (median) highway.",
+      "id": "BUS-001-A",
+      "ruleId": "BUS-001",
+      "difficulty": 1,
+      "type": "recall",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "A school bus ahead turns on its flashing AMBER (yellow) lights. This means:",
+      "o": [
+        "The bus is about to re-enter traffic",
+        "Be prepared to stop because the red lights will follow",
+        "Pass before the bus reaches its stopping point",
+        "Stop immediately in your lane before reaching the bus"
+      ],
+      "a": 1,
+      "t": "bus",
+      "r": "guide",
+      "e": "Amber flashing lights are a warning: get ready to stop. Red lights come next as it stops.",
+      "id": "BUS-002-A",
+      "ruleId": "BUS-002",
+      "difficulty": 1,
+      "type": "recall",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "When do you NOT have to stop for a school bus with flashing red lights?",
+      "o": [
+        "When you are approaching from the opposite direction on any four-lane road",
+        "When the bus is on the opposite side of a highway divided by a physical median",
+        "When the bus is stopped at a marked bus bay",
+        "When all children have reached the sidewalk"
+      ],
+      "a": 1,
+      "t": "bus",
+      "r": "guide",
+      "e": "The only exception is when the bus is on the opposite side of a highway divided by a physical median.",
+      "id": "BUS-003-A",
+      "ruleId": "BUS-003",
+      "difficulty": 2,
+      "type": "scenario",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "The penalty for illegally passing a school bus with red lights flashing includes:",
+      "o": [
+        "A warning only",
+        "A fine plus demerit points",
+        "1 demerit point only",
+        "Loss of licence for a year"
+      ],
+      "a": 1,
+      "t": "bus",
+      "r": "guide",
+      "e": "It's a serious offence carrying a fine plus demerit points.",
+      "id": "BUS-004-A",
+      "ruleId": "BUS-004",
+      "difficulty": 1,
+      "type": "recall",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "After a school bus's red lights stop flashing, you may:",
+      "o": [
+        "Proceed as soon as the stop arm begins retracting",
+        "Proceed with caution after confirming the way is clear",
+        "Pass only after the bus begins moving",
+        "Proceed without checking because children no longer have right of way"
+      ],
+      "a": 1,
+      "t": "bus",
+      "r": "guide",
+      "e": "Proceed only once the red lights stop flashing, watching for children still nearby.",
+      "id": "BUS-005-A",
+      "ruleId": "BUS-005",
+      "difficulty": 2,
+      "type": "scenario",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Even when a school bus has no lights flashing, you should:",
+      "o": [
+        "Treat it like any other vehicle and maintain normal following distance",
+        "Watch carefully for children who may be loading, unloading, or crossing",
+        "Pass whenever the bus travels below the posted speed",
+        "Remain stopped until the bus driver waves you through"
+      ],
+      "a": 1,
+      "t": "bus",
+      "r": "guide",
+      "e": "Stay alert for children loading, unloading, or crossing even if lights aren't flashing.",
+      "id": "BUS-006-A",
+      "ruleId": "BUS-006",
+      "difficulty": 2,
+      "type": "scenario",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "An emergency vehicle approaches with lights and siren on a two-way road. You should:",
+      "o": [
+        "Continue to the next intersection before stopping",
+        "Pull as far right as practical and stop",
+        "Stop where you are, even if you block the travel lane",
+        "Move left if the emergency vehicle is approaching from behind"
+      ],
+      "a": 1,
+      "t": "emerg",
+      "r": "guide",
+      "e": "Pull to the right and stop, clearing a path — no matter which direction it comes from.",
+      "id": "EMG-001-A",
+      "ruleId": "EMG-001",
+      "difficulty": 2,
+      "type": "scenario",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "How closely may you follow an emergency vehicle running its lights and siren?",
+      "o": [
+        "No closer than 60 m",
+        "No closer than 150 m",
+        "No closer than 500 m",
+        "You may follow directly behind"
+      ],
+      "a": 1,
+      "t": "emerg",
+      "r": "guide",
+      "e": "Stay at least 150 metres back from a responding emergency vehicle.",
+      "id": "EMG-002-A",
+      "ruleId": "EMG-002",
+      "difficulty": 1,
+      "type": "recall",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "You approach a stopped emergency vehicle with flashing lights on the roadside. You should:",
+      "o": [
+        "Maintain the posted speed if responders are outside your lane",
+        "Slow down and, when safe, move over to provide space",
+        "Stop beside the emergency vehicle and wait for directions",
+        "Move over without reducing speed"
+      ],
+      "a": 1,
+      "t": "emerg",
+      "r": "guide",
+      "e": "Slow down and move over a lane if you safely can, to protect responders.",
+      "id": "EMG-003-A",
+      "ruleId": "EMG-003",
+      "difficulty": 2,
+      "type": "scenario",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "If an emergency vehicle approaches while you're stopped in an intersection, you should:",
+      "o": [
+        "Remain stopped until the emergency vehicle changes direction",
+        "Clear the intersection when safe, then pull right and stop",
+        "Reverse behind the stop line before yielding",
+        "Turn at the intersection even if the turn is not permitted"
+      ],
+      "a": 1,
+      "t": "emerg",
+      "r": "guide",
+      "e": "Clear the intersection safely, then pull to the right and stop to let it pass.",
+      "id": "EMG-004-A",
+      "ruleId": "EMG-004",
+      "difficulty": 2,
+      "type": "scenario",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "How far from a fire hydrant must you park (Alberta rules of the road)?",
+      "o": [
+        "1 metre",
+        "At least 5 metres",
+        "At least 15 metres",
+        "No restriction"
+      ],
+      "a": 1,
+      "t": "park",
+      "r": "guide",
+      "e": "Do not park within 5 metres of a fire hydrant.",
+      "id": "PRK-001-A",
+      "ruleId": "PRK-001",
+      "difficulty": 1,
+      "type": "recall",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "How close to a marked crosswalk may you park?",
+      "o": [
+        "No nearer than 1 metre",
+        "No nearer than 5 metres",
+        "No nearer than 10 metres",
+        "No nearer than 15 metres"
+      ],
+      "a": 1,
+      "t": "park",
+      "r": "guide",
+      "e": "Do not park within 5 metres of the near side of a marked crosswalk.",
+      "id": "PRK-002-A",
+      "ruleId": "PRK-002",
+      "difficulty": 1,
+      "type": "recall",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "You may not park within how far of a stop sign or the corner of an intersection?",
+      "o": [
+        "1 metre",
+        "5 metres",
+        "20 metres",
+        "No limit"
+      ],
+      "a": 1,
+      "t": "park",
+      "r": "guide",
+      "e": "Keep at least 5 metres from a stop/yield sign and from the corner at an intersection.",
+      "id": "PRK-003-A",
+      "ruleId": "PRK-003",
+      "difficulty": 2,
+      "type": "scenario",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Parking on a bridge or in an underpass/subway is:",
+      "o": [
+        "Allowed if brief",
+        "Not permitted",
+        "Fine at night",
+        "Allowed with flashers"
+      ],
+      "a": 1,
+      "t": "park",
+      "r": "guide",
+      "e": "You may not park on a bridge or in a subway/underpass or on their approaches.",
+      "id": "PRK-004-A",
+      "ruleId": "PRK-004",
+      "difficulty": 1,
+      "type": "recall",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Before opening your car door into traffic, you should:",
+      "o": [
+        "Check the mirror only because cyclists must avoid parked vehicles",
+        "Check for cyclists, traffic, and pedestrians before opening",
+        "Signal left before opening the door",
+        "Open the door slightly first so approaching traffic can see it"
+      ],
+      "a": 1,
+      "t": "park",
+      "r": "guide",
+      "e": "Always check that it's safe — watch for cyclists and passing traffic — before opening a door.",
+      "id": "PRK-005-A",
+      "ruleId": "PRK-005",
+      "difficulty": 2,
+      "type": "scenario",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "You may not park within about how far of an access to a driveway or private road?",
+      "o": [
+        "1.5 metres",
+        "10 metres",
+        "25 metres",
+        "No restriction"
+      ],
+      "a": 0,
+      "t": "park",
+      "r": "guide",
+      "e": "Do not park within 1.5 metres of a driveway or private road access.",
+      "id": "PRK-006-A",
+      "ruleId": "PRK-006",
+      "difficulty": 2,
+      "type": "scenario",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "When parking facing downhill with a curb, you should turn your front wheels:",
+      "o": [
+        "Toward the curb",
+        "Away from the curb",
+        "Straight ahead",
+        "It doesn't matter"
+      ],
+      "a": 0,
+      "t": "park",
+      "r": "guide",
+      "e": "Downhill, turn wheels toward the curb so the car rolls into it if the brakes slip.",
+      "id": "PRK-007-A",
+      "ruleId": "PRK-007",
+      "difficulty": 2,
+      "type": "scenario",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "When you leave your parked vehicle, you should:",
+      "o": [
+        "Shift to park but leave the parking brake released on level ground",
+        "Set the parking brake, secure the transmission, and remove the key",
+        "Set the parking brake but leave the key in case the vehicle must be moved",
+        "Use the hazard lights instead of the parking brake for short stops"
+      ],
+      "a": 1,
+      "t": "park",
+      "r": "guide",
+      "e": "Set the parking brake, shift to park, remove the key, and lock up.",
+      "id": "PRK-008-A",
+      "ruleId": "PRK-008",
+      "difficulty": 2,
+      "type": "scenario",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "What is a safe following distance in good conditions?",
+      "o": [
+        "Half a car length",
+        "At least a 2-second gap",
+        "One car length at any speed",
+        "5 metres"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "Keep at least a 2-second gap — more in poor weather — so you have time to react.",
+      "id": "SAF-001-A",
+      "ruleId": "SAF-001",
+      "difficulty": 1,
+      "type": "recall",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "In rain, snow, or fog you should increase your following distance to:",
+      "o": [
+        "Exactly 2 seconds because lower speed provides enough stopping room",
+        "At least 3 to 4 seconds or more, depending on conditions",
+        "Exactly 5 seconds in every type of poor weather",
+        "One additional vehicle length regardless of speed"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "Bad conditions need a larger gap — 3 to 4 seconds or more.",
+      "id": "SAF-002-A",
+      "ruleId": "SAF-002",
+      "difficulty": 2,
+      "type": "scenario",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "When must you turn your headlights on?",
+      "o": [
+        "From sunset until sunrise, but not during poor daytime visibility",
+        "From one hour after sunset until one hour before sunrise, and whenever visibility is poor",
+        "From one hour before sunset until one hour after sunrise in all conditions",
+        "Only when street lighting is not available"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "Headlights are required during nighttime — one hour after sunset to one hour before sunrise — and whenever conditions reduce visibility.",
+      "id": "SAF-003-A",
+      "ruleId": "SAF-003",
+      "difficulty": 2,
+      "type": "scenario",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "If your vehicle starts to skid, you should:",
+      "o": [
+        "Brake firmly and steer opposite the direction you want to travel",
+        "Ease off the accelerator and steer where you want the vehicle to go",
+        "Accelerate gently until the tires regain traction",
+        "Hold the steering wheel straight until the vehicle stops sliding"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "Ease off the accelerator and steer where you want the front to go; avoid slamming the brakes.",
+      "id": "SAF-004-A",
+      "ruleId": "SAF-004",
+      "difficulty": 2,
+      "type": "scenario",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "On a slippery or icy road, you should:",
+      "o": [
+        "Use firm, repeated braking to test available traction",
+        "Slow down and increase your following distance",
+        "Maintain the posted speed but avoid lane changes",
+        "Follow the vehicle ahead more closely so you can copy its path"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "Slow down and leave extra distance — stopping takes much longer on ice.",
+      "id": "SAF-005-A",
+      "ruleId": "SAF-005",
+      "difficulty": 2,
+      "type": "scenario",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "'Hydroplaning' happens when:",
+      "o": [
+        "Your engine overheats",
+        "Tires ride up on water and lose grip",
+        "You brake too gently",
+        "You use high beams"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "Hydroplaning is when tires lose contact by riding on a film of water; ease off the gas and don't brake hard.",
+      "id": "SAF-006-A",
+      "ruleId": "SAF-006",
+      "difficulty": 1,
+      "type": "recall",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "To reduce the chance of hydroplaning, you should:",
+      "o": [
+        "Maintain speed so the tire tread clears water more quickly",
+        "Slow down and keep your tires properly inflated and in good condition",
+        "Brake lightly whenever you cross standing water",
+        "Steer toward the deepest tire tracks left by other vehicles"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "Lower speed and good tires reduce hydroplaning risk.",
+      "id": "SAF-007-A",
+      "ruleId": "SAF-007",
+      "difficulty": 2,
+      "type": "scenario",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "What should you check before changing lanes?",
+      "o": [
+        "Mirrors only, provided they are adjusted correctly",
+        "Mirrors, signal, and a shoulder check of the blind spot",
+        "The lane ahead and the rear-view mirror only",
+        "The side mirror twice instead of performing a shoulder check"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "Mirror, signal, then shoulder-check your blind spot before moving over.",
+      "id": "SAF-008-A",
+      "ruleId": "SAF-008",
+      "difficulty": 2,
+      "type": "scenario",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Large trucks and buses have big blind spots. The safest approach is:",
+      "o": [
+        "Remain beside the cab where the driver is most likely to notice you",
+        "Avoid lingering beside them; if you cannot see the driver's mirror, the driver may not see you",
+        "Pass on the right because the driver sits on the left",
+        "Follow closely so your headlights remain visible in the mirrors"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "Stay out of the 'No-Zones'. If you can't see the driver in their mirror, they can't see you.",
+      "id": "SAF-009-A",
+      "ruleId": "SAF-009",
+      "difficulty": 1,
+      "type": "recall",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "If you feel drowsy while driving, the safest thing is to:",
+      "o": [
+        "Open a window and continue until the next scheduled stop",
+        "Pull over somewhere safe and rest",
+        "Drink caffeine and continue at a reduced speed",
+        "Change lanes frequently to stay mentally engaged"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "Fatigue impairs driving — pull over and rest; music and air don't fix drowsiness.",
+      "id": "SAF-010-A",
+      "ruleId": "SAF-010",
+      "difficulty": 2,
+      "type": "scenario",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Using a hand-held cellphone while driving in Alberta is:",
+      "o": [
+        "Permitted while fully stopped at a red traffic light",
+        "Illegal under distracted-driving law",
+        "Permitted for Class 5 drivers but not learners",
+        "Illegal only when the vehicle is travelling above 50 km/h"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "distracted",
+      "e": "Hand-held phone use is distracted driving — illegal, with a fine and demerit points.",
+      "id": "SAF-011-A",
+      "ruleId": "SAF-011",
+      "difficulty": 1,
+      "type": "recall",
+      "source": {
+        "edition": "2026",
+        "reference": "distracted"
+      }
+    },
+    {
+      "q": "When approaching a railway crossing with flashing red lights, you must:",
+      "o": [
+        "Cross if the train is still more than one block away",
+        "Stop and wait until the lights stop flashing and it is safe to proceed",
+        "Slow to 30 km/h and cross after checking both directions",
+        "Stop only when the crossing gate has lowered"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "Stop and wait until the lights stop flashing and the way is clear — never try to beat a train.",
+      "id": "SAF-012-A",
+      "ruleId": "SAF-012",
+      "difficulty": 2,
+      "type": "scenario",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Before starting to drive, your first actions should be to:",
+      "o": [
+        "Start moving, then adjust the mirrors once traffic is clear",
+        "Fasten your seatbelt and adjust your seat and mirrors",
+        "Check the dashboard after entering the roadway",
+        "Adjust only the rear-view mirror because side mirrors are checked while moving"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "Buckle up and adjust your seat and mirrors before you move.",
+      "id": "SAF-013-A",
+      "ruleId": "SAF-013",
+      "difficulty": 2,
+      "type": "scenario",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "The safest way to handle a tailgater behind you is to:",
+      "o": [
+        "Tap the brakes to show that the following distance is unsafe",
+        "Move over when safe and allow the vehicle to pass",
+        "Increase speed until a larger gap develops behind you",
+        "Maintain position and focus only on traffic ahead"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "Let a tailgater pass when you safely can; don't brake-check or race.",
+      "id": "SAF-014-A",
+      "ruleId": "SAF-014",
+      "difficulty": 1,
+      "type": "recall",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "When driving in fog, you should use:",
+      "o": [
+        "High-beam headlights to illuminate farther ahead",
+        "Low-beam headlights to reduce reflected glare",
+        "Parking lights so other drivers can see your vehicle",
+        "Hazard lights together with high-beam headlights"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "Low beams work better in fog; high beams reflect back and reduce visibility.",
+      "id": "SAF-015-A",
+      "ruleId": "SAF-015",
+      "difficulty": 2,
+      "type": "scenario",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "The recommended way to steer in normal driving is:",
+      "o": [
+        "One hand near the 12 o’clock position",
+        "Both hands around 9 and 3, or another balanced low position",
+        "One hand low on the wheel while the other rests on the gear selector",
+        "Both hands close together at the top of the wheel"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "Keep both hands on the wheel at balanced positions for control.",
+      "id": "SAF-016-A",
+      "ruleId": "SAF-016",
+      "difficulty": 1,
+      "type": "recall",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "'Nighttime' in the Alberta Basic Licence Driver's Guide is defined as:",
+      "o": [
+        "Sunset to sunrise",
+        "One hour after sunset to one hour before sunrise",
+        "9 p.m. to 6 a.m.",
+        "When streetlights are on"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "Officially, nighttime is one hour after sunset to one hour before sunrise.",
+      "id": "SAF-017-A",
+      "ruleId": "SAF-017",
+      "difficulty": 1,
+      "type": "recall",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "You're being passed by another vehicle. You should:",
+      "o": [
+        "Increase speed slightly so the passing vehicle spends less time beside you",
+        "Maintain a steady speed and allow the vehicle to complete the pass",
+        "Move toward the centre line to discourage an unsafe pass",
+        "Brake firmly as soon as the passing vehicle reaches your blind spot"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "Hold your speed (or ease off slightly) so they can pass safely.",
+      "id": "SAF-018-A",
+      "ruleId": "SAF-018",
+      "difficulty": 2,
+      "type": "scenario",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Cruise control is best avoided on:",
+      "o": [
+        "Dry highways",
+        "Wet, icy, or slippery roads",
+        "Long straight roads",
+        "Flat ground"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "Avoid cruise control on slippery roads where you may need full control.",
+      "id": "SAF-019-A",
+      "ruleId": "SAF-019",
+      "difficulty": 1,
+      "type": "recall",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "When you plan to turn, you should signal:",
+      "o": [
+        "Only after beginning to slow down",
+        "Well before the turn so other road users have time to react",
+        "Only when another vehicle is close enough to be affected",
+        "At the point where you begin turning the steering wheel"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "Signal early, before slowing, to give others time to react.",
+      "id": "SAF-020-A",
+      "ruleId": "SAF-020",
+      "difficulty": 2,
+      "type": "scenario",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "If your brakes suddenly fail, one thing you can try is:",
+      "o": [
+        "Switch off the ignition immediately while travelling at speed",
+        "Pump the brake pedal and downshift to help reduce speed",
+        "Apply the parking brake fully in one motion",
+        "Shift directly into park while steering to the shoulder"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "Pump the pedal, shift to a lower gear, and use the parking brake gently; steer to a safe spot.",
+      "id": "SAF-021-A",
+      "ruleId": "SAF-021",
+      "difficulty": 2,
+      "type": "scenario",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Your right wheels drift onto a soft shoulder. You should:",
+      "o": [
+        "Steer sharply back onto the pavement before losing speed",
+        "Ease off the accelerator, slow down, and return gently to the road",
+        "Brake firmly while half of the vehicle remains on the pavement",
+        "Accelerate so the tires climb back over the pavement edge"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "Don't jerk the wheel — slow down, then ease back onto the road smoothly.",
+      "id": "SAF-022-A",
+      "ruleId": "SAF-022",
+      "difficulty": 2,
+      "type": "scenario",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "When you approach a curve, you should:",
+      "o": [
+        "Maintain speed until entering the curve, then brake as needed",
+        "Slow before the curve, then accelerate gently through it",
+        "Coast through the curve with the transmission in neutral",
+        "Move toward the centre line to reduce the sharpness of the curve"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "Reduce speed before the curve, then power gently through for control.",
+      "id": "SAF-023-A",
+      "ruleId": "SAF-023",
+      "difficulty": 2,
+      "type": "scenario",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "The best defence against another driver's mistake is to:",
+      "o": [
+        "Match the speed of surrounding traffic even when conditions are poor",
+        "Stay alert and maintain space around your vehicle",
+        "Follow closely enough to anticipate the other driver’s movement",
+        "Use the horn whenever another vehicle approaches your lane"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "Defensive driving — space, attention, anticipating others — prevents most collisions.",
+      "id": "SAF-024-A",
+      "ruleId": "SAF-024",
+      "difficulty": 1,
+      "type": "recall",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "On a multi-lane road, slower traffic should generally keep:",
+      "o": [
+        "Left",
+        "Right",
+        "Centre",
+        "Any lane"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "Keep right except to pass; leave the left lane for passing.",
+      "id": "SAF-025-A",
+      "ruleId": "SAF-025",
+      "difficulty": 2,
+      "type": "scenario",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "When you're the first to arrive at a collision scene, you should:",
+      "o": [
+        "Continue driving and report the location at the next safe stop",
+        "Stop if safe, call for help, and warn approaching traffic",
+        "Move injured people away from the vehicles before calling for help",
+        "Park in the travel lane so other drivers are forced to slow down"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "Stop if safe, call 911, and warn traffic; don't move the injured unless there's danger.",
+      "id": "SAF-026-A",
+      "ruleId": "SAF-026",
+      "difficulty": 2,
+      "type": "scenario",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "How many passengers may a Class 7 learner carry?",
+      "o": [
+        "No passengers at all",
+        "Only family members",
+        "No more than the number of seatbelts",
+        "Up to 4 friends"
+      ],
+      "a": 2,
+      "t": "restr",
+      "r": "restraint",
+      "e": "No more passengers than there are working seatbelts in the vehicle.",
+      "id": "RST-001-A",
+      "ruleId": "RST-001",
+      "difficulty": 1,
+      "type": "recall",
+      "source": {
+        "edition": "2026",
+        "reference": "restraint"
+      }
+    },
+    {
+      "q": "Who must wear a seatbelt in the vehicle?",
+      "o": [
+        "Only the driver",
+        "Only front-seat riders",
+        "The driver and every passenger",
+        "Only passengers under 16"
+      ],
+      "a": 2,
+      "t": "restr",
+      "r": "restraint",
+      "e": "The driver and all passengers must be properly buckled up.",
+      "id": "RST-002-A",
+      "ruleId": "RST-002",
+      "difficulty": 1,
+      "type": "recall",
+      "source": {
+        "edition": "2026",
+        "reference": "restraint"
+      }
+    },
+    {
+      "q": "Who is legally responsible for making sure passengers under 16 are buckled up?",
+      "o": [
+        "The passenger once they can fasten the belt without help",
+        "The driver of the vehicle",
+        "The registered owner, even when someone else is driving",
+        "The child’s parent or guardian, even when absent"
+      ],
+      "a": 1,
+      "t": "restr",
+      "r": "restraint",
+      "e": "The driver is responsible for ensuring passengers under 16 are properly secured.",
+      "id": "RST-003-A",
+      "ruleId": "RST-003",
+      "difficulty": 1,
+      "type": "recall",
+      "source": {
+        "edition": "2026",
+        "reference": "restraint"
+      }
+    },
+    {
+      "q": "In Alberta, a child must ride rear-facing until at least:",
+      "o": [
+        "1 year of age, regardless of the seat limits",
+        "2 years of age or until reaching the seat manufacturer's rear-facing limit",
+        "18 kg (40 lb), regardless of age",
+        "6 years of age or until a booster seat fits"
+      ],
+      "a": 1,
+      "t": "restr",
+      "r": "child",
+      "e": "Children ride rear-facing until at least age 2 or the seat's stated height/weight limit.",
+      "id": "RST-004-A",
+      "ruleId": "RST-004",
+      "difficulty": 2,
+      "type": "scenario",
+      "source": {
+        "edition": "2026",
+        "reference": "child"
+      }
+    },
+    {
+      "q": "A forward-facing child car seat is required for children who are:",
+      "o": [
+        "Under 6 years old, regardless of weight",
+        "Under 6 years old and 18 kg (40 lb) or less",
+        "Age 6 to 8 and shorter than 145 cm",
+        "Under 18 kg only when seated in the front passenger seat"
+      ],
+      "a": 1,
+      "t": "restr",
+      "r": "child",
+      "e": "Children under 6 and under 18 kg (40 lb) must use a proper child car seat.",
+      "id": "RST-005-A",
+      "ruleId": "RST-005",
+      "difficulty": 1,
+      "type": "recall",
+      "source": {
+        "edition": "2026",
+        "reference": "child"
+      }
+    },
+    {
+      "q": "Booster seats in Alberta are:",
+      "o": [
+        "Required until a child reaches 145 cm",
+        "Strongly recommended until the seatbelt fits properly, but not required by Alberta law",
+        "Required for every child between ages 6 and 12",
+        "Required only when the vehicle has lap-and-shoulder belts"
+      ],
+      "a": 1,
+      "t": "restr",
+      "r": "child",
+      "e": "Booster seats aren't legally required in Alberta but are strongly recommended until the belt fits properly.",
+      "id": "RST-006-A",
+      "ruleId": "RST-006",
+      "difficulty": 1,
+      "type": "recall",
+      "source": {
+        "edition": "2026",
+        "reference": "child"
+      }
+    },
+    {
+      "q": "The safest place for children under 13 to ride is:",
+      "o": [
+        "The front passenger seat with the seat moved fully rearward",
+        "The back seat, using the restraint appropriate for the child",
+        "Either front or back when a booster seat is being used",
+        "The front seat whenever the passenger airbag can be disabled"
+      ],
+      "a": 1,
+      "t": "restr",
+      "r": "child",
+      "e": "Children are safest in the back seat, especially with front airbags.",
+      "id": "RST-007-A",
+      "ruleId": "RST-007",
+      "difficulty": 1,
+      "type": "recall",
+      "source": {
+        "edition": "2026",
+        "reference": "child"
+      }
+    },
+    {
+      "q": "A seatbelt should be worn:",
+      "o": [
+        "With the shoulder belt under the arm if it touches the neck",
+        "Across the chest and low across the hips",
+        "With the lap belt across the stomach and shoulder belt near the neck",
+        "Slightly loose so the body can move during a collision"
+      ],
+      "a": 1,
+      "t": "restr",
+      "r": "restraint",
+      "e": "Wear the shoulder belt across the chest and the lap belt low and snug across the hips.",
+      "id": "RST-008-A",
+      "ruleId": "RST-008",
+      "difficulty": 2,
+      "type": "scenario",
+      "source": {
+        "edition": "2026",
+        "reference": "restraint"
+      }
+    },
+    {
+      "q": "Outside a city, town or village, what is the default maximum speed on a primary highway unless a sign states otherwise?",
+      "o": [
+        "80 km/h",
+        "90 km/h",
+        "100 km/h",
+        "110 km/h"
+      ],
+      "a": 2,
+      "t": "zones",
+      "r": "guide",
+      "e": "Unless a sign sets a different limit, the default maximum on a primary highway outside an urban area is 100 km/h.",
+      "id": "ZON-010-A",
+      "ruleId": "ZON-010",
+      "difficulty": 1,
+      "type": "recall",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "When backing a passenger vehicle to the left, where should the driver mainly look?",
+      "o": [
+        "Over the left shoulder, with brief checks forward",
+        "Only in the left side mirror",
+        "Over the right shoulder for the entire manoeuvre",
+        "Only through the rear-view camera"
+      ],
+      "a": 0,
+      "t": "safe",
+      "r": "guide",
+      "e": "When backing left, look mainly over the left shoulder while making brief checks forward and around the vehicle.",
+      "id": "SAF-027-A",
+      "ruleId": "SAF-027",
+      "difficulty": 2,
+      "type": "scenario",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "A green right-turn arrow is displayed beside a red traffic light. What may a driver do?",
+      "o": [
+        "Turn right in the arrow's direction when the way is safe",
+        "Go straight after slowing",
+        "Turn right only after the signal becomes fully green",
+        "Make either a right or left turn after stopping"
+      ],
+      "a": 0,
+      "t": "row",
+      "r": "guide",
+      "e": "A green arrow permits movement in the arrow's direction even when another signal is red, but the driver must still proceed safely and yield where required.",
+      "id": "ROW-011-A",
+      "ruleId": "ROW-011",
+      "difficulty": 1,
+      "type": "recall",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "A fully licensed Alberta driver normally receives a licence suspension after accumulating how many demerit points?",
+      "o": [
+        "8",
+        "10",
+        "12",
+        "15"
+      ],
+      "a": 3,
+      "t": "gdl",
+      "r": "demerit",
+      "e": "A fully licensed driver is normally suspended at 15 demerit points. GDL drivers have a lower threshold.",
+      "id": "GDL-015-A",
+      "ruleId": "GDL-015",
+      "difficulty": 1,
+      "type": "recall",
+      "source": {
+        "edition": "2026",
+        "reference": "demerit"
+      }
+    },
+    {
+      "q": "After passing a large truck on a two-way highway, when should you return to your lane?",
+      "o": [
+        "As soon as your rear bumper clears the truck",
+        "After leaving extra space so the truck is clearly visible behind you",
+        "When the truck driver flashes the headlights",
+        "As soon as you can no longer see the truck's front wheels"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "Large vehicles need more stopping room. Leave extra space before moving back into the lane ahead of a truck.",
+      "id": "SAF-028-A",
+      "ruleId": "SAF-028",
+      "difficulty": 2,
+      "type": "scenario",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Before turning right at a red light where the turn is permitted, what must you do?",
+      "o": [
+        "Slow and turn without stopping when no vehicle is visible",
+        "Stop fully, check that the turn is permitted, yield, and turn only when safe",
+        "Stop only when pedestrians are present",
+        "Wait for a green light in every case"
+      ],
+      "a": 1,
+      "t": "row",
+      "r": "guide",
+      "e": "A right turn on red requires a complete stop first. The driver must check for a prohibition and yield to traffic and pedestrians before turning.",
+      "id": "ROW-012-A",
+      "ruleId": "ROW-012",
+      "difficulty": 2,
+      "type": "scenario",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "What does a single solid white line separating lanes generally tell drivers?",
+      "o": [
+        "Traffic is moving in opposite directions",
+        "Lane changes across the line are not permitted",
+        "Passing must occur on the right",
+        "The lane is reserved only during rush hour"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "A solid white line generally means drivers should not change lanes across it.",
+      "id": "SAF-029-A",
+      "ruleId": "SAF-029",
+      "difficulty": 1,
+      "type": "recall",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "In a vehicle equipped with ABS, what should you do during an emergency stop?",
+      "o": [
+        "Pump the brake pedal rapidly",
+        "Press the brake firmly and keep steering toward a safe path",
+        "Apply the parking brake first",
+        "Release the brake whenever the pedal vibrates"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "With ABS, apply firm continuous brake pressure and steer as needed. Pedal vibration is normal; do not pump the brakes.",
+      "id": "SAF-030-A",
+      "ruleId": "SAF-030",
+      "difficulty": 2,
+      "type": "scenario",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "What does it mean to over-drive your headlights at night?",
+      "o": [
+        "Using high beams longer than permitted",
+        "Driving too fast to stop within the distance illuminated ahead",
+        "Using headlights during daylight",
+        "Following another vehicle with headlights on"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "You are over-driving your headlights when your stopping distance is longer than the distance you can see.",
+      "id": "SAF-031-A",
+      "ruleId": "SAF-031",
+      "difficulty": 1,
+      "type": "recall",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "When parallel parked, how close must the wheels nearest the curb generally be?",
+      "o": [
+        "Within 20 cm",
+        "Within 30 cm",
+        "Within 50 cm",
+        "Within 1 metre"
+      ],
+      "a": 2,
+      "t": "park",
+      "r": "guide",
+      "e": "When parallel parked, the wheels nearest the curb should be no more than 50 centimetres from it.",
+      "id": "PRK-009-A",
+      "ruleId": "PRK-009",
+      "difficulty": 2,
+      "type": "scenario",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "When stopped behind another vehicle in traffic, what space should you leave?",
+      "o": [
+        "Enough to see the rear tires of the vehicle ahead and move out without reversing",
+        "Exactly one metre in all conditions",
+        "No more than half a vehicle length",
+        "Enough to see only the rear licence plate"
+      ],
+      "a": 0,
+      "t": "safe",
+      "r": "guide",
+      "e": "Leave enough room to see the rear tires of the vehicle ahead and to move around it without first reversing.",
+      "id": "SAF-032-A",
+      "ruleId": "SAF-032",
+      "difficulty": 2,
+      "type": "scenario",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "A slow-moving vehicle emblem is intended for vehicles that normally travel at less than:",
+      "o": [
+        "30 km/h",
+        "40 km/h",
+        "50 km/h",
+        "60 km/h"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "The slow-moving vehicle emblem identifies vehicles that normally travel at less than 40 km/h.",
+      "id": "SAF-033-A",
+      "ruleId": "SAF-033",
+      "difficulty": 1,
+      "type": "recall",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "What is a weave zone on a freeway?",
+      "o": [
+        "A section where entrance and exit traffic must cross paths over a short distance",
+        "A series of sharp curves requiring alternating steering",
+        "A lane reserved for emergency vehicles",
+        "A shoulder area used by disabled vehicles"
+      ],
+      "a": 0,
+      "t": "row",
+      "r": "guide",
+      "e": "A weave zone occurs where vehicles entering and leaving the freeway must cross paths within a limited distance.",
+      "id": "ROW-013-A",
+      "ruleId": "ROW-013",
+      "difficulty": 1,
+      "type": "recall",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "A registry road test may be refused when the test vehicle is:",
+      "o": [
+        "A rental vehicle",
+        "More than five years old",
+        "Mechanically unsafe",
+        "Equipped with an automatic transmission"
+      ],
+      "a": 2,
+      "t": "gdl",
+      "r": "guide",
+      "e": "The vehicle used for a road test must be safe and roadworthy. An examiner may refuse an unsafe vehicle.",
+      "id": "GDL-016-A",
+      "ruleId": "GDL-016",
+      "difficulty": 1,
+      "type": "recall",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "May a driver exceed the posted speed limit while passing another vehicle?",
+      "o": [
+        "Yes, by up to 10 km/h",
+        "Yes, but only on a divided highway",
+        "No, the speed limit still applies",
+        "Only when the passing lane is short"
+      ],
+      "a": 2,
+      "t": "safe",
+      "r": "guide",
+      "e": "The posted speed limit remains the maximum legal speed while passing.",
+      "id": "SAF-034-A",
+      "ruleId": "SAF-034",
+      "difficulty": 1,
+      "type": "recall",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "When must a posted construction-zone speed limit be obeyed?",
+      "o": [
+        "Only while workers are visible",
+        "Only during daylight hours",
+        "Whenever the limit is posted and in effect",
+        "Only while a flag person is controlling traffic"
+      ],
+      "a": 2,
+      "t": "zones",
+      "r": "guide",
+      "e": "Drivers must obey the posted construction-zone speed limit whenever it is in effect, not only when workers are visible.",
+      "id": "ZON-011-A",
+      "ruleId": "ZON-011",
+      "difficulty": 2,
+      "type": "scenario",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "In a vehicle without ABS, what is threshold braking?",
+      "o": [
+        "Pumping the brake pedal as rapidly as possible",
+        "Applying firm pressure just short of locking the wheels",
+        "Using only the parking brake",
+        "Locking the wheels and holding them locked"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "Threshold braking uses the greatest braking force possible without locking the wheels.",
+      "id": "SAF-035-A",
+      "ruleId": "SAF-035",
+      "difficulty": 2,
+      "type": "scenario",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Which technique produces a smooth normal stop?",
+      "o": [
+        "Increase brake pressure continuously until the vehicle stops",
+        "Brake firmly, ease pressure slightly near the end, then finish the stop",
+        "Shift to neutral before touching the brake",
+        "Pump the brake pedal throughout the stop"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "For a smooth stop, apply the brakes, ease pressure slightly just before stopping, then finish the stop gently.",
+      "id": "SAF-036-A",
+      "ruleId": "SAF-036",
+      "difficulty": 1,
+      "type": "recall",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "What is the purpose of a freeway deceleration lane?",
+      "o": [
+        "To build speed before entering the freeway",
+        "To reduce speed after leaving the through lane",
+        "To provide a lane for passing slow traffic",
+        "To stop and wait for a gap in freeway traffic"
+      ],
+      "a": 1,
+      "t": "row",
+      "r": "guide",
+      "e": "Move into the deceleration lane before slowing so through traffic can continue at freeway speed.",
+      "id": "ROW-014-A",
+      "ruleId": "ROW-014",
+      "difficulty": 1,
+      "type": "recall",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "When turning left from a two-way road onto a one-way road, which lane should you normally enter?",
+      "o": [
+        "The lane nearest the right curb",
+        "The lane nearest the left curb",
+        "Any lane that appears clear",
+        "The centre lane when one exists"
+      ],
+      "a": 1,
+      "t": "row",
+      "r": "guide",
+      "e": "A left turn from a two-way road onto a one-way road should normally finish in the lane nearest the left curb.",
+      "id": "ROW-015-A",
+      "ruleId": "ROW-015",
+      "difficulty": 2,
+      "type": "scenario",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "When backing straight, where should the driver mainly look?",
+      "o": [
+        "Over the right shoulder through the rear window, while checking around the vehicle",
+        "Only at the rear-view camera",
+        "Over the left shoulder at all times",
+        "Only in both side mirrors"
+      ],
+      "a": 0,
+      "t": "safe",
+      "r": "guide",
+      "e": "For straight backing, look mainly through the rear window over the right shoulder while continuing to check the vehicle's surroundings.",
+      "id": "SAF-037-A",
+      "ruleId": "SAF-037",
+      "difficulty": 2,
+      "type": "scenario",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "What is an acceleration lane designed for?",
+      "o": [
+        "Stopping before entering a freeway",
+        "Building speed to match freeway traffic before merging",
+        "Passing vehicles already on the freeway",
+        "Reducing speed before an exit"
+      ],
+      "a": 1,
+      "t": "row",
+      "r": "guide",
+      "e": "Use an acceleration lane to reach a speed close to freeway traffic before merging into a safe gap.",
+      "id": "ROW-016-A",
+      "ruleId": "ROW-016",
+      "difficulty": 1,
+      "type": "recall",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Unless signs state different times, when are Alberta school-zone limits generally in effect on school days?",
+      "o": [
+        "8:00–9:30 a.m., 11:30 a.m.–1:30 p.m., and 3:00–4:30 p.m.",
+        "8:30 a.m. until one hour after sunset",
+        "From sunrise to sunset",
+        "Continuously from 8:00 a.m. to 4:30 p.m."
+      ],
+      "a": 0,
+      "t": "zones",
+      "r": "zones",
+      "e": "Unless otherwise posted, the standard school-zone periods are 8:00–9:30 a.m., 11:30 a.m.–1:30 p.m., and 3:00–4:30 p.m. on school days.",
+      "id": "ZON-012-A",
+      "ruleId": "ZON-012",
+      "difficulty": 1,
+      "type": "recall",
+      "source": {
+        "edition": "2026",
+        "reference": "zones"
+      }
+    },
+    {
+      "q": "A vehicle is trying to merge from an acceleration lane on your right. What should you do when possible?",
+      "o": [
+        "Speed up to prevent it entering ahead",
+        "Maintain exactly the same position regardless of traffic",
+        "Move left if safe or adjust speed to help create a gap",
+        "Stop in the through lane"
+      ],
+      "a": 2,
+      "t": "row",
+      "r": "guide",
+      "e": "Although the merging driver must find a safe gap, through drivers can improve safety by moving left when safe or adjusting speed.",
+      "id": "ROW-017-A",
+      "ruleId": "ROW-017",
+      "difficulty": 2,
+      "type": "scenario",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "When parking uphill beside a curb, which way should the front wheels be turned?",
+      "o": [
+        "Toward the curb",
+        "Away from the curb",
+        "Straight ahead",
+        "Parallel to the curb"
+      ],
+      "a": 1,
+      "t": "park",
+      "r": "guide",
+      "e": "Uphill with a curb, turn the wheels away from the curb so the vehicle would roll back against the curb if it moved.",
+      "id": "PRK-010-A",
+      "ruleId": "PRK-010",
+      "difficulty": 2,
+      "type": "scenario",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "In normal urban driving, how far ahead should a driver generally scan?",
+      "o": [
+        "About 3 to 5 seconds",
+        "About 6 to 8 seconds",
+        "About 12 to 15 seconds",
+        "At least 30 seconds"
+      ],
+      "a": 2,
+      "t": "safe",
+      "r": "guide",
+      "e": "Looking about 12 to 15 seconds ahead helps a driver identify hazards early and plan smoothly.",
+      "id": "SAF-038-A",
+      "ruleId": "SAF-038",
+      "difficulty": 2,
+      "type": "scenario",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "As you approach the crest of a hill on a two-lane highway, where should you position your vehicle?",
+      "o": [
+        "Close to the centre line",
+        "Toward the right side of your lane",
+        "Partly on the shoulder",
+        "In the oncoming lane if it appears clear"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "Stay well to the right near a hill crest because an oncoming hazard may be hidden from view.",
+      "id": "SAF-039-A",
+      "ruleId": "SAF-039",
+      "difficulty": 2,
+      "type": "scenario",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "What causes most vehicle skids?",
+      "o": [
+        "Mechanical brake failure",
+        "Poor road design",
+        "Driver actions that exceed available traction",
+        "Snowfall by itself"
+      ],
+      "a": 2,
+      "t": "safe",
+      "r": "guide",
+      "e": "Most skids result from driver error, such as braking, steering, or accelerating too aggressively for available traction.",
+      "id": "SAF-040-A",
+      "ruleId": "SAF-040",
+      "difficulty": 1,
+      "type": "recall",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "When may a vehicle legally occupy a designated disability parking space?",
+      "o": [
+        "Whenever the driver remains inside",
+        "When nearby spaces are full",
+        "When it displays the proper disability placard or licence plate",
+        "For any stop shorter than five minutes"
+      ],
+      "a": 2,
+      "t": "park",
+      "r": "guide",
+      "e": "A designated disability space may be used only by a vehicle displaying the required valid placard or plate.",
+      "id": "PRK-011-A",
+      "ruleId": "PRK-011",
+      "difficulty": 2,
+      "type": "scenario",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "At night, when following another vehicle, high beams should be dimmed when you are within approximately:",
+      "o": [
+        "60 metres",
+        "100 metres",
+        "150 metres",
+        "300 metres"
+      ],
+      "a": 2,
+      "t": "safe",
+      "r": "guide",
+      "e": "Dim high beams when following another vehicle within 150 metres so glare does not interfere with the other driver.",
+      "id": "SAF-041-A",
+      "ruleId": "SAF-041",
+      "difficulty": 2,
+      "type": "scenario",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "When are dual turns from more than one lane permitted?",
+      "o": [
+        "Whenever both roads have multiple lanes",
+        "Only when signs or pavement markings indicate them",
+        "Whenever traffic is light",
+        "Only when directed by another driver"
+      ],
+      "a": 1,
+      "t": "row",
+      "r": "guide",
+      "e": "Dual turns are permitted only where signs or pavement markings specifically authorize them.",
+      "id": "ROW-018-A",
+      "ruleId": "ROW-018",
+      "difficulty": 2,
+      "type": "scenario",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "What does a posted speed limit represent?",
+      "o": [
+        "The speed every vehicle must maintain",
+        "The maximum speed under favourable road and weather conditions",
+        "A minimum speed for the lane",
+        "A limit that may be exceeded while passing"
+      ],
+      "a": 1,
+      "t": "zones",
+      "r": "guide",
+      "e": "A posted limit is the maximum under favourable conditions. Drivers must slow further when conditions make that speed unsafe.",
+      "id": "ZON-013-A",
+      "ruleId": "ZON-013",
+      "difficulty": 1,
+      "type": "recall",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "What makes an intersection uncontrolled?",
+      "o": [
+        "It has traffic lights but no signs",
+        "It has stop signs on only one road",
+        "It has no traffic signs or traffic signals controlling right-of-way",
+        "It is controlled only during rush hour"
+      ],
+      "a": 2,
+      "t": "row",
+      "r": "guide",
+      "e": "An uncontrolled intersection has no signs or signals assigning right-of-way. Drivers must apply the uncontrolled-intersection rules.",
+      "id": "ROW-019-A",
+      "ruleId": "ROW-019",
+      "difficulty": 1,
+      "type": "recall",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "At night, high beams must be dimmed for an approaching vehicle when it is within approximately:",
+      "o": [
+        "60 metres",
+        "150 metres",
+        "300 metres",
+        "500 metres"
+      ],
+      "a": 2,
+      "t": "safe",
+      "r": "guide",
+      "e": "Dim high beams when an approaching vehicle is within 300 metres to avoid blinding the other driver.",
+      "id": "SAF-042-A",
+      "ruleId": "SAF-042",
+      "difficulty": 2,
+      "type": "scenario",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Where should the centre of an adjustable head restraint be positioned?",
+      "o": [
+        "At shoulder height",
+        "Near the top of the ears",
+        "At the base of the neck",
+        "Above the top of the head"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "Position the centre of the head restraint near the top of the ears to reduce neck injury in a collision.",
+      "id": "SAF-043-A",
+      "ruleId": "SAF-043",
+      "difficulty": 2,
+      "type": "scenario",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "A slower vehicle reaches a passing-lane section. What should its driver do?",
+      "o": [
+        "Stay in the left lane to prevent unsafe passing",
+        "Move to the right lane when safe and allow faster traffic to pass",
+        "Increase speed above the limit",
+        "Stop on the shoulder until all traffic passes"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "Slower traffic should use the right lane in a passing-lane section and allow faster vehicles to pass safely.",
+      "id": "SAF-044-A",
+      "ruleId": "SAF-044",
+      "difficulty": 2,
+      "type": "scenario",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Before driving from a parking lot or driveway across a sidewalk and onto a roadway, a driver must:",
+      "o": [
+        "Stop only if a sign is posted",
+        "Come to a complete stop and yield before entering",
+        "Continue slowly because roadway traffic must yield",
+        "Stop only when a pedestrian is visible"
+      ],
+      "a": 1,
+      "t": "row",
+      "r": "guide",
+      "e": "A driver emerging from a parking lot, alley, or driveway must stop before crossing the sidewalk or entering the roadway and yield as required.",
+      "id": "ROW-020-A",
+      "ruleId": "ROW-020",
+      "difficulty": 2,
+      "type": "scenario",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "At a railway crossing with flashing red lights, how far from the nearest rail should you stop?",
+      "o": [
+        "At least 2 metres",
+        "At least 3 metres",
+        "At least 5 metres",
+        "At least 15 metres"
+      ],
+      "a": 2,
+      "t": "safe",
+      "r": "guide",
+      "e": "Stop at least 5 metres from the nearest rail and wait until the warning stops and the crossing is safe.",
+      "id": "SAF-045-A",
+      "ruleId": "SAF-045",
+      "difficulty": 2,
+      "type": "scenario",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Why is it especially dangerous to pass a loaded log truck while it is turning?",
+      "o": [
+        "The truck is not required to signal",
+        "The rear of the load can sweep across adjoining lanes",
+        "The truck must stop halfway through every turn",
+        "The driver cannot see vehicles in front"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "The rear of a long load can swing or sweep across nearby lanes during a turn. Stay back and never try to squeeze past.",
+      "id": "SAF-046-A",
+      "ruleId": "SAF-046",
+      "difficulty": 1,
+      "type": "recall",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "When angle parked, how close should the front wheel be to the curb?",
+      "o": [
+        "Within 25 cm",
+        "Within 50 cm",
+        "Within 75 cm",
+        "Within 1 metre"
+      ],
+      "a": 1,
+      "t": "park",
+      "r": "guide",
+      "e": "When angle parked, the front wheel should be no more than 50 centimetres from the curb.",
+      "id": "PRK-012-A",
+      "ruleId": "PRK-012",
+      "difficulty": 2,
+      "type": "scenario",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "A pedestrian at a crosswalk points an arm across the roadway. What should a driver understand?",
+      "o": [
+        "The pedestrian is directing vehicles to continue",
+        "The pedestrian is indicating an intention to cross, so the driver must stop and yield",
+        "The pedestrian wants traffic to slow but not stop",
+        "The signal applies only to cyclists"
+      ],
+      "a": 1,
+      "t": "row",
+      "r": "guide",
+      "e": "A pedestrian may signal an intention to cross by pointing an arm across the road. Drivers must stop and yield.",
+      "id": "ROW-021-A",
+      "ruleId": "ROW-021",
+      "difficulty": 2,
+      "type": "scenario",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "A broken yellow centre line is beside a solid yellow line. When may you pass?",
+      "o": [
+        "Only when the broken line is on your side and the pass is otherwise safe",
+        "Only when the solid line is on your side",
+        "From either direction whenever no vehicle is visible",
+        "Never from either direction"
+      ],
+      "a": 0,
+      "t": "safe",
+      "r": "guide",
+      "e": "Passing may be permitted for traffic beside the broken line, provided the manoeuvre is legal and safe. Traffic beside the solid line must not pass.",
+      "id": "SAF-047-A",
+      "ruleId": "SAF-047",
+      "difficulty": 1,
+      "type": "recall",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "On a two-lane highway, which side should normally be used to pass a vehicle travelling in the same direction?",
+      "o": [
+        "The right side",
+        "The left side when the pass is legal and safe",
+        "Either shoulder",
+        "Whichever side has more space"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "Normally pass on the left when markings, sight distance, and traffic conditions allow it safely.",
+      "id": "SAF-048-A",
+      "ruleId": "SAF-048",
+      "difficulty": 2,
+      "type": "scenario",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "When parking uphill on a road without a curb, which way should the front wheels be turned?",
+      "o": [
+        "Toward the right edge of the roadway",
+        "Toward the centre of the roadway",
+        "Straight ahead",
+        "Either direction if the parking brake is set"
+      ],
+      "a": 0,
+      "t": "park",
+      "r": "guide",
+      "e": "Uphill without a curb, turn the wheels toward the right edge so the vehicle would roll away from traffic if it moved.",
+      "id": "PRK-013-A",
+      "ruleId": "PRK-013",
+      "difficulty": 2,
+      "type": "scenario",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Which option correctly states the minimum score needed to pass the Alberta Class 7 knowledge test?",
+      "o": [
+        "20 out of 30",
+        "23 out of 30",
+        "25 out of 30",
+        "28 out of 30"
+      ],
+      "a": 2,
+      "t": "gdl",
+      "r": "test",
+      "e": "You need 25 out of 30 (83%) correct.",
+      "id": "GDL-001-B",
+      "ruleId": "GDL-001",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "test"
+      }
+    },
+    {
+      "q": "Under Alberta rules, as a Class 7 learner, what blood alcohol level are you allowed while driving?",
+      "o": [
+        "Under 0.05",
+        "Under 0.08",
+        "0.00 — zero",
+        "One drink is fine"
+      ],
+      "a": 2,
+      "t": "gdl",
+      "r": "class7",
+      "e": "Class 7 learners must be at zero (0.00). The same zero rule covers cannabis and other drugs.",
+      "id": "GDL-002-B",
+      "ruleId": "GDL-002",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "class7"
+      }
+    },
+    {
+      "q": "Choose the correct response to this situation. A Class 7 learner must be accompanied by a supervising driver who is:",
+      "o": [
+        "Any licensed driver",
+        "Fully licensed, 18 or older, in the front passenger seat",
+        "A GDL driver in the back seat",
+        "At least 16 years old"
+      ],
+      "a": 1,
+      "t": "gdl",
+      "r": "class7",
+      "e": "Your supervisor must be a fully licensed (non-GDL) driver, 18+, seated beside you in front.",
+      "id": "GDL-003-B",
+      "ruleId": "GDL-003",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "class7"
+      }
+    },
+    {
+      "q": "Apply the correct Alberta rule. At how many demerit points is a Class 7 learner's licence suspended?",
+      "o": [
+        "6 points",
+        "8 points",
+        "12 points",
+        "15 points"
+      ],
+      "a": 1,
+      "t": "gdl",
+      "r": "demerit",
+      "e": "GDL drivers are suspended at 8 demerit points — lower than the 15 for fully licensed drivers.",
+      "id": "GDL-004-B",
+      "ruleId": "GDL-004",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "demerit"
+      }
+    },
+    {
+      "q": "Choose the correct response to this situation. A Class 7 learner is NOT permitted to drive between:",
+      "o": [
+        "10 p.m. and 6 a.m.",
+        "Midnight and 5 a.m.",
+        "11 p.m. and 4 a.m.",
+        "Sunset and sunrise"
+      ],
+      "a": 1,
+      "t": "gdl",
+      "r": "class7",
+      "e": "Learners may not drive between midnight and 5 a.m.",
+      "id": "GDL-005-B",
+      "ruleId": "GDL-005",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "class7"
+      }
+    },
+    {
+      "q": "Which answer correctly gives the rule for often may you attempt the Alberta driver knowledge test?",
+      "o": [
+        "Twice in a 24-hour period",
+        "Once per day",
+        "Once every 7 days",
+        "Three times per calendar month"
+      ],
+      "a": 1,
+      "t": "gdl",
+      "r": "test",
+      "e": "The knowledge test may be taken once per day, and the fee must be paid for each attempt.",
+      "id": "GDL-006-B",
+      "ruleId": "GDL-006",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "test"
+      }
+    },
+    {
+      "q": "Under Alberta rules, can a Class 7 learner upgrade to a commercial licence (Class 1, 2, 3 or 4)?",
+      "o": [
+        "Yes, anytime",
+        "No — not while in GDL",
+        "Yes, after passing a test",
+        "Only Class 4"
+      ],
+      "a": 1,
+      "t": "gdl",
+      "r": "class7",
+      "e": "GDL drivers cannot hold or upgrade to a commercial licence.",
+      "id": "GDL-007-B",
+      "ruleId": "GDL-007",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "class7"
+      }
+    },
+    {
+      "q": "A driver encounters this situation. When can a Class 7 learner drive alone?",
+      "o": [
+        "After holding the licence for 6 months",
+        "Never — a qualified supervising driver is required",
+        "After turning 16, but only during daylight hours",
+        "After completing an approved driver-training course"
+      ],
+      "a": 1,
+      "t": "gdl",
+      "r": "class7",
+      "e": "A Class 7 learner can never drive alone; a qualified supervisor must always be beside you.",
+      "id": "GDL-008-B",
+      "ruleId": "GDL-008",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "class7"
+      }
+    },
+    {
+      "q": "Which option correctly completes this safety rule? To exit the GDL program and get a full Class 5 licence, you must first:",
+      "o": [
+        "Be at least 18, complete the required probationary period, and be suspension- and demerit-free for the last 12 months",
+        "Pass an advanced road test after holding a Class 5-GDL licence for one year",
+        "Hold a Class 7 licence for 24 months without taking a Class 5 road test",
+        "Complete a commercial driver-training course and turn 18"
+      ],
+      "a": 0,
+      "t": "gdl",
+      "r": "class7",
+      "e": "To exit GDL, you must be at least 18, complete the required probationary period, and be suspension- and demerit-free for the last 12 months. An advanced road test is no longer required.",
+      "id": "GDL-009-B",
+      "ruleId": "GDL-009",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "class7"
+      }
+    },
+    {
+      "q": "Which option correctly states the minimum age to get a Class 7 learner's licence in Alberta?",
+      "o": [
+        "12",
+        "14",
+        "16",
+        "18"
+      ],
+      "a": 1,
+      "t": "gdl",
+      "r": "class7",
+      "e": "You can get a Class 7 licence at 14 (with parent/guardian consent if under 18).",
+      "id": "GDL-010-B",
+      "ruleId": "GDL-010",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "class7"
+      }
+    },
+    {
+      "q": "Apply the Alberta rule to this situation. If you are under 18, what else do you need to apply for a Class 7 licence?",
+      "o": [
+        "A job",
+        "Parent or guardian consent",
+        "A vehicle of your own",
+        "Two references"
+      ],
+      "a": 1,
+      "t": "gdl",
+      "r": "class7",
+      "e": "Applicants under 18 need written parental or guardian consent.",
+      "id": "GDL-011-B",
+      "ruleId": "GDL-011",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "class7"
+      }
+    },
+    {
+      "q": "Under Alberta rules, can a Class 7 learner act as the supervising driver for another learner?",
+      "o": [
+        "Yes",
+        "No",
+        "Only a family member",
+        "Only in daytime"
+      ],
+      "a": 1,
+      "t": "gdl",
+      "r": "class7",
+      "e": "A GDL driver cannot supervise another learner — the supervisor must be fully licensed.",
+      "id": "GDL-012-B",
+      "ruleId": "GDL-012",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "class7"
+      }
+    },
+    {
+      "q": "Which statement correctly completes this rule? The Class 7 knowledge test also requires you to pass a:",
+      "o": [
+        "Hearing test",
+        "Vision test",
+        "Physical fitness test",
+        "Written essay"
+      ],
+      "a": 1,
+      "t": "gdl",
+      "r": "class7",
+      "e": "You must pass a vision test along with the knowledge test.",
+      "id": "GDL-013-B",
+      "ruleId": "GDL-013",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "class7"
+      }
+    },
+    {
+      "q": "Which option correctly completes this licence condition? Besides alcohol, the zero-tolerance rule for Class 7 learners also covers:",
+      "o": [
+        "Coffee",
+        "Cannabis and other impairing drugs",
+        "Energy drinks",
+        "Prescription vitamins"
+      ],
+      "a": 1,
+      "t": "gdl",
+      "r": "class7",
+      "e": "Zero tolerance applies to cannabis and other impairing drugs too, not just alcohol.",
+      "id": "GDL-014-B",
+      "ruleId": "GDL-014",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "class7"
+      }
+    },
+    {
+      "q": "Which statement correctly completes this rule? The default speed limit in an urban area (no posted sign) is:",
+      "o": [
+        "30 km/h",
+        "40 km/h",
+        "50 km/h",
+        "60 km/h"
+      ],
+      "a": 2,
+      "t": "zones",
+      "r": "guide",
+      "e": "Unless posted otherwise, the urban default is 50 km/h.",
+      "id": "ZON-004-B",
+      "ruleId": "ZON-004",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Under Alberta driving rules, on most open rural highways in Alberta, the speed limit is commonly:",
+      "o": [
+        "50 km/h",
+        "60 km/h",
+        "80–100 km/h",
+        "120 km/h"
+      ],
+      "a": 2,
+      "t": "zones",
+      "r": "guide",
+      "e": "Rural highways are commonly 80 to 100 km/h, depending on the road and posted signs.",
+      "id": "ZON-009-B",
+      "ruleId": "ZON-009",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "A driver encounters this situation. When two vehicles reach an uncontrolled intersection at the same time, who yields?",
+      "o": [
+        "The vehicle on the right yields to the vehicle on the left",
+        "The vehicle on the left yields to the vehicle on the right",
+        "The vehicle turning right yields to the vehicle travelling straight",
+        "The vehicle on the narrower road has the right of way"
+      ],
+      "a": 1,
+      "t": "row",
+      "r": "guide",
+      "e": "Yield to the vehicle on your right when you arrive together with no signs or lights.",
+      "id": "ROW-001-B",
+      "ruleId": "ROW-001",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Imagine this occurs while you are driving. You want to make a left turn at a plain green light. You should:",
+      "o": [
+        "Begin the turn before oncoming traffic enters the intersection",
+        "Yield to oncoming traffic and pedestrians, then turn when clear",
+        "Wait in the crosswalk until the signal turns yellow",
+        "Turn at the same time as opposing right-turning traffic"
+      ],
+      "a": 1,
+      "t": "row",
+      "r": "guide",
+      "e": "On a plain green, a left turn must yield to oncoming traffic and pedestrians first.",
+      "id": "ROW-002-B",
+      "ruleId": "ROW-002",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Choose the correct response to this situation. A pedestrian is waiting at a marked crosswalk. You should:",
+      "o": [
+        "Continue if the pedestrian has not stepped off the curb",
+        "Stop and allow the pedestrian to cross",
+        "Slow down but continue if your lane is clear",
+        "Stop only when the pedestrian reaches your half of the roadway"
+      ],
+      "a": 1,
+      "t": "row",
+      "r": "guide",
+      "e": "Yield and stop for pedestrians at a crosswalk.",
+      "id": "ROW-003-B",
+      "ruleId": "ROW-003",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Apply the correct Alberta rule. At a four-way stop, right of way goes to:",
+      "o": [
+        "The biggest vehicle",
+        "Whoever arrived and stopped first",
+        "The vehicle turning left",
+        "The fastest to react"
+      ],
+      "a": 1,
+      "t": "row",
+      "r": "guide",
+      "e": "The vehicle that stops first goes first; if tied, yield to the right.",
+      "id": "ROW-004-B",
+      "ruleId": "ROW-004",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Under Alberta driving rules, in a roundabout (traffic circle), you should:",
+      "o": [
+        "Enter at traffic speed because vehicles inside must yield",
+        "Yield to traffic already circulating, then enter when a safe gap is available",
+        "Come to a full stop before entering, even when the circle is empty",
+        "Enter to the left and travel clockwise around the centre island"
+      ],
+      "a": 1,
+      "t": "row",
+      "r": "guide",
+      "e": "Yield to vehicles already in the roundabout, then enter on a safe gap.",
+      "id": "ROW-005-B",
+      "ruleId": "ROW-005",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "While driving, you're turning left into a driveway across oncoming traffic. You must yield to:",
+      "o": [
+        "Nobody",
+        "Oncoming traffic and any pedestrians",
+        "Only large trucks",
+        "Only cyclists"
+      ],
+      "a": 1,
+      "t": "row",
+      "r": "guide",
+      "e": "A left turn must yield to oncoming traffic and to pedestrians where you're turning.",
+      "id": "ROW-006-B",
+      "ruleId": "ROW-006",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "A driver encounters this situation. When entering a highway from an on-ramp, you should:",
+      "o": [
+        "Enter below highway speed and accelerate after changing lanes",
+        "Match the speed of traffic and merge into a safe gap",
+        "Stop near the end of the acceleration lane until both lanes are clear",
+        "Continue along the shoulder until another driver creates a gap"
+      ],
+      "a": 1,
+      "t": "row",
+      "r": "guide",
+      "e": "Use the ramp to reach traffic speed, then merge smoothly into a gap.",
+      "id": "ROW-007-B",
+      "ruleId": "ROW-007",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Choose the correct response to this situation. A funeral procession is passing through an intersection. You should:",
+      "o": [
+        "Enter through a large gap if your light is green",
+        "Wait and allow the procession to continue",
+        "Join the procession briefly to cross the intersection",
+        "Proceed when the lead vehicle has passed, regardless of following vehicles"
+      ],
+      "a": 1,
+      "t": "row",
+      "r": "guide",
+      "e": "Yield to a funeral procession and don't break into it.",
+      "id": "ROW-008-B",
+      "ruleId": "ROW-008",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Imagine this occurs while you are driving. You reach a stop sign at the same time as a pedestrian starting to cross. You should:",
+      "o": [
+        "Go first",
+        "Let the pedestrian cross",
+        "Wave them back",
+        "Edge forward"
+      ],
+      "a": 1,
+      "t": "row",
+      "r": "guide",
+      "e": "Pedestrians in or entering the crosswalk have the right of way.",
+      "id": "ROW-009-B",
+      "ruleId": "ROW-009",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "A driver encounters this situation. When a vehicle ahead is stopped to let a pedestrian cross, drivers behind should:",
+      "o": [
+        "Pass only after changing to the lane farthest from the pedestrian",
+        "Also stop and not pass the stopped vehicle",
+        "Proceed slowly if the pedestrian is not visible",
+        "Pass when the stopped driver signals that the lane is clear"
+      ],
+      "a": 1,
+      "t": "row",
+      "r": "guide",
+      "e": "Never pass a vehicle stopped for a pedestrian — someone may be crossing you can't see.",
+      "id": "ROW-010-B",
+      "ruleId": "ROW-010",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Choose the correct response to this situation. A school bus ahead has its RED lights flashing. You must:",
+      "o": [
+        "Stop only when you are travelling behind the bus",
+        "Stop whether approaching or following, unless separated by a physical median",
+        "Slow to 30 km/h and pass when no children are visible",
+        "Stop only while the bus door is open"
+      ],
+      "a": 1,
+      "t": "bus",
+      "r": "guide",
+      "e": "Stop for flashing red lights from either direction. Exception: the bus is across a physically divided (median) highway.",
+      "id": "BUS-001-B",
+      "ruleId": "BUS-001",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Choose the correct response to this situation. A school bus ahead turns on its flashing AMBER (yellow) lights. This means:",
+      "o": [
+        "The bus is about to re-enter traffic",
+        "Be prepared to stop because the red lights will follow",
+        "Pass before the bus reaches its stopping point",
+        "Stop immediately in your lane before reaching the bus"
+      ],
+      "a": 1,
+      "t": "bus",
+      "r": "guide",
+      "e": "Amber flashing lights are a warning: get ready to stop. Red lights come next as it stops.",
+      "id": "BUS-002-B",
+      "ruleId": "BUS-002",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "A driver encounters this situation. When do you NOT have to stop for a school bus with flashing red lights?",
+      "o": [
+        "When you are approaching from the opposite direction on any four-lane road",
+        "When the bus is on the opposite side of a highway divided by a physical median",
+        "When the bus is stopped at a marked bus bay",
+        "When all children have reached the sidewalk"
+      ],
+      "a": 1,
+      "t": "bus",
+      "r": "guide",
+      "e": "The only exception is when the bus is on the opposite side of a highway divided by a physical median.",
+      "id": "BUS-003-B",
+      "ruleId": "BUS-003",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Which statement correctly completes this rule? The penalty for illegally passing a school bus with red lights flashing includes:",
+      "o": [
+        "A warning only",
+        "A fine plus demerit points",
+        "1 demerit point only",
+        "Loss of licence for a year"
+      ],
+      "a": 1,
+      "t": "bus",
+      "r": "guide",
+      "e": "It's a serious offence carrying a fine plus demerit points.",
+      "id": "BUS-004-B",
+      "ruleId": "BUS-004",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "After this event, which response is correct? After a school bus's red lights stop flashing, you may:",
+      "o": [
+        "Proceed as soon as the stop arm begins retracting",
+        "Proceed with caution after confirming the way is clear",
+        "Pass only after the bus begins moving",
+        "Proceed without checking because children no longer have right of way"
+      ],
+      "a": 1,
+      "t": "bus",
+      "r": "guide",
+      "e": "Proceed only once the red lights stop flashing, watching for children still nearby.",
+      "id": "BUS-005-B",
+      "ruleId": "BUS-005",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Under Alberta driving rules, even when a school bus has no lights flashing, you should:",
+      "o": [
+        "Treat it like any other vehicle and maintain normal following distance",
+        "Watch carefully for children who may be loading, unloading, or crossing",
+        "Pass whenever the bus travels below the posted speed",
+        "Remain stopped until the bus driver waves you through"
+      ],
+      "a": 1,
+      "t": "bus",
+      "r": "guide",
+      "e": "Stay alert for children loading, unloading, or crossing even if lights aren't flashing.",
+      "id": "BUS-006-B",
+      "ruleId": "BUS-006",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Under Alberta driving rules, an emergency vehicle approaches with lights and siren on a two-way road. You should:",
+      "o": [
+        "Continue to the next intersection before stopping",
+        "Pull as far right as practical and stop",
+        "Stop where you are, even if you block the travel lane",
+        "Move left if the emergency vehicle is approaching from behind"
+      ],
+      "a": 1,
+      "t": "emerg",
+      "r": "guide",
+      "e": "Pull to the right and stop, clearing a path — no matter which direction it comes from.",
+      "id": "EMG-001-B",
+      "ruleId": "EMG-001",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Which answer correctly gives the rule for closely may you follow an emergency vehicle running its lights and siren?",
+      "o": [
+        "No closer than 60 m",
+        "No closer than 150 m",
+        "No closer than 500 m",
+        "You may follow directly behind"
+      ],
+      "a": 1,
+      "t": "emerg",
+      "r": "guide",
+      "e": "Stay at least 150 metres back from a responding emergency vehicle.",
+      "id": "EMG-002-B",
+      "ruleId": "EMG-002",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Imagine this occurs while you are driving. You approach a stopped emergency vehicle with flashing lights on the roadside. You should:",
+      "o": [
+        "Maintain the posted speed if responders are outside your lane",
+        "Slow down and, when safe, move over to provide space",
+        "Stop beside the emergency vehicle and wait for directions",
+        "Move over without reducing speed"
+      ],
+      "a": 1,
+      "t": "emerg",
+      "r": "guide",
+      "e": "Slow down and move over a lane if you safely can, to protect responders.",
+      "id": "EMG-003-B",
+      "ruleId": "EMG-003",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Apply the Alberta rule to this situation. If an emergency vehicle approaches while you're stopped in an intersection, you should:",
+      "o": [
+        "Remain stopped until the emergency vehicle changes direction",
+        "Clear the intersection when safe, then pull right and stop",
+        "Reverse behind the stop line before yielding",
+        "Turn at the intersection even if the turn is not permitted"
+      ],
+      "a": 1,
+      "t": "emerg",
+      "r": "guide",
+      "e": "Clear the intersection safely, then pull to the right and stop to let it pass.",
+      "id": "EMG-004-B",
+      "ruleId": "EMG-004",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Which answer correctly gives the rule for far from a fire hydrant must you park (Alberta rules of the road)?",
+      "o": [
+        "1 metre",
+        "At least 5 metres",
+        "At least 15 metres",
+        "No restriction"
+      ],
+      "a": 1,
+      "t": "park",
+      "r": "guide",
+      "e": "Do not park within 5 metres of a fire hydrant.",
+      "id": "PRK-001-B",
+      "ruleId": "PRK-001",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Which answer correctly gives the rule for close to a marked crosswalk may you park?",
+      "o": [
+        "No nearer than 1 metre",
+        "No nearer than 5 metres",
+        "No nearer than 10 metres",
+        "No nearer than 15 metres"
+      ],
+      "a": 1,
+      "t": "park",
+      "r": "guide",
+      "e": "Do not park within 5 metres of the near side of a marked crosswalk.",
+      "id": "PRK-002-B",
+      "ruleId": "PRK-002",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Imagine this occurs while you are driving. You may not park within how far of a stop sign or the corner of an intersection?",
+      "o": [
+        "1 metre",
+        "5 metres",
+        "20 metres",
+        "No limit"
+      ],
+      "a": 1,
+      "t": "park",
+      "r": "guide",
+      "e": "Keep at least 5 metres from a stop/yield sign and from the corner at an intersection.",
+      "id": "PRK-003-B",
+      "ruleId": "PRK-003",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Under Alberta driving rules, parking on a bridge or in an underpass/subway is:",
+      "o": [
+        "Allowed if brief",
+        "Not permitted",
+        "Fine at night",
+        "Allowed with flashers"
+      ],
+      "a": 1,
+      "t": "park",
+      "r": "guide",
+      "e": "You may not park on a bridge or in a subway/underpass or on their approaches.",
+      "id": "PRK-004-B",
+      "ruleId": "PRK-004",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Before this action, which requirement applies? Before opening your car door into traffic, you should:",
+      "o": [
+        "Check the mirror only because cyclists must avoid parked vehicles",
+        "Check for cyclists, traffic, and pedestrians before opening",
+        "Signal left before opening the door",
+        "Open the door slightly first so approaching traffic can see it"
+      ],
+      "a": 1,
+      "t": "park",
+      "r": "guide",
+      "e": "Always check that it's safe — watch for cyclists and passing traffic — before opening a door.",
+      "id": "PRK-005-B",
+      "ruleId": "PRK-005",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Imagine this occurs while you are driving. You may not park within about how far of an access to a driveway or private road?",
+      "o": [
+        "1.5 metres",
+        "10 metres",
+        "25 metres",
+        "No restriction"
+      ],
+      "a": 0,
+      "t": "park",
+      "r": "guide",
+      "e": "Do not park within 1.5 metres of a driveway or private road access.",
+      "id": "PRK-006-B",
+      "ruleId": "PRK-006",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "A driver encounters this situation. When parking facing downhill with a curb, you should turn your front wheels:",
+      "o": [
+        "Toward the curb",
+        "Away from the curb",
+        "Straight ahead",
+        "It doesn't matter"
+      ],
+      "a": 0,
+      "t": "park",
+      "r": "guide",
+      "e": "Downhill, turn wheels toward the curb so the car rolls into it if the brakes slip.",
+      "id": "PRK-007-B",
+      "ruleId": "PRK-007",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "A driver encounters this situation. When you leave your parked vehicle, you should:",
+      "o": [
+        "Shift to park but leave the parking brake released on level ground",
+        "Set the parking brake, secure the transmission, and remove the key",
+        "Set the parking brake but leave the key in case the vehicle must be moved",
+        "Use the hazard lights instead of the parking brake for short stops"
+      ],
+      "a": 1,
+      "t": "park",
+      "r": "guide",
+      "e": "Set the parking brake, shift to park, remove the key, and lock up.",
+      "id": "PRK-008-B",
+      "ruleId": "PRK-008",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Which option correctly states a safe following distance in good conditions?",
+      "o": [
+        "Half a car length",
+        "At least a 2-second gap",
+        "One car length at any speed",
+        "5 metres"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "Keep at least a 2-second gap — more in poor weather — so you have time to react.",
+      "id": "SAF-001-B",
+      "ruleId": "SAF-001",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Under Alberta driving rules, in rain, snow, or fog you should increase your following distance to:",
+      "o": [
+        "Exactly 2 seconds because lower speed provides enough stopping room",
+        "At least 3 to 4 seconds or more, depending on conditions",
+        "Exactly 5 seconds in every type of poor weather",
+        "One additional vehicle length regardless of speed"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "Bad conditions need a larger gap — 3 to 4 seconds or more.",
+      "id": "SAF-002-B",
+      "ruleId": "SAF-002",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "A driver encounters this situation. When must you turn your headlights on?",
+      "o": [
+        "From sunset until sunrise, but not during poor daytime visibility",
+        "From one hour after sunset until one hour before sunrise, and whenever visibility is poor",
+        "From one hour before sunset until one hour after sunrise in all conditions",
+        "Only when street lighting is not available"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "Headlights are required during nighttime — one hour after sunset to one hour before sunrise — and whenever conditions reduce visibility.",
+      "id": "SAF-003-B",
+      "ruleId": "SAF-003",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Apply the Alberta rule to this situation. If your vehicle starts to skid, you should:",
+      "o": [
+        "Brake firmly and steer opposite the direction you want to travel",
+        "Ease off the accelerator and steer where you want the vehicle to go",
+        "Accelerate gently until the tires regain traction",
+        "Hold the steering wheel straight until the vehicle stops sliding"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "Ease off the accelerator and steer where you want the front to go; avoid slamming the brakes.",
+      "id": "SAF-004-B",
+      "ruleId": "SAF-004",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Under Alberta driving rules, on a slippery or icy road, you should:",
+      "o": [
+        "Use firm, repeated braking to test available traction",
+        "Slow down and increase your following distance",
+        "Maintain the posted speed but avoid lane changes",
+        "Follow the vehicle ahead more closely so you can copy its path"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "Slow down and leave extra distance — stopping takes much longer on ice.",
+      "id": "SAF-005-B",
+      "ruleId": "SAF-005",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Which description of hydroplaning is correct?",
+      "o": [
+        "Your engine overheats",
+        "Tires ride up on water and lose grip",
+        "You brake too gently",
+        "You use high beams"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "Hydroplaning is when tires lose contact by riding on a film of water; ease off the gas and don't brake hard.",
+      "id": "SAF-006-B",
+      "ruleId": "SAF-006",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Which option correctly completes this safety rule? To reduce the chance of hydroplaning, you should:",
+      "o": [
+        "Maintain speed so the tire tread clears water more quickly",
+        "Slow down and keep your tires properly inflated and in good condition",
+        "Brake lightly whenever you cross standing water",
+        "Steer toward the deepest tire tracks left by other vehicles"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "Lower speed and good tires reduce hydroplaning risk.",
+      "id": "SAF-007-B",
+      "ruleId": "SAF-007",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Under Alberta driving rules, what should you check before changing lanes?",
+      "o": [
+        "Mirrors only, provided they are adjusted correctly",
+        "Mirrors, signal, and a shoulder check of the blind spot",
+        "The lane ahead and the rear-view mirror only",
+        "The side mirror twice instead of performing a shoulder check"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "Mirror, signal, then shoulder-check your blind spot before moving over.",
+      "id": "SAF-008-B",
+      "ruleId": "SAF-008",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Under Alberta driving rules, large trucks and buses have big blind spots. The safest approach is:",
+      "o": [
+        "Remain beside the cab where the driver is most likely to notice you",
+        "Avoid lingering beside them; if you cannot see the driver's mirror, the driver may not see you",
+        "Pass on the right because the driver sits on the left",
+        "Follow closely so your headlights remain visible in the mirrors"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "Stay out of the 'No-Zones'. If you can't see the driver in their mirror, they can't see you.",
+      "id": "SAF-009-B",
+      "ruleId": "SAF-009",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Apply the Alberta rule to this situation. If you feel drowsy while driving, the safest thing is to:",
+      "o": [
+        "Open a window and continue until the next scheduled stop",
+        "Pull over somewhere safe and rest",
+        "Drink caffeine and continue at a reduced speed",
+        "Change lanes frequently to stay mentally engaged"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "Fatigue impairs driving — pull over and rest; music and air don't fix drowsiness.",
+      "id": "SAF-010-B",
+      "ruleId": "SAF-010",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Which statement correctly describes this rule? Using a hand-held cellphone while driving in Alberta is:",
+      "o": [
+        "Permitted while fully stopped at a red traffic light",
+        "Illegal under distracted-driving law",
+        "Permitted for Class 5 drivers but not learners",
+        "Illegal only when the vehicle is travelling above 50 km/h"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "distracted",
+      "e": "Hand-held phone use is distracted driving — illegal, with a fine and demerit points.",
+      "id": "SAF-011-B",
+      "ruleId": "SAF-011",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "distracted"
+      }
+    },
+    {
+      "q": "A driver encounters this situation. When approaching a railway crossing with flashing red lights, you must:",
+      "o": [
+        "Cross if the train is still more than one block away",
+        "Stop and wait until the lights stop flashing and it is safe to proceed",
+        "Slow to 30 km/h and cross after checking both directions",
+        "Stop only when the crossing gate has lowered"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "Stop and wait until the lights stop flashing and the way is clear — never try to beat a train.",
+      "id": "SAF-012-B",
+      "ruleId": "SAF-012",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Before this action, which requirement applies? Before starting to drive, your first actions should be to:",
+      "o": [
+        "Start moving, then adjust the mirrors once traffic is clear",
+        "Fasten your seatbelt and adjust your seat and mirrors",
+        "Check the dashboard after entering the roadway",
+        "Adjust only the rear-view mirror because side mirrors are checked while moving"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "Buckle up and adjust your seat and mirrors before you move.",
+      "id": "SAF-013-B",
+      "ruleId": "SAF-013",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Which statement correctly completes this rule? The safest way to handle a tailgater behind you is to:",
+      "o": [
+        "Tap the brakes to show that the following distance is unsafe",
+        "Move over when safe and allow the vehicle to pass",
+        "Increase speed until a larger gap develops behind you",
+        "Maintain position and focus only on traffic ahead"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "Let a tailgater pass when you safely can; don't brake-check or race.",
+      "id": "SAF-014-B",
+      "ruleId": "SAF-014",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "A driver encounters this situation. When driving in fog, you should use:",
+      "o": [
+        "High-beam headlights to illuminate farther ahead",
+        "Low-beam headlights to reduce reflected glare",
+        "Parking lights so other drivers can see your vehicle",
+        "Hazard lights together with high-beam headlights"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "Low beams work better in fog; high beams reflect back and reduce visibility.",
+      "id": "SAF-015-B",
+      "ruleId": "SAF-015",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Which statement correctly completes this rule? The recommended way to steer in normal driving is:",
+      "o": [
+        "One hand near the 12 o’clock position",
+        "Both hands around 9 and 3, or another balanced low position",
+        "One hand low on the wheel while the other rests on the gear selector",
+        "Both hands close together at the top of the wheel"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "Keep both hands on the wheel at balanced positions for control.",
+      "id": "SAF-016-B",
+      "ruleId": "SAF-016",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Under Alberta driving rules, 'Nighttime' in the Alberta Basic Licence Driver's Guide is defined as:",
+      "o": [
+        "Sunset to sunrise",
+        "One hour after sunset to one hour before sunrise",
+        "9 p.m. to 6 a.m.",
+        "When streetlights are on"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "Officially, nighttime is one hour after sunset to one hour before sunrise.",
+      "id": "SAF-017-B",
+      "ruleId": "SAF-017",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "While driving, you're being passed by another vehicle. You should:",
+      "o": [
+        "Increase speed slightly so the passing vehicle spends less time beside you",
+        "Maintain a steady speed and allow the vehicle to complete the pass",
+        "Move toward the centre line to discourage an unsafe pass",
+        "Brake firmly as soon as the passing vehicle reaches your blind spot"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "Hold your speed (or ease off slightly) so they can pass safely.",
+      "id": "SAF-018-B",
+      "ruleId": "SAF-018",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Under Alberta driving rules, cruise control is best avoided on:",
+      "o": [
+        "Dry highways",
+        "Wet, icy, or slippery roads",
+        "Long straight roads",
+        "Flat ground"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "Avoid cruise control on slippery roads where you may need full control.",
+      "id": "SAF-019-B",
+      "ruleId": "SAF-019",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "A driver encounters this situation. When you plan to turn, you should signal:",
+      "o": [
+        "Only after beginning to slow down",
+        "Well before the turn so other road users have time to react",
+        "Only when another vehicle is close enough to be affected",
+        "At the point where you begin turning the steering wheel"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "Signal early, before slowing, to give others time to react.",
+      "id": "SAF-020-B",
+      "ruleId": "SAF-020",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Apply the Alberta rule to this situation. If your brakes suddenly fail, one thing you can try is:",
+      "o": [
+        "Switch off the ignition immediately while travelling at speed",
+        "Pump the brake pedal and downshift to help reduce speed",
+        "Apply the parking brake fully in one motion",
+        "Shift directly into park while steering to the shoulder"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "Pump the pedal, shift to a lower gear, and use the parking brake gently; steer to a safe spot.",
+      "id": "SAF-021-B",
+      "ruleId": "SAF-021",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "While driving, your right wheels drift onto a soft shoulder. You should:",
+      "o": [
+        "Steer sharply back onto the pavement before losing speed",
+        "Ease off the accelerator, slow down, and return gently to the road",
+        "Brake firmly while half of the vehicle remains on the pavement",
+        "Accelerate so the tires climb back over the pavement edge"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "Don't jerk the wheel — slow down, then ease back onto the road smoothly.",
+      "id": "SAF-022-B",
+      "ruleId": "SAF-022",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "A driver encounters this situation. When you approach a curve, you should:",
+      "o": [
+        "Maintain speed until entering the curve, then brake as needed",
+        "Slow before the curve, then accelerate gently through it",
+        "Coast through the curve with the transmission in neutral",
+        "Move toward the centre line to reduce the sharpness of the curve"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "Reduce speed before the curve, then power gently through for control.",
+      "id": "SAF-023-B",
+      "ruleId": "SAF-023",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Which statement correctly completes this rule? The best defence against another driver's mistake is to:",
+      "o": [
+        "Match the speed of surrounding traffic even when conditions are poor",
+        "Stay alert and maintain space around your vehicle",
+        "Follow closely enough to anticipate the other driver’s movement",
+        "Use the horn whenever another vehicle approaches your lane"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "Defensive driving — space, attention, anticipating others — prevents most collisions.",
+      "id": "SAF-024-B",
+      "ruleId": "SAF-024",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Under Alberta driving rules, on a multi-lane road, slower traffic should generally keep:",
+      "o": [
+        "Left",
+        "Right",
+        "Centre",
+        "Any lane"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "Keep right except to pass; leave the left lane for passing.",
+      "id": "SAF-025-B",
+      "ruleId": "SAF-025",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "A driver encounters this situation. When you're the first to arrive at a collision scene, you should:",
+      "o": [
+        "Continue driving and report the location at the next safe stop",
+        "Stop if safe, call for help, and warn approaching traffic",
+        "Move injured people away from the vehicles before calling for help",
+        "Park in the travel lane so other drivers are forced to slow down"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "Stop if safe, call 911, and warn traffic; don't move the injured unless there's danger.",
+      "id": "SAF-026-B",
+      "ruleId": "SAF-026",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Which answer correctly gives the rule for many passengers may a Class 7 learner carry?",
+      "o": [
+        "No passengers at all",
+        "Only family members",
+        "No more than the number of seatbelts",
+        "Up to 4 friends"
+      ],
+      "a": 2,
+      "t": "restr",
+      "r": "restraint",
+      "e": "No more passengers than there are working seatbelts in the vehicle.",
+      "id": "RST-001-B",
+      "ruleId": "RST-001",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "restraint"
+      }
+    },
+    {
+      "q": "Under Alberta driving rules, who must wear a seatbelt in the vehicle?",
+      "o": [
+        "Only the driver",
+        "Only front-seat riders",
+        "The driver and every passenger",
+        "Only passengers under 16"
+      ],
+      "a": 2,
+      "t": "restr",
+      "r": "restraint",
+      "e": "The driver and all passengers must be properly buckled up.",
+      "id": "RST-002-B",
+      "ruleId": "RST-002",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "restraint"
+      }
+    },
+    {
+      "q": "Under Alberta driving rules, who is legally responsible for making sure passengers under 16 are buckled up?",
+      "o": [
+        "The passenger once they can fasten the belt without help",
+        "The driver of the vehicle",
+        "The registered owner, even when someone else is driving",
+        "The child’s parent or guardian, even when absent"
+      ],
+      "a": 1,
+      "t": "restr",
+      "r": "restraint",
+      "e": "The driver is responsible for ensuring passengers under 16 are properly secured.",
+      "id": "RST-003-B",
+      "ruleId": "RST-003",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "restraint"
+      }
+    },
+    {
+      "q": "Under Alberta driving rules, in Alberta, a child must ride rear-facing until at least:",
+      "o": [
+        "1 year of age, regardless of the seat limits",
+        "2 years of age or until reaching the seat manufacturer's rear-facing limit",
+        "18 kg (40 lb), regardless of age",
+        "6 years of age or until a booster seat fits"
+      ],
+      "a": 1,
+      "t": "restr",
+      "r": "child",
+      "e": "Children ride rear-facing until at least age 2 or the seat's stated height/weight limit.",
+      "id": "RST-004-B",
+      "ruleId": "RST-004",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "child"
+      }
+    },
+    {
+      "q": "Choose the correct response to this situation. A forward-facing child car seat is required for children who are:",
+      "o": [
+        "Under 6 years old, regardless of weight",
+        "Under 6 years old and 18 kg (40 lb) or less",
+        "Age 6 to 8 and shorter than 145 cm",
+        "Under 18 kg only when seated in the front passenger seat"
+      ],
+      "a": 1,
+      "t": "restr",
+      "r": "child",
+      "e": "Children under 6 and under 18 kg (40 lb) must use a proper child car seat.",
+      "id": "RST-005-B",
+      "ruleId": "RST-005",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "child"
+      }
+    },
+    {
+      "q": "Under Alberta driving rules, booster seats in Alberta are:",
+      "o": [
+        "Required until a child reaches 145 cm",
+        "Strongly recommended until the seatbelt fits properly, but not required by Alberta law",
+        "Required for every child between ages 6 and 12",
+        "Required only when the vehicle has lap-and-shoulder belts"
+      ],
+      "a": 1,
+      "t": "restr",
+      "r": "child",
+      "e": "Booster seats aren't legally required in Alberta but are strongly recommended until the belt fits properly.",
+      "id": "RST-006-B",
+      "ruleId": "RST-006",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "child"
+      }
+    },
+    {
+      "q": "Which statement correctly completes this rule? The safest place for children under 13 to ride is:",
+      "o": [
+        "The front passenger seat with the seat moved fully rearward",
+        "The back seat, using the restraint appropriate for the child",
+        "Either front or back when a booster seat is being used",
+        "The front seat whenever the passenger airbag can be disabled"
+      ],
+      "a": 1,
+      "t": "restr",
+      "r": "child",
+      "e": "Children are safest in the back seat, especially with front airbags.",
+      "id": "RST-007-B",
+      "ruleId": "RST-007",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "child"
+      }
+    },
+    {
+      "q": "Choose the correct response to this situation. A seatbelt should be worn:",
+      "o": [
+        "With the shoulder belt under the arm if it touches the neck",
+        "Across the chest and low across the hips",
+        "With the lap belt across the stomach and shoulder belt near the neck",
+        "Slightly loose so the body can move during a collision"
+      ],
+      "a": 1,
+      "t": "restr",
+      "r": "restraint",
+      "e": "Wear the shoulder belt across the chest and the lap belt low and snug across the hips.",
+      "id": "RST-008-B",
+      "ruleId": "RST-008",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "restraint"
+      }
+    },
+    {
+      "q": "Under Alberta driving rules, outside a city, town or village, what is the default maximum speed on a primary highway unless a sign states otherwise?",
+      "o": [
+        "80 km/h",
+        "90 km/h",
+        "100 km/h",
+        "110 km/h"
+      ],
+      "a": 2,
+      "t": "zones",
+      "r": "guide",
+      "e": "Unless a sign sets a different limit, the default maximum on a primary highway outside an urban area is 100 km/h.",
+      "id": "ZON-010-B",
+      "ruleId": "ZON-010",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "A driver encounters this situation. When backing a passenger vehicle to the left, where should the driver mainly look?",
+      "o": [
+        "Over the left shoulder, with brief checks forward",
+        "Only in the left side mirror",
+        "Over the right shoulder for the entire manoeuvre",
+        "Only through the rear-view camera"
+      ],
+      "a": 0,
+      "t": "safe",
+      "r": "guide",
+      "e": "When backing left, look mainly over the left shoulder while making brief checks forward and around the vehicle.",
+      "id": "SAF-027-B",
+      "ruleId": "SAF-027",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Choose the correct response to this situation. A green right-turn arrow is displayed beside a red traffic light. What may a driver do?",
+      "o": [
+        "Turn right in the arrow's direction when the way is safe",
+        "Go straight after slowing",
+        "Turn right only after the signal becomes fully green",
+        "Make either a right or left turn after stopping"
+      ],
+      "a": 0,
+      "t": "row",
+      "r": "guide",
+      "e": "A green arrow permits movement in the arrow's direction even when another signal is red, but the driver must still proceed safely and yield where required.",
+      "id": "ROW-011-B",
+      "ruleId": "ROW-011",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Choose the correct response to this situation. A fully licensed Alberta driver normally receives a licence suspension after accumulating how many demerit points?",
+      "o": [
+        "8",
+        "10",
+        "12",
+        "15"
+      ],
+      "a": 3,
+      "t": "gdl",
+      "r": "demerit",
+      "e": "A fully licensed driver is normally suspended at 15 demerit points. GDL drivers have a lower threshold.",
+      "id": "GDL-015-B",
+      "ruleId": "GDL-015",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "demerit"
+      }
+    },
+    {
+      "q": "After this event, which response is correct? After passing a large truck on a two-way highway, when should you return to your lane?",
+      "o": [
+        "As soon as your rear bumper clears the truck",
+        "After leaving extra space so the truck is clearly visible behind you",
+        "When the truck driver flashes the headlights",
+        "As soon as you can no longer see the truck's front wheels"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "Large vehicles need more stopping room. Leave extra space before moving back into the lane ahead of a truck.",
+      "id": "SAF-028-B",
+      "ruleId": "SAF-028",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Before this action, which requirement applies? Before turning right at a red light where the turn is permitted, what must you do?",
+      "o": [
+        "Slow and turn without stopping when no vehicle is visible",
+        "Stop fully, check that the turn is permitted, yield, and turn only when safe",
+        "Stop only when pedestrians are present",
+        "Wait for a green light in every case"
+      ],
+      "a": 1,
+      "t": "row",
+      "r": "guide",
+      "e": "A right turn on red requires a complete stop first. The driver must check for a prohibition and yield to traffic and pedestrians before turning.",
+      "id": "ROW-012-B",
+      "ruleId": "ROW-012",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Which answer correctly explains a single solid white line separating lanes generally tell drivers?",
+      "o": [
+        "Traffic is moving in opposite directions",
+        "Lane changes across the line are not permitted",
+        "Passing must occur on the right",
+        "The lane is reserved only during rush hour"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "A solid white line generally means drivers should not change lanes across it.",
+      "id": "SAF-029-B",
+      "ruleId": "SAF-029",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Under Alberta driving rules, in a vehicle equipped with ABS, what should you do during an emergency stop?",
+      "o": [
+        "Pump the brake pedal rapidly",
+        "Press the brake firmly and keep steering toward a safe path",
+        "Apply the parking brake first",
+        "Release the brake whenever the pedal vibrates"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "With ABS, apply firm continuous brake pressure and steer as needed. Pedal vibration is normal; do not pump the brakes.",
+      "id": "SAF-030-B",
+      "ruleId": "SAF-030",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Which answer correctly explains it mean to over-drive your headlights at night?",
+      "o": [
+        "Using high beams longer than permitted",
+        "Driving too fast to stop within the distance illuminated ahead",
+        "Using headlights during daylight",
+        "Following another vehicle with headlights on"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "You are over-driving your headlights when your stopping distance is longer than the distance you can see.",
+      "id": "SAF-031-B",
+      "ruleId": "SAF-031",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "A driver encounters this situation. When parallel parked, how close must the wheels nearest the curb generally be?",
+      "o": [
+        "Within 20 cm",
+        "Within 30 cm",
+        "Within 50 cm",
+        "Within 1 metre"
+      ],
+      "a": 2,
+      "t": "park",
+      "r": "guide",
+      "e": "When parallel parked, the wheels nearest the curb should be no more than 50 centimetres from it.",
+      "id": "PRK-009-B",
+      "ruleId": "PRK-009",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "A driver encounters this situation. When stopped behind another vehicle in traffic, what space should you leave?",
+      "o": [
+        "Enough to see the rear tires of the vehicle ahead and move out without reversing",
+        "Exactly one metre in all conditions",
+        "No more than half a vehicle length",
+        "Enough to see only the rear licence plate"
+      ],
+      "a": 0,
+      "t": "safe",
+      "r": "guide",
+      "e": "Leave enough room to see the rear tires of the vehicle ahead and to move around it without first reversing.",
+      "id": "SAF-032-B",
+      "ruleId": "SAF-032",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Choose the correct response to this situation. A slow-moving vehicle emblem is intended for vehicles that normally travel at less than:",
+      "o": [
+        "30 km/h",
+        "40 km/h",
+        "50 km/h",
+        "60 km/h"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "The slow-moving vehicle emblem identifies vehicles that normally travel at less than 40 km/h.",
+      "id": "SAF-033-B",
+      "ruleId": "SAF-033",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Which option correctly states a weave zone on a freeway?",
+      "o": [
+        "A section where entrance and exit traffic must cross paths over a short distance",
+        "A series of sharp curves requiring alternating steering",
+        "A lane reserved for emergency vehicles",
+        "A shoulder area used by disabled vehicles"
+      ],
+      "a": 0,
+      "t": "row",
+      "r": "guide",
+      "e": "A weave zone occurs where vehicles entering and leaving the freeway must cross paths within a limited distance.",
+      "id": "ROW-013-B",
+      "ruleId": "ROW-013",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Choose the correct response to this situation. A registry road test may be refused when the test vehicle is:",
+      "o": [
+        "A rental vehicle",
+        "More than five years old",
+        "Mechanically unsafe",
+        "Equipped with an automatic transmission"
+      ],
+      "a": 2,
+      "t": "gdl",
+      "r": "guide",
+      "e": "The vehicle used for a road test must be safe and roadworthy. An examiner may refuse an unsafe vehicle.",
+      "id": "GDL-016-B",
+      "ruleId": "GDL-016",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Under Alberta driving rules, may a driver exceed the posted speed limit while passing another vehicle?",
+      "o": [
+        "Yes, by up to 10 km/h",
+        "Yes, but only on a divided highway",
+        "No, the speed limit still applies",
+        "Only when the passing lane is short"
+      ],
+      "a": 2,
+      "t": "safe",
+      "r": "guide",
+      "e": "The posted speed limit remains the maximum legal speed while passing.",
+      "id": "SAF-034-B",
+      "ruleId": "SAF-034",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "A driver encounters this situation. When must a posted construction-zone speed limit be obeyed?",
+      "o": [
+        "Only while workers are visible",
+        "Only during daylight hours",
+        "Whenever the limit is posted and in effect",
+        "Only while a flag person is controlling traffic"
+      ],
+      "a": 2,
+      "t": "zones",
+      "r": "guide",
+      "e": "Drivers must obey the posted construction-zone speed limit whenever it is in effect, not only when workers are visible.",
+      "id": "ZON-011-B",
+      "ruleId": "ZON-011",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Under Alberta driving rules, in a vehicle without ABS, what is threshold braking?",
+      "o": [
+        "Pumping the brake pedal as rapidly as possible",
+        "Applying firm pressure just short of locking the wheels",
+        "Using only the parking brake",
+        "Locking the wheels and holding them locked"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "Threshold braking uses the greatest braking force possible without locking the wheels.",
+      "id": "SAF-035-B",
+      "ruleId": "SAF-035",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Under Alberta driving rules, which technique produces a smooth normal stop?",
+      "o": [
+        "Increase brake pressure continuously until the vehicle stops",
+        "Brake firmly, ease pressure slightly near the end, then finish the stop",
+        "Shift to neutral before touching the brake",
+        "Pump the brake pedal throughout the stop"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "For a smooth stop, apply the brakes, ease pressure slightly just before stopping, then finish the stop gently.",
+      "id": "SAF-036-B",
+      "ruleId": "SAF-036",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Which option correctly states the purpose of a freeway deceleration lane?",
+      "o": [
+        "To build speed before entering the freeway",
+        "To reduce speed after leaving the through lane",
+        "To provide a lane for passing slow traffic",
+        "To stop and wait for a gap in freeway traffic"
+      ],
+      "a": 1,
+      "t": "row",
+      "r": "guide",
+      "e": "Move into the deceleration lane before slowing so through traffic can continue at freeway speed.",
+      "id": "ROW-014-B",
+      "ruleId": "ROW-014",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "A driver encounters this situation. When turning left from a two-way road onto a one-way road, which lane should you normally enter?",
+      "o": [
+        "The lane nearest the right curb",
+        "The lane nearest the left curb",
+        "Any lane that appears clear",
+        "The centre lane when one exists"
+      ],
+      "a": 1,
+      "t": "row",
+      "r": "guide",
+      "e": "A left turn from a two-way road onto a one-way road should normally finish in the lane nearest the left curb.",
+      "id": "ROW-015-B",
+      "ruleId": "ROW-015",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "A driver encounters this situation. When backing straight, where should the driver mainly look?",
+      "o": [
+        "Over the right shoulder through the rear window, while checking around the vehicle",
+        "Only at the rear-view camera",
+        "Over the left shoulder at all times",
+        "Only in both side mirrors"
+      ],
+      "a": 0,
+      "t": "safe",
+      "r": "guide",
+      "e": "For straight backing, look mainly through the rear window over the right shoulder while continuing to check the vehicle's surroundings.",
+      "id": "SAF-037-B",
+      "ruleId": "SAF-037",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Which option correctly states an acceleration lane designed for?",
+      "o": [
+        "Stopping before entering a freeway",
+        "Building speed to match freeway traffic before merging",
+        "Passing vehicles already on the freeway",
+        "Reducing speed before an exit"
+      ],
+      "a": 1,
+      "t": "row",
+      "r": "guide",
+      "e": "Use an acceleration lane to reach a speed close to freeway traffic before merging into a safe gap.",
+      "id": "ROW-016-B",
+      "ruleId": "ROW-016",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Under Alberta driving rules, unless signs state different times, when are Alberta school-zone limits generally in effect on school days?",
+      "o": [
+        "8:00–9:30 a.m., 11:30 a.m.–1:30 p.m., and 3:00–4:30 p.m.",
+        "8:30 a.m. until one hour after sunset",
+        "From sunrise to sunset",
+        "Continuously from 8:00 a.m. to 4:30 p.m."
+      ],
+      "a": 0,
+      "t": "zones",
+      "r": "zones",
+      "e": "Unless otherwise posted, the standard school-zone periods are 8:00–9:30 a.m., 11:30 a.m.–1:30 p.m., and 3:00–4:30 p.m. on school days.",
+      "id": "ZON-012-B",
+      "ruleId": "ZON-012",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "zones"
+      }
+    },
+    {
+      "q": "Choose the correct response to this situation. A vehicle is trying to merge from an acceleration lane on your right. What should you do when possible?",
+      "o": [
+        "Speed up to prevent it entering ahead",
+        "Maintain exactly the same position regardless of traffic",
+        "Move left if safe or adjust speed to help create a gap",
+        "Stop in the through lane"
+      ],
+      "a": 2,
+      "t": "row",
+      "r": "guide",
+      "e": "Although the merging driver must find a safe gap, through drivers can improve safety by moving left when safe or adjusting speed.",
+      "id": "ROW-017-B",
+      "ruleId": "ROW-017",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "A driver encounters this situation. When parking uphill beside a curb, which way should the front wheels be turned?",
+      "o": [
+        "Toward the curb",
+        "Away from the curb",
+        "Straight ahead",
+        "Parallel to the curb"
+      ],
+      "a": 1,
+      "t": "park",
+      "r": "guide",
+      "e": "Uphill with a curb, turn the wheels away from the curb so the vehicle would roll back against the curb if it moved.",
+      "id": "PRK-010-B",
+      "ruleId": "PRK-010",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Under Alberta driving rules, in normal urban driving, how far ahead should a driver generally scan?",
+      "o": [
+        "About 3 to 5 seconds",
+        "About 6 to 8 seconds",
+        "About 12 to 15 seconds",
+        "At least 30 seconds"
+      ],
+      "a": 2,
+      "t": "safe",
+      "r": "guide",
+      "e": "Looking about 12 to 15 seconds ahead helps a driver identify hazards early and plan smoothly.",
+      "id": "SAF-038-B",
+      "ruleId": "SAF-038",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Under Alberta rules, as you approach the crest of a hill on a two-lane highway, where should you position your vehicle?",
+      "o": [
+        "Close to the centre line",
+        "Toward the right side of your lane",
+        "Partly on the shoulder",
+        "In the oncoming lane if it appears clear"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "Stay well to the right near a hill crest because an oncoming hazard may be hidden from view.",
+      "id": "SAF-039-B",
+      "ruleId": "SAF-039",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Under Alberta driving rules, what causes most vehicle skids?",
+      "o": [
+        "Mechanical brake failure",
+        "Poor road design",
+        "Driver actions that exceed available traction",
+        "Snowfall by itself"
+      ],
+      "a": 2,
+      "t": "safe",
+      "r": "guide",
+      "e": "Most skids result from driver error, such as braking, steering, or accelerating too aggressively for available traction.",
+      "id": "SAF-040-B",
+      "ruleId": "SAF-040",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "A driver encounters this situation. When may a vehicle legally occupy a designated disability parking space?",
+      "o": [
+        "Whenever the driver remains inside",
+        "When nearby spaces are full",
+        "When it displays the proper disability placard or licence plate",
+        "For any stop shorter than five minutes"
+      ],
+      "a": 2,
+      "t": "park",
+      "r": "guide",
+      "e": "A designated disability space may be used only by a vehicle displaying the required valid placard or plate.",
+      "id": "PRK-011-B",
+      "ruleId": "PRK-011",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Apply the correct Alberta rule. At night, when following another vehicle, high beams should be dimmed when you are within approximately:",
+      "o": [
+        "60 metres",
+        "100 metres",
+        "150 metres",
+        "300 metres"
+      ],
+      "a": 2,
+      "t": "safe",
+      "r": "guide",
+      "e": "Dim high beams when following another vehicle within 150 metres so glare does not interfere with the other driver.",
+      "id": "SAF-041-B",
+      "ruleId": "SAF-041",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "A driver encounters this situation. When are dual turns from more than one lane permitted?",
+      "o": [
+        "Whenever both roads have multiple lanes",
+        "Only when signs or pavement markings indicate them",
+        "Whenever traffic is light",
+        "Only when directed by another driver"
+      ],
+      "a": 1,
+      "t": "row",
+      "r": "guide",
+      "e": "Dual turns are permitted only where signs or pavement markings specifically authorize them.",
+      "id": "ROW-018-B",
+      "ruleId": "ROW-018",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Which answer correctly explains a posted speed limit represent?",
+      "o": [
+        "The speed every vehicle must maintain",
+        "The maximum speed under favourable road and weather conditions",
+        "A minimum speed for the lane",
+        "A limit that may be exceeded while passing"
+      ],
+      "a": 1,
+      "t": "zones",
+      "r": "guide",
+      "e": "A posted limit is the maximum under favourable conditions. Drivers must slow further when conditions make that speed unsafe.",
+      "id": "ZON-013-B",
+      "ruleId": "ZON-013",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Under Alberta driving rules, what makes an intersection uncontrolled?",
+      "o": [
+        "It has traffic lights but no signs",
+        "It has stop signs on only one road",
+        "It has no traffic signs or traffic signals controlling right-of-way",
+        "It is controlled only during rush hour"
+      ],
+      "a": 2,
+      "t": "row",
+      "r": "guide",
+      "e": "An uncontrolled intersection has no signs or signals assigning right-of-way. Drivers must apply the uncontrolled-intersection rules.",
+      "id": "ROW-019-B",
+      "ruleId": "ROW-019",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Apply the correct Alberta rule. At night, high beams must be dimmed for an approaching vehicle when it is within approximately:",
+      "o": [
+        "60 metres",
+        "150 metres",
+        "300 metres",
+        "500 metres"
+      ],
+      "a": 2,
+      "t": "safe",
+      "r": "guide",
+      "e": "Dim high beams when an approaching vehicle is within 300 metres to avoid blinding the other driver.",
+      "id": "SAF-042-B",
+      "ruleId": "SAF-042",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Under Alberta driving rules, where should the centre of an adjustable head restraint be positioned?",
+      "o": [
+        "At shoulder height",
+        "Near the top of the ears",
+        "At the base of the neck",
+        "Above the top of the head"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "Position the centre of the head restraint near the top of the ears to reduce neck injury in a collision.",
+      "id": "SAF-043-B",
+      "ruleId": "SAF-043",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Choose the correct response to this situation. A slower vehicle reaches a passing-lane section. What should its driver do?",
+      "o": [
+        "Stay in the left lane to prevent unsafe passing",
+        "Move to the right lane when safe and allow faster traffic to pass",
+        "Increase speed above the limit",
+        "Stop on the shoulder until all traffic passes"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "Slower traffic should use the right lane in a passing-lane section and allow faster vehicles to pass safely.",
+      "id": "SAF-044-B",
+      "ruleId": "SAF-044",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Before this action, which requirement applies? Before driving from a parking lot or driveway across a sidewalk and onto a roadway, a driver must:",
+      "o": [
+        "Stop only if a sign is posted",
+        "Come to a complete stop and yield before entering",
+        "Continue slowly because roadway traffic must yield",
+        "Stop only when a pedestrian is visible"
+      ],
+      "a": 1,
+      "t": "row",
+      "r": "guide",
+      "e": "A driver emerging from a parking lot, alley, or driveway must stop before crossing the sidewalk or entering the roadway and yield as required.",
+      "id": "ROW-020-B",
+      "ruleId": "ROW-020",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Apply the correct Alberta rule. At a railway crossing with flashing red lights, how far from the nearest rail should you stop?",
+      "o": [
+        "At least 2 metres",
+        "At least 3 metres",
+        "At least 5 metres",
+        "At least 15 metres"
+      ],
+      "a": 2,
+      "t": "safe",
+      "r": "guide",
+      "e": "Stop at least 5 metres from the nearest rail and wait until the warning stops and the crossing is safe.",
+      "id": "SAF-045-B",
+      "ruleId": "SAF-045",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "What makes it especially dangerous to pass a loaded log truck while it is turning?",
+      "o": [
+        "The truck is not required to signal",
+        "The rear of the load can sweep across adjoining lanes",
+        "The truck must stop halfway through every turn",
+        "The driver cannot see vehicles in front"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "The rear of a long load can swing or sweep across nearby lanes during a turn. Stay back and never try to squeeze past.",
+      "id": "SAF-046-B",
+      "ruleId": "SAF-046",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "A driver encounters this situation. When angle parked, how close should the front wheel be to the curb?",
+      "o": [
+        "Within 25 cm",
+        "Within 50 cm",
+        "Within 75 cm",
+        "Within 1 metre"
+      ],
+      "a": 1,
+      "t": "park",
+      "r": "guide",
+      "e": "When angle parked, the front wheel should be no more than 50 centimetres from the curb.",
+      "id": "PRK-012-B",
+      "ruleId": "PRK-012",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Choose the correct response to this situation. A pedestrian at a crosswalk points an arm across the roadway. What should a driver understand?",
+      "o": [
+        "The pedestrian is directing vehicles to continue",
+        "The pedestrian is indicating an intention to cross, so the driver must stop and yield",
+        "The pedestrian wants traffic to slow but not stop",
+        "The signal applies only to cyclists"
+      ],
+      "a": 1,
+      "t": "row",
+      "r": "guide",
+      "e": "A pedestrian may signal an intention to cross by pointing an arm across the road. Drivers must stop and yield.",
+      "id": "ROW-021-B",
+      "ruleId": "ROW-021",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Choose the correct response to this situation. A broken yellow centre line is beside a solid yellow line. When may you pass?",
+      "o": [
+        "Only when the broken line is on your side and the pass is otherwise safe",
+        "Only when the solid line is on your side",
+        "From either direction whenever no vehicle is visible",
+        "Never from either direction"
+      ],
+      "a": 0,
+      "t": "safe",
+      "r": "guide",
+      "e": "Passing may be permitted for traffic beside the broken line, provided the manoeuvre is legal and safe. Traffic beside the solid line must not pass.",
+      "id": "SAF-047-B",
+      "ruleId": "SAF-047",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Under Alberta driving rules, on a two-lane highway, which side should normally be used to pass a vehicle travelling in the same direction?",
+      "o": [
+        "The right side",
+        "The left side when the pass is legal and safe",
+        "Either shoulder",
+        "Whichever side has more space"
+      ],
+      "a": 1,
+      "t": "safe",
+      "r": "guide",
+      "e": "Normally pass on the left when markings, sight distance, and traffic conditions allow it safely.",
+      "id": "SAF-048-B",
+      "ruleId": "SAF-048",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "A driver encounters this situation. When parking uphill on a road without a curb, which way should the front wheels be turned?",
+      "o": [
+        "Toward the right edge of the roadway",
+        "Toward the centre of the roadway",
+        "Straight ahead",
+        "Either direction if the parking brake is set"
+      ],
+      "a": 0,
+      "t": "park",
+      "r": "guide",
+      "e": "Uphill without a curb, turn the wheels toward the right edge so the vehicle would roll away from traffic if it moved.",
+      "id": "PRK-013-B",
+      "ruleId": "PRK-013",
+      "difficulty": 2,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "guide"
+      }
+    },
+    {
+      "q": "Which answer is correct under Alberta driving rules? What is the minimum score needed to pass the Alberta Class 7 knowledge test?",
+      "o": [
+        "20 out of 30",
+        "23 out of 30",
+        "25 out of 30",
+        "28 out of 30"
+      ],
+      "a": 2,
+      "t": "gdl",
+      "r": "test",
+      "e": "You need 25 out of 30 (83%) correct.",
+      "id": "GDL-001-C",
+      "ruleId": "GDL-001",
+      "difficulty": 3,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "test"
+      }
+    },
+    {
+      "q": "Which answer is correct under Alberta driving rules? As a Class 7 learner, what blood alcohol level are you allowed while driving?",
+      "o": [
+        "Under 0.05",
+        "Under 0.08",
+        "0.00 — zero",
+        "One drink is fine"
+      ],
+      "a": 2,
+      "t": "gdl",
+      "r": "class7",
+      "e": "Class 7 learners must be at zero (0.00). The same zero rule covers cannabis and other drugs.",
+      "id": "GDL-002-C",
+      "ruleId": "GDL-002",
+      "difficulty": 3,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "class7"
+      }
+    },
+    {
+      "q": "Choose the correct completion under Alberta rules. A Class 7 learner must be accompanied by a supervising driver who is:",
+      "o": [
+        "Any licensed driver",
+        "Fully licensed, 18 or older, in the front passenger seat",
+        "A GDL driver in the back seat",
+        "At least 16 years old"
+      ],
+      "a": 1,
+      "t": "gdl",
+      "r": "class7",
+      "e": "Your supervisor must be a fully licensed (non-GDL) driver, 18+, seated beside you in front.",
+      "id": "GDL-003-C",
+      "ruleId": "GDL-003",
+      "difficulty": 3,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "class7"
+      }
+    },
+    {
+      "q": "Which answer is correct under Alberta driving rules? At how many demerit points is a Class 7 learner's licence suspended?",
+      "o": [
+        "6 points",
+        "8 points",
+        "12 points",
+        "15 points"
+      ],
+      "a": 1,
+      "t": "gdl",
+      "r": "demerit",
+      "e": "GDL drivers are suspended at 8 demerit points — lower than the 15 for fully licensed drivers.",
+      "id": "GDL-004-C",
+      "ruleId": "GDL-004",
+      "difficulty": 3,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "demerit"
+      }
+    },
+    {
+      "q": "Choose the correct completion under Alberta rules. A Class 7 learner is NOT permitted to drive between:",
+      "o": [
+        "10 p.m. and 6 a.m.",
+        "Midnight and 5 a.m.",
+        "11 p.m. and 4 a.m.",
+        "Sunset and sunrise"
+      ],
+      "a": 1,
+      "t": "gdl",
+      "r": "class7",
+      "e": "Learners may not drive between midnight and 5 a.m.",
+      "id": "GDL-005-C",
+      "ruleId": "GDL-005",
+      "difficulty": 3,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "class7"
+      }
+    },
+    {
+      "q": "Which answer is correct under Alberta driving rules? How often may you attempt the Alberta driver knowledge test?",
+      "o": [
+        "Twice in a 24-hour period",
+        "Once per day",
+        "Once every 7 days",
+        "Three times per calendar month"
+      ],
+      "a": 1,
+      "t": "gdl",
+      "r": "test",
+      "e": "The knowledge test may be taken once per day, and the fee must be paid for each attempt.",
+      "id": "GDL-006-C",
+      "ruleId": "GDL-006",
+      "difficulty": 3,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "test"
+      }
+    },
+    {
+      "q": "Which answer is correct under Alberta driving rules? Can a Class 7 learner upgrade to a commercial licence (Class 1, 2, 3 or 4)?",
+      "o": [
+        "Yes, anytime",
+        "No — not while in GDL",
+        "Yes, after passing a test",
+        "Only Class 4"
+      ],
+      "a": 1,
+      "t": "gdl",
+      "r": "class7",
+      "e": "GDL drivers cannot hold or upgrade to a commercial licence.",
+      "id": "GDL-007-C",
+      "ruleId": "GDL-007",
+      "difficulty": 3,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "class7"
+      }
+    },
+    {
+      "q": "Which answer is correct under Alberta driving rules? When can a Class 7 learner drive alone?",
+      "o": [
+        "After holding the licence for 6 months",
+        "Never — a qualified supervising driver is required",
+        "After turning 16, but only during daylight hours",
+        "After completing an approved driver-training course"
+      ],
+      "a": 1,
+      "t": "gdl",
+      "r": "class7",
+      "e": "A Class 7 learner can never drive alone; a qualified supervisor must always be beside you.",
+      "id": "GDL-008-C",
+      "ruleId": "GDL-008",
+      "difficulty": 3,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "class7"
+      }
+    },
+    {
+      "q": "Choose the correct completion under Alberta rules. To exit the GDL program and get a full Class 5 licence, you must first:",
+      "o": [
+        "Be at least 18, complete the required probationary period, and be suspension- and demerit-free for the last 12 months",
+        "Pass an advanced road test after holding a Class 5-GDL licence for one year",
+        "Hold a Class 7 licence for 24 months without taking a Class 5 road test",
+        "Complete a commercial driver-training course and turn 18"
+      ],
+      "a": 0,
+      "t": "gdl",
+      "r": "class7",
+      "e": "To exit GDL, you must be at least 18, complete the required probationary period, and be suspension- and demerit-free for the last 12 months. An advanced road test is no longer required.",
+      "id": "GDL-009-C",
+      "ruleId": "GDL-009",
+      "difficulty": 3,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "class7"
+      }
+    },
+    {
+      "q": "Which answer is correct under Alberta driving rules? What is the minimum age to get a Class 7 learner's licence in Alberta?",
+      "o": [
+        "12",
+        "14",
+        "16",
+        "18"
+      ],
+      "a": 1,
+      "t": "gdl",
+      "r": "class7",
+      "e": "You can get a Class 7 licence at 14 (with parent/guardian consent if under 18).",
+      "id": "GDL-010-C",
+      "ruleId": "GDL-010",
+      "difficulty": 3,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "class7"
+      }
+    },
+    {
+      "q": "Which answer is correct under Alberta driving rules? If you are under 18, what else do you need to apply for a Class 7 licence?",
+      "o": [
+        "A job",
+        "Parent or guardian consent",
+        "A vehicle of your own",
+        "Two references"
+      ],
+      "a": 1,
+      "t": "gdl",
+      "r": "class7",
+      "e": "Applicants under 18 need written parental or guardian consent.",
+      "id": "GDL-011-C",
+      "ruleId": "GDL-011",
+      "difficulty": 3,
+      "type": "variant",
+      "source": {
+        "edition": "2026",
+        "reference": "class7"
+      }
+    }
+  ]
+}
