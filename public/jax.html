@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>Class 7 Practice — Jax</title>
+<title>Jax · Class 7 Prep</title>
 <style>
   :root{
     --bg:#0C1017; --bg2:#141A24; --panel:#1A2230; --panel2:#232D3E;
@@ -34,20 +34,27 @@
   .screen{flex:1;display:flex;flex-direction:column;animation:fade .3s ease}
   @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
   .hidden{display:none!important}
-  .head{margin:6px 0 18px}
-  .eyebrow{font-size:12px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
-  h1{font-size:28px;line-height:1.12;font-weight:850;letter-spacing:-.02em;margin-bottom:10px}
-  .sub{color:#AEB9C9;font-size:15px;line-height:1.55}
+  .brand{display:flex;align-items:center;gap:12px;margin:4px 0 22px}
+  .mono{width:46px;height:46px;flex:none;border-radius:13px;display:flex;align-items:center;justify-content:center;
+    font-size:14px;font-weight:900;letter-spacing:.04em;color:#04121F;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 6px 18px rgba(76,154,255,.35)}
+  .brand-txt{display:flex;flex-direction:column;line-height:1.2}
+  .brand-1{font-size:14px;font-weight:850;letter-spacing:-.01em;color:var(--paper)}
+  .brand-2{font-size:11.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+  .head{margin:2px 0 20px}
+  h1{font-size:30px;line-height:1.14;font-weight:850;letter-spacing:-.025em;margin-bottom:12px}
+  h1 .name{background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .sub{color:#AEB9C9;font-size:15px;line-height:1.6}
   .info{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;margin-bottom:20px}
   .info .row{display:flex;justify-content:space-between;padding:8px 0;font-size:14px}
   .info .row+.row{border-top:1px solid var(--line)}
   .info .k{color:#AEB9C9}.info .v{font-weight:800}
   .menu{display:flex;flex-direction:column;gap:11px}
-  .card{text-align:left;border:1px solid var(--line);cursor:pointer;background:var(--panel);color:var(--paper);
-    border-radius:var(--r);padding:15px 16px;display:flex;align-items:center;gap:14px;box-shadow:var(--shadow);transition:transform .1s,border-color .15s}
-  .card:active{transform:scale(.985)}
-  .card:disabled{opacity:.45;cursor:default}
-  .card .ic{width:42px;height:42px;border-radius:11px;flex:none;display:flex;align-items:center;justify-content:center;font-size:21px;background:var(--panel2)}
+  .card{text-align:left;border:1px solid var(--line);cursor:pointer;background:linear-gradient(180deg,var(--panel),#161D28);color:var(--paper);
+    border-radius:var(--r);padding:15px 16px;display:flex;align-items:center;gap:14px;box-shadow:var(--shadow);transition:transform .12s,border-color .15s}
+  .card:active{transform:scale(.98)}
+  .card:disabled{opacity:.4;cursor:default}
+  .card .ic{width:44px;height:44px;border-radius:12px;flex:none;display:flex;align-items:center;justify-content:center;font-size:22px;background:var(--panel2);border:1px solid rgba(255,255,255,.05)}
   .card .t{font-size:16px;font-weight:800}
   .card .d{font-size:13px;color:var(--muted);margin-top:2px;line-height:1.35}
   .card .n{margin-left:auto;font-size:13px;font-weight:800;color:var(--gold);flex:none}
@@ -110,10 +117,13 @@
   </div>
 
   <section class="screen" id="startScreen">
+    <div class="brand">
+      <div class="mono">JAX</div>
+      <div class="brand-txt"><span class="brand-1">Alberta Class 7</span><span class="brand-2">Knowledge Test Prep</span></div>
+    </div>
     <div class="head">
-      <div class="eyebrow">Alberta Class 7 Knowledge Test</div>
-      <h1>Practice test</h1>
-      <p class="sub">Answer, see what you miss, and the app tracks your weak spots so you can drill them. Pass mark is 25 out of 30.</p>
+      <h1>Let's get you<br>road ready, <span class="name">Jax</span>.</h1>
+      <p class="sub">Answer the questions, see exactly what you miss, and the app tracks your weak spots so you can drill them. Pass mark is 25 out of 30.</p>
     </div>
     <div class="info">
       <div class="row"><span class="k">Questions on the real test</span><span class="v">30</span></div>
@@ -384,7 +394,7 @@ function results(){
   const missTopics=[...new Set(session.filter(s=>!s.correct).map(s=>BANK[s.qi].t))];
   const ringC=passed?'var(--go-bg)':'var(--stop-bg)';
   const ringT=passed?'var(--go)':'var(--stop)';
-  const verdict = mode==='test' ? (passed?'Passed':'Not passed') : (passed?'Great score':'Keep practising');
+  const verdict = mode==='test' ? (passed?'Passed, Jax':'Not passed yet') : (passed?'Great score, Jax':'Keep practising');
   const vsub = passed
     ? 'That clears the pass mark. Run it again to stay sharp, or drill weak spots.'
     : 'You need 25 out of 30. Focus on the topics below, then run it again.';
