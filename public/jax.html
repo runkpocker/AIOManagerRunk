@@ -26,11 +26,16 @@
     background-image:radial-gradient(90% 60% at 50% -10%, #16202E 0%, var(--bg) 60%);
   }
   .wrap{width:100%;max-width:540px;margin:0 auto;flex:1;display:flex;flex-direction:column;padding:16px 16px 28px}
-  .topbar{display:flex;align-items:center;gap:10px;margin-bottom:18px;min-height:28px}
+  .topbar{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;margin-bottom:18px;min-height:28px}
   .tag{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);white-space:nowrap}
-  .bar{flex:1;height:7px;border-radius:99px;background:#0A0E15;overflow:hidden;border:1px solid var(--line)}
+  .bar{height:7px;border-radius:99px;background:#0A0E15;overflow:hidden;border:1px solid var(--line)}
   .bar-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .35s ease}
   .count{font-size:13px;font-weight:700;color:var(--muted);white-space:nowrap}
+  .live-stats{grid-column:1/-1;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-top:2px}
+  .live-stat{min-width:0;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:7px 4px;text-align:center}
+  .live-stat .num{display:block;font-size:16px;line-height:1;font-weight:850;color:var(--paper)}
+  .live-stat .lbl{display:block;margin-top:4px;font-size:9px;line-height:1;text-transform:uppercase;letter-spacing:.04em;font-weight:800;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .live-stat.good .num{color:var(--go)}.live-stat.bad .num{color:var(--stop)}.live-stat.skip .num{color:var(--gold)}
   .screen{flex:1;display:flex;flex-direction:column;animation:fade .3s ease}
   @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
   .hidden{display:none!important}
@@ -116,6 +121,13 @@
     <span class="tag" id="modeTag">Test</span>
     <div class="bar"><div class="bar-fill" id="barFill"></div></div>
     <span class="count" id="count">0/30</span>
+    <div class="live-stats" aria-label="Live test progress">
+      <div class="live-stat good"><span class="num" id="liveCorrect">0</span><span class="lbl">Correct</span></div>
+      <div class="live-stat bad"><span class="num" id="liveWrong">0</span><span class="lbl">Wrong</span></div>
+      <div class="live-stat"><span class="num" id="liveAnswered">0</span><span class="lbl">Answered</span></div>
+      <div class="live-stat skip"><span class="num" id="liveSkipped">0</span><span class="lbl">Skipped</span></div>
+      <div class="live-stat"><span class="num" id="liveRemaining">30</span><span class="lbl">Left</span></div>
+    </div>
   </div>
 
   <section class="screen" id="startScreen">
@@ -136,7 +148,7 @@
     <div class="menu">
       <button class="card primary" onclick="start('test')">
         <div class="ic">📝</div>
-        <div><div class="t">Full Test</div><div class="d">30 questions with balanced answer positions. Skipped questions return at the end.</div></div>
+        <div><div class="t">Full Test</div><div class="d">30 questions with immediate feedback, live scoring, balanced answer positions, and skipped questions returned at the end.</div></div>
       </button>
       <button class="card" onclick="start('practice')">
         <div class="ic">📖</div>
@@ -1598,12 +1610,30 @@ function start(m){
   render();
 }
 
+function pendingSkippedCount(){
+  if(mode!=='test')return 0;
+  const answeredIds=new Set(session.map(s=>s.qi));
+  return skipped.filter(qi=>!answeredIds.has(qi)).length;
+}
+function updateLiveProgress(){
+  const correct=session.filter(s=>s.correct).length;
+  const wrong=session.length-correct;
+  const answeredCount=session.length;
+  const total=examTotal||order.length||0;
+  const remaining=Math.max(0,total-answeredCount);
+  $('liveCorrect').textContent=correct;
+  $('liveWrong').textContent=wrong;
+  $('liveAnswered').textContent=answeredCount;
+  $('liveSkipped').textContent=pendingSkippedCount();
+  $('liveRemaining').textContent=remaining;
+  $('count').textContent=mode==='test'?(answeredCount+'/'+total+' answered'):((Math.min(idx+1,total))+'/'+total);
+  $('barFill').style.width=(total?(answeredCount/total*100):0)+'%';
+}
+
 function render(){
   answered=false;
   const qi=order[idx], q=BANK[qi], layout=optionLayouts[qi];
-  const answeredCount=session.length;
-  $('count').textContent=mode==='test'?(answeredCount+'/'+examTotal+' answered'):((idx+1)+'/'+order.length);
-  $('barFill').style.width=((mode==='test'?answeredCount:idx)/examTotal*100)+'%';
+  updateLiveProgress();
   $('qtag').textContent=mode==='test'&&reviewingSkipped?('Skipped question '+(idx+1)+' of '+order.length):('Question '+(idx+1));
   $('qtopic').innerHTML=(mode==='test'&&reviewingSkipped?'<div class="skip-note">Skipped earlier — answer required</div>':'')+TOPIC[q.t].name;
   $('qtext').textContent=q.q;
@@ -1645,29 +1675,23 @@ function choose(displayIndex){
   buttons.forEach((b,bi)=>b.setAttribute('disabled',''));
   $('skipBtn').classList.add('hidden');
 
-  if(mode==='test'){
-    buttons[displayIndex].classList.add('selected');
-    $('explain').classList.add('hidden');
-  }else{
-    buttons.forEach((b,bi)=>{
-      const originalIndex=layout[bi];
-      if(originalIndex===q.a)b.classList.add('correct');
-      else if(bi===displayIndex)b.classList.add('wrong');
-      else b.classList.add('dim');
-    });
-    const ex=$('explain'), ref=REF[q.r];
-    ex.className='explain '+(wasCorrect?'good':'bad');
-    ex.innerHTML='<span class="verdict '+(wasCorrect?'g':'b')+'">'+(wasCorrect?'Correct':'Incorrect')+'</span>'+q.e+
-      '<br><a class="reflink" href="'+ref.u+'" target="_blank" rel="noopener">Read the rule: '+ref.l+'</a>';
-    ex.classList.remove('hidden');
-  }
+  buttons.forEach((b,bi)=>{
+    const originalIndex=layout[bi];
+    if(originalIndex===q.a)b.classList.add('correct');
+    else if(bi===displayIndex)b.classList.add('wrong');
+    else b.classList.add('dim');
+  });
+  const ex=$('explain'), ref=REF[q.r];
+  ex.className='explain '+(wasCorrect?'good':'bad');
+  ex.innerHTML='<span class="verdict '+(wasCorrect?'g':'b')+'">'+(wasCorrect?'Correct':'Incorrect')+'</span>'+q.e+
+    '<br><a class="reflink" href="'+ref.u+'" target="_blank" rel="noopener">Read the rule: '+ref.l+'</a>';
+  ex.classList.remove('hidden');
 
   const atEnd=idx>=order.length-1;
   const goesToSkipped=mode==='test'&&!reviewingSkipped&&atEnd&&skipped.length>0;
   $('nextBtn').textContent=testFailed()?'See results':(goesToSkipped?'Answer skipped questions':(atEnd?'See results':'Next'));
   $('nextBtn').classList.remove('hidden');
-  $('barFill').style.width=(session.length/examTotal*100)+'%';
-  $('count').textContent=mode==='test'?(session.length+'/'+examTotal+' answered'):((idx+1)+'/'+order.length);
+  updateLiveProgress();
   refreshMenu();
 }
 
@@ -1675,6 +1699,7 @@ function skipQuestion(){
   if(mode!=='test'||reviewingSkipped||answered)return;
   const qi=order[idx];
   if(!skipped.includes(qi))skipped.push(qi);
+  updateLiveProgress();
   advance();
 }
 
