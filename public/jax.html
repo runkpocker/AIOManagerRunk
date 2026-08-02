@@ -97,6 +97,13 @@
   .btn.go{background:var(--accent);color:#04121F}
   .btn.ghost{background:transparent;border:1.5px solid var(--line);color:var(--paper);box-shadow:none}
   .quiz-actions{display:flex;gap:10px;margin-top:14px}.quiz-actions .btn{margin-top:0;flex:1}.skip-note{font-size:12px;color:var(--gold);font-weight:800;margin:0 0 10px}
+  .practice-nav{display:flex;gap:10px;margin-top:14px}.practice-nav .btn{margin-top:0;flex:1}
+  .menu-subaction{width:100%;border:1px solid var(--line);background:transparent;color:var(--muted);border-radius:12px;padding:11px 14px;font-size:13px;font-weight:800;cursor:pointer;margin-top:-2px}
+  .menu-subaction:active{transform:scale(.985)}
+  .pager{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center;margin:14px 0 6px}
+  .pager .btn{margin-top:0;padding:12px 10px;font-size:14px}
+  .pager-count{font-size:12px;font-weight:800;color:var(--muted);white-space:nowrap;text-align:center}
+  .review-note{font-size:12px;color:var(--accent);font-weight:800;margin:0 0 10px}
   .score{width:150px;height:150px;margin:6px auto 14px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:var(--shadow)}
   .score .pct{font-size:42px;font-weight:850;line-height:1}
   .score .lab{font-size:12px;letter-spacing:.1em;text-transform:uppercase;margin-top:4px;opacity:.9}
@@ -167,6 +174,7 @@
         <div><div class="t">Retest Weak Spots</div><div class="d">Only the topics you keep missing.</div></div>
         <span class="n" id="weakCount"></span>
       </button>
+      <button class="menu-subaction hidden" id="resetWeakBtn" onclick="resetWeakSpots()">↻ Reset weak-spot history</button>
       <button class="card" id="studyBtn" onclick="showStudy()">
         <div class="ic">📌</div>
         <div><div class="t">Study List</div><div class="d">Every question you've gotten wrong, with answers.</div></div>
@@ -186,6 +194,10 @@
     <div class="quiz-actions">
       <button class="btn ghost hidden" id="skipBtn" onclick="skipQuestion()">Skip for now</button>
       <button class="btn go hidden" id="nextBtn" onclick="next()">Next</button>
+    </div>
+    <div class="practice-nav hidden" id="practiceNav">
+      <button class="btn ghost hidden" id="practiceBackBtn" onclick="practiceBack()">← Back</button>
+      <button class="btn go hidden" id="practiceNextBtn" onclick="practiceNext()">Next →</button>
     </div>
   </section>
 
@@ -1617,6 +1629,7 @@ const BANK = [
 const KEY_TOPIC="jax_topic_stats_v1", KEY_STUDY="jax_study_list_v1";
 let mode='test', order=[], idx=0, answered=false, session=[];
 let optionLayouts={}, skipped=[], reviewingSkipped=false, examTotal=0;
+let practiceMaxIdx=0, studyPos=0;
 const EXAM_LEN=30, PASS=25, FAIL_AT=6;
 const $=id=>document.getElementById(id);
 function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a}
@@ -1662,6 +1675,7 @@ function refreshMenu(){
   const weakQs=BANK.map((q,i)=>i).filter(i=>weakTopics.includes(BANK[i].t));
   $('weakCount').textContent=weakTopics.length?weakQs.length:'';
   $('weakBtn').disabled=!weakTopics.length;
+  $('resetWeakBtn').classList.toggle('hidden',!weakTopics.length);
   const sl=studyList();
   $('studyCount').textContent=sl.length?sl.length:'';
   $('studyBtn').disabled=!sl.length;
@@ -1669,7 +1683,7 @@ function refreshMenu(){
 refreshMenu();
 
 function start(m){
-  mode=m; idx=0; answered=false; session=[]; skipped=[]; reviewingSkipped=false;
+  mode=m; idx=0; answered=false; session=[]; skipped=[]; reviewingSkipped=false; practiceMaxIdx=0;
   if(m==='test') order=shuffle(BANK.map((q,i)=>i)).slice(0,EXAM_LEN);
   else if(m==='practice') order=shuffle(BANK.map((q,i)=>i));
   else if(m==='weak'){
@@ -1705,7 +1719,16 @@ function updateLiveProgress(){
   $('barFill').style.width=(total?(answeredCount/total*100):0)+'%';
 }
 
+function responseFor(qi){return session.find(s=>s.qi===qi)||null}
+
 function render(){
+  if(mode==='test')return renderTest();
+  return renderPractice();
+}
+
+// Full Test renderer intentionally preserves the existing registry-style flow.
+function renderTest(){
+  $('practiceNav').classList.add('hidden');
   answered=false;
   const qi=order[idx], q=BANK[qi], layout=optionLayouts[qi];
   updateLiveProgress();
@@ -1728,6 +1751,53 @@ function render(){
   window.scrollTo(0,0);
 }
 
+function renderPractice(){
+  const qi=order[idx], q=BANK[qi], layout=optionLayouts[qi], response=responseFor(qi);
+  answered=!!response;
+  updateLiveProgress();
+  $('qtag').textContent='Question '+(idx+1);
+  $('qtopic').innerHTML=(idx<practiceMaxIdx?'<div class="review-note">Reviewing a previous question</div>':'')+TOPIC[q.t].name;
+  const media=questionMediaHtml(q);
+  $('qmedia').innerHTML=media;
+  $('qmedia').classList.toggle('hidden',!media);
+  $('qtext').textContent=q.q;
+  const box=$('opts');box.innerHTML='';const keys=['A','B','C','D'];
+  layout.forEach((originalIndex,displayIndex)=>{
+    const b=document.createElement('button');b.className='opt';
+    b.innerHTML='<span class="key">'+keys[displayIndex]+'</span><span>'+q.o[originalIndex]+'</span>';
+    if(response){
+      b.setAttribute('disabled','');
+      if(originalIndex===q.a)b.classList.add('correct');
+      else if(originalIndex===response.chosen)b.classList.add('wrong');
+      else b.classList.add('dim');
+    }else{
+      b.onclick=()=>choose(displayIndex);
+    }
+    box.appendChild(b);
+  });
+
+  const ex=$('explain');
+  if(response){
+    const ref=REF[q.r];
+    ex.className='explain '+(response.correct?'good':'bad');
+    ex.innerHTML='<span class="verdict '+(response.correct?'g':'b')+'">'+(response.correct?'Correct':'Incorrect')+'</span>'+q.e+
+      '<br><a class="reflink" href="'+ref.u+'" target="_blank" rel="noopener">Read the rule: '+ref.l+'</a>';
+    ex.classList.remove('hidden');
+  }else{
+    ex.className='explain hidden';
+    ex.innerHTML='';
+  }
+
+  // Full Test controls stay hidden in Practice and Weak Spots.
+  $('skipBtn').classList.add('hidden');
+  $('nextBtn').classList.add('hidden');
+  $('practiceNav').classList.remove('hidden');
+  $('practiceBackBtn').classList.toggle('hidden',idx===0);
+  const canMoveForward=idx<practiceMaxIdx||!!response;
+  $('practiceNextBtn').classList.toggle('hidden',!canMoveForward);
+  $('practiceNextBtn').textContent=(idx===order.length-1&&response)?'See results':'Next →';
+  window.scrollTo(0,0);
+}
 function recordTopic(topicKey,wasCorrect){
   const st=topicStats();
   if(!st[topicKey])st[topicKey]={wrong:0,seen:0};
@@ -1742,6 +1812,12 @@ function wrongCount(){return session.filter(s=>!s.correct).length}
 function testFailed(){return mode==='test'&&wrongCount()>=FAIL_AT}
 
 function choose(displayIndex){
+  if(mode==='test')return chooseTest(displayIndex);
+  return choosePractice(displayIndex);
+}
+
+// Full Test answer handling intentionally preserves the existing behavior.
+function chooseTest(displayIndex){
   if(answered)return;answered=true;
   const qi=order[idx], q=BANK[qi], layout=optionLayouts[qi];
   const chosenOriginal=layout[displayIndex];
@@ -1773,6 +1849,18 @@ function choose(displayIndex){
   refreshMenu();
 }
 
+function choosePractice(displayIndex){
+  if(responseFor(order[idx]))return;
+  const qi=order[idx], q=BANK[qi], layout=optionLayouts[qi];
+  const chosenOriginal=layout[displayIndex];
+  const wasCorrect=chosenOriginal===q.a;
+  session.push({qi,chosen:chosenOriginal,correct:wasCorrect});
+  recordTopic(q.t,wasCorrect);
+  if(wasCorrect) removeStudy(qi); else addStudy(qi);
+  updateLiveProgress();
+  refreshMenu();
+  renderPractice();
+}
 function skipQuestion(){
   if(mode!=='test'||reviewingSkipped||answered)return;
   const qi=order[idx];
@@ -1794,7 +1882,33 @@ function advance(){
   results();
 }
 
-function next(){advance();}
+function next(){
+  if(mode==='test')advance();
+  else practiceNext();
+}
+
+function practiceBack(){
+  if(mode==='test'||idx<=0)return;
+  idx--;
+  renderPractice();
+}
+
+function practiceNext(){
+  if(mode==='test')return;
+  if(idx<practiceMaxIdx){
+    idx++;
+    renderPractice();
+    return;
+  }
+  if(!responseFor(order[idx]))return;
+  if(idx>=order.length-1){
+    results();
+    return;
+  }
+  idx++;
+  practiceMaxIdx=idx;
+  renderPractice();
+}
 
 function results(){
   $('quizScreen').classList.add('hidden');$('topbar').classList.add('hidden');
@@ -1869,31 +1983,46 @@ function sendResults(r){
     .catch(()=>{const el=$('sendStatus');if(el){el.className='send-status err';el.textContent='Results saved on this device (offline).';}});
 }
 
-function showStudy(){
+function showStudy(position=0){
   const sl=studyList();
   $('startScreen').classList.add('hidden');
+  $('quizScreen').classList.add('hidden');
+  $('topbar').classList.add('hidden');
   const scr=$('resultScreen');scr.classList.remove('hidden');
   if(!sl.length){
     scr.innerHTML='<div class="section-h">Study list</div><div class="verdict-sub">Nothing here yet. Questions you miss will be saved for you to review.</div><div class="actions"><button class="btn ghost" onclick="home()">Back to menu</button></div>';
     window.scrollTo(0,0);return;
   }
-  const items=sl.map(qi=>{const q=BANK[qi];const ref=REF[q.r];
-    return '<div class="rev wrong">'+questionMediaHtml(q,true)+'<div class="rq">'+q.q+'</div>'+
-      '<div class="line cor">'+q.o[q.a]+'</div>'+
-      '<div class="why">'+q.e+'</div>'+
-      '<a class="reflink" href="'+ref.u+'" target="_blank" rel="noopener">'+ref.l+'</a></div>';
-  }).join('');
-  scr.innerHTML='<div class="section-h">Study list — '+sl.length+' saved</div>'+items+
+  studyPos=Math.max(0,Math.min(position,sl.length-1));
+  const qi=sl[studyPos], q=BANK[qi], ref=REF[q.r];
+  const item='<div class="rev wrong">'+questionMediaHtml(q,true)+'<div class="rq">'+q.q+'</div>'+ 
+    '<div class="line cor">'+q.o[q.a]+'</div>'+ 
+    '<div class="why">'+q.e+'</div>'+ 
+    '<a class="reflink" href="'+ref.u+'" target="_blank" rel="noopener">'+ref.l+'</a></div>';
+  const prev=studyPos>0?'<button class="btn ghost" onclick="showStudy('+(studyPos-1)+')">← Back</button>':'<span></span>';
+  const next=studyPos<sl.length-1?'<button class="btn go" onclick="showStudy('+(studyPos+1)+')">Next →</button>':'<span></span>';
+  scr.innerHTML='<div class="section-h">Study list</div>'+ 
+    '<div class="pager">'+prev+'<div class="pager-count">'+(studyPos+1)+' / '+sl.length+'</div>'+next+'</div>'+ 
+    item+
     '<div class="actions">'+
-    '<button class="btn go" onclick="start(\'weak\')">Retest these topics</button>'+
-    '<button class="btn ghost" onclick="clearStudy()">Clear study list</button>'+
-    '<button class="btn ghost" onclick="home()">Back to menu</button></div>';
+      '<button class="btn go" onclick="start(\'weak\')">Retest these topics</button>'+ 
+      '<button class="btn ghost" onclick="clearStudy()">Clear study list</button>'+ 
+      '<button class="btn ghost" onclick="home()">Back to menu</button></div>';
   window.scrollTo(0,0);
 }
 function clearStudy(){save(KEY_STUDY,[]);refreshMenu();home();}
 
+function resetWeakSpots(){
+  const st=topicStats();
+  const hasWeak=Object.keys(st).some(t=>st[t]&&st[t].wrong>0);
+  if(!hasWeak)return;
+  if(!window.confirm('Reset all weak-spot history? This will not clear the Study List.'))return;
+  save(KEY_TOPIC,{});
+  refreshMenu();
+}
+
 function home(){
-  skipped=[];reviewingSkipped=false;
+  skipped=[];reviewingSkipped=false;practiceMaxIdx=0;
   $('resultScreen').classList.add('hidden');$('quizScreen').classList.add('hidden');
   $('startScreen').classList.remove('hidden');$('topbar').classList.add('hidden');
   refreshMenu();
