@@ -70,6 +70,7 @@
   .opt:active{transform:scale(.985)}
   .opt .key{width:26px;height:26px;flex:none;border-radius:7px;background:var(--panel2);color:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px}
   .opt.correct{border-color:var(--go);background:var(--go-bg)}.opt.correct .key{background:var(--go);color:#04140C}
+  .opt.selected{border-color:var(--accent);background:rgba(76,154,255,.12)}.opt.selected .key{background:var(--accent);color:#04121F}
   .opt.wrong{border-color:var(--stop);background:var(--stop-bg)}.opt.wrong .key{background:var(--stop);color:#210307}
   .opt.dim{opacity:.4}.opt[disabled]{cursor:default}
   .explain{margin-top:14px;background:var(--bg2);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:12px;padding:13px 15px;font-size:14.5px;line-height:1.55;color:#D3DBE6}
@@ -82,6 +83,7 @@
   .btn:active{transform:scale(.98)}
   .btn.go{background:var(--accent);color:#04121F}
   .btn.ghost{background:transparent;border:1.5px solid var(--line);color:var(--paper);box-shadow:none}
+  .quiz-actions{display:flex;gap:10px;margin-top:14px}.quiz-actions .btn{margin-top:0;flex:1}.skip-note{font-size:12px;color:var(--gold);font-weight:800;margin:0 0 10px}
   .score{width:150px;height:150px;margin:6px auto 14px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:var(--shadow)}
   .score .pct{font-size:42px;font-weight:850;line-height:1}
   .score .lab{font-size:12px;letter-spacing:.1em;text-transform:uppercase;margin-top:4px;opacity:.9}
@@ -129,12 +131,12 @@
       <div class="row"><span class="k">Questions on the real test</span><span class="v">30</span></div>
       <div class="row"><span class="k">Correct answers to pass</span><span class="v">25 &nbsp;(83%)</span></div>
       <div class="row"><span class="k">Question bank here</span><span class="v" id="bankCount">103</span></div>
-      <div class="row"><span class="k">Retake after a fail</span><span class="v">24 hours</span></div>
+      <div class="row"><span class="k">Knowledge-test attempts</span><span class="v">Once per day</span></div>
     </div>
     <div class="menu">
       <button class="card primary" onclick="start('test')">
         <div class="ic">📝</div>
-        <div><div class="t">Full Test</div><div class="d">30 questions, real conditions. Pass at 25, fail at 6 wrong.</div></div>
+        <div><div class="t">Full Test</div><div class="d">30 questions with balanced answer positions. Skipped questions return at the end.</div></div>
       </button>
       <button class="card" onclick="start('practice')">
         <div class="ic">📖</div>
@@ -160,7 +162,10 @@
     <div class="qtext" id="qtext"></div>
     <div class="opts" id="opts"></div>
     <div class="explain hidden" id="explain"></div>
-    <button class="btn go hidden" id="nextBtn" onclick="next()">Next</button>
+    <div class="quiz-actions">
+      <button class="btn ghost hidden" id="skipBtn" onclick="skipQuestion()">Skip for now</button>
+      <button class="btn go hidden" id="nextBtn" onclick="next()">Next</button>
+    </div>
   </section>
 
   <section class="screen hidden" id="resultScreen"></section>
@@ -176,7 +181,7 @@ const REF = {
   restraint:{l:"Occupant restraint laws — Alberta.ca",u:"https://www.alberta.ca/occupant-restraint-laws"},
   child:{l:"Child seats — Alberta.ca",u:"https://www.alberta.ca/child-seats"},
   distracted:{l:"Distracted driving — Alberta.ca",u:"https://www.alberta.ca/distracted-driving"},
-  guide:{l:"Alberta Driver's Guide (PDF)",u:"https://open.alberta.ca/dataset/ddca813d-5463-4daa-afc9-093807a1bb6a/resource/d4670a18-1a24-4b9f-a4d2-0932907d66e6/download/trans-drivers-guide-cars-light-trucks-2020-07.pdf"}
+  guide:{l:"Alberta Driver's Guide — Cars and light trucks (2026 PDF)",u:"https://open.alberta.ca/dataset/387f4e8a-6c0a-456a-ab31-995aadaf1f2b/resource/5babee5c-040d-4e41-981a-04f22e839aac/download/tec-drivers-guide-2026.pdf"}
 };
 const TOPIC = {
   gdl:{name:"GDL & Licence Rules",ref:"gdl"},
@@ -190,113 +195,1350 @@ const TOPIC = {
   restr:{name:"Seatbelts & Passengers",ref:"child"}
 };
 const BANK = [
-{q:"What is the minimum score needed to pass the Alberta Class 7 knowledge test?",o:["20 out of 30","23 out of 30","25 out of 30","28 out of 30"],a:2,t:"gdl",r:"test",e:"You need 25 out of 30 (83%) correct."},
-{q:"As a Class 7 learner, what blood alcohol level are you allowed while driving?",o:["Under 0.05","Under 0.08","0.00 — zero","One drink is fine"],a:2,t:"gdl",r:"class7",e:"Class 7 learners must be at zero (0.00). The same zero rule covers cannabis and other drugs."},
-{q:"A Class 7 learner must be accompanied by a supervising driver who is:",o:["Any licensed driver","Fully licensed, 18 or older, in the front passenger seat","A GDL driver in the back seat","At least 16 years old"],a:1,t:"gdl",r:"class7",e:"Your supervisor must be a fully licensed (non-GDL) driver, 18+, seated beside you in front."},
-{q:"At how many demerit points is a Class 7 learner's licence suspended?",o:["6 points","8 points","12 points","15 points"],a:1,t:"gdl",r:"demerit",e:"GDL drivers are suspended at 8 demerit points — lower than the 15 for fully licensed drivers."},
-{q:"A Class 7 learner is NOT permitted to drive between:",o:["10 p.m. and 6 a.m.","Midnight and 5 a.m.","11 p.m. and 4 a.m.","Sunset and sunrise"],a:1,t:"gdl",r:"class7",e:"Learners may not drive between midnight and 5 a.m."},
-{q:"You fail the knowledge test. How soon can you retake it?",o:["Same day","After 24 hours","After 1 week","After 30 days"],a:1,t:"gdl",r:"test",e:"You may retake after 24 hours (once per day), paying the fee again."},
-{q:"Can a Class 7 learner upgrade to a commercial licence (Class 1, 2, 3 or 4)?",o:["Yes, anytime","No — not while in GDL","Yes, after passing a test","Only Class 4"],a:1,t:"gdl",r:"class7",e:"GDL drivers cannot hold or upgrade to a commercial licence."},
-{q:"When can a Class 7 learner drive alone?",o:["After 6 months","Never — a supervisor is always required","On quiet roads only","During daytime only"],a:1,t:"gdl",r:"class7",e:"A Class 7 learner can never drive alone; a qualified supervisor must always be beside you."},
-{q:"To exit the GDL program and get a full Class 5 licence, you must first:",o:["Just turn 18","Be suspension-free and pass the required road test","Pay a fee only","Drive for 6 months"],a:1,t:"gdl",r:"class7",e:"You must be suspension-free for the required period and pass the road test."},
-{q:"What is the minimum age to get a Class 7 learner's licence in Alberta?",o:["12","14","16","18"],a:1,t:"gdl",r:"class7",e:"You can get a Class 7 licence at 14 (with parent/guardian consent if under 18)."},
-{q:"If you are under 18, what else do you need to apply for a Class 7 licence?",o:["A job","Parent or guardian consent","A vehicle of your own","Two references"],a:1,t:"gdl",r:"class7",e:"Applicants under 18 need written parental or guardian consent."},
-{q:"Can a Class 7 learner act as the supervising driver for another learner?",o:["Yes","No","Only a family member","Only in daytime"],a:1,t:"gdl",r:"class7",e:"A GDL driver cannot supervise another learner — the supervisor must be fully licensed."},
-{q:"The Class 7 knowledge test also requires you to pass a:",o:["Hearing test","Vision test","Physical fitness test","Written essay"],a:1,t:"gdl",r:"class7",e:"You must pass a vision test along with the knowledge test."},
-{q:"Besides alcohol, the zero-tolerance rule for Class 7 learners also covers:",o:["Coffee","Cannabis and other impairing drugs","Energy drinks","Prescription vitamins"],a:1,t:"gdl",r:"class7",e:"Zero tolerance applies to cannabis and other impairing drugs too, not just alcohol."},
-{q:"What is the speed limit in a school zone unless otherwise posted?",o:["20 km/h","30 km/h","40 km/h","50 km/h"],a:1,t:"zones",r:"zones",e:"School zones are 30 km/h (urban and rural) unless a sign posts otherwise."},
-{q:"What is the speed limit in a playground zone when in effect?",o:["25 km/h","30 km/h","40 km/h","50 km/h"],a:1,t:"zones",r:"zones",e:"Playground zones are 30 km/h unless otherwise posted."},
-{q:"When are playground zone speed limits in effect?",o:["Only on school days","8:30 a.m. until 1 hour after sunset, every day","Only 3 p.m.–6 p.m.","24 hours a day"],a:1,t:"zones",r:"zones",e:"Playground zones apply every day, 8:30 a.m. to one hour after sunset."},
-{q:"The default speed limit in an urban area (no posted sign) is:",o:["30 km/h","40 km/h","50 km/h","60 km/h"],a:2,t:"zones",r:"guide",e:"Unless posted otherwise, the urban default is 50 km/h."},
-{q:"You may pass another vehicle in a school or playground zone when the zone is in effect:",o:["Yes, if under the speed limit","Never — passing is not allowed","Only school buses","Only on the left"],a:1,t:"zones",r:"zones",e:"You must not pass another vehicle in a school or playground zone while the limit is in effect."},
-{q:"A school zone speed limit applies:",o:["24 hours a day","On school days during posted hours","Only in winter","Only when a crossing guard is present"],a:1,t:"zones",r:"zones",e:"School zone limits apply on school days during the posted hours."},
-{q:"You see a playground sign with no speed limit attached. This means:",o:["Speed up","You are entering a playground area — use caution, children may be near","Parking allowed","The zone has ended"],a:1,t:"zones",r:"zones",e:"A playground sign without a speed sign warns you're entering a playground area; drive with caution."},
-{q:"If you are caught speeding in a construction zone with workers present, penalties are usually:",o:["Reduced","Doubled / increased","Waived","Only a warning"],a:1,t:"zones",r:"guide",e:"Fines are typically increased in construction zones when workers are present."},
-{q:"On most open rural highways in Alberta, the speed limit is commonly:",o:["50 km/h","60 km/h","80–100 km/h","120 km/h"],a:2,t:"zones",r:"guide",e:"Rural highways are commonly 80 to 100 km/h, depending on the road and posted signs."},
-{q:"An eight-sided (octagon) red sign always means:",o:["Yield","Stop","Do not enter","Construction ahead"],a:1,t:"signs",r:"signs",e:"A red octagon is a STOP sign — the shape belongs to it alone."},
-{q:"A downward-pointing triangle sign means:",o:["Stop","Yield","No passing","School zone"],a:1,t:"signs",r:"signs",e:"The inverted triangle is a YIELD sign — give the right of way."},
-{q:"A yellow diamond-shaped sign is used to:",o:["Give an order you must obey","Warn you of a hazard ahead","Show route numbers","Mark parking rules"],a:1,t:"signs",r:"signs",e:"Yellow diamonds are warning signs — a hazard or road change is ahead."},
-{q:"Orange signs on a roadway indicate:",o:["A hospital","A construction or work zone","A rest stop","A wildlife reserve"],a:1,t:"signs",r:"signs",e:"Orange signs mark construction and work zones."},
-{q:"A five-sided (pentagon) sign usually marks:",o:["A hospital","A school zone or crossing","A no-parking area","A ferry"],a:1,t:"signs",r:"signs",e:"The pentagon shape marks school zones and crossings."},
-{q:"A white rectangular sign with black lettering (like a speed limit) is a:",o:["Warning sign","Regulatory sign — a law you must obey","Guide sign","Service sign"],a:1,t:"signs",r:"signs",e:"White regulatory signs give rules you must obey by law."},
-{q:"A green sign on a highway most often gives:",o:["A warning","Direction, distance, and destination info","A speed limit","A hazard alert"],a:1,t:"signs",r:"signs",e:"Green guide signs show directions, distances and destinations."},
-{q:"A blue sign with a white 'H' means:",o:["Highway entrance","Hospital nearby","Hotel","Bus stop"],a:1,t:"signs",r:"signs",e:"A blue 'H' sign points to a nearby hospital."},
-{q:"A flashing red traffic light means:",o:["Slow down and proceed","Come to a full stop, then go when safe","Stop and wait for green","Speed up to clear the intersection"],a:1,t:"signs",r:"guide",e:"Treat a flashing red like a stop sign: full stop, then go when safe."},
-{q:"A flashing amber (yellow) traffic light means:",o:["Stop completely","Slow down and proceed with caution","The light is broken — ignore it","Same as a red light"],a:1,t:"signs",r:"guide",e:"A flashing amber means slow down and proceed carefully."},
-{q:"You approach an intersection as the light turns yellow. You should:",o:["Always speed up to get through","Stop if you can do so safely","Stop instantly no matter what","Cover the horn"],a:1,t:"signs",r:"guide",e:"A yellow means red is coming — stop if you can do so safely."},
-{q:"A solid yellow line on your side of the road centre means:",o:["Passing is allowed","Do not pass","Two-way traffic ends","Bike lane"],a:1,t:"signs",r:"guide",e:"A solid yellow line on your side means no passing."},
-{q:"A red circle with a red line through a symbol means:",o:["The action is required","The action is prohibited","Caution ahead","Parking allowed"],a:1,t:"signs",r:"signs",e:"A red circle with a slash means the action shown is not allowed."},
-{q:"A 'U-turn' symbol inside a red circle with a slash means:",o:["U-turns encouraged","U-turns are not permitted here","Roundabout ahead","Detour"],a:1,t:"signs",r:"signs",e:"That sign prohibits U-turns at that location."},
-{q:"A white sign with a red circle and a horizontal white bar means:",o:["One way","Do not enter — road closed to you","Yield","Merge"],a:1,t:"signs",r:"signs",e:"A red circle with a white bar means the road ahead is closed to traffic in your direction (do not enter)."},
-{q:"A green light means:",o:["Go, but yield to traffic and pedestrians still in the intersection","Speed through","Stop","Turn only"],a:0,t:"signs",r:"guide",e:"On green you may go, but must yield to anyone still lawfully in the intersection and to pedestrians."},
-{q:"A steady green arrow pointing left means:",o:["Left turn is protected — oncoming traffic is stopped","Yield to oncoming traffic","Do not turn","No entry"],a:0,t:"signs",r:"guide",e:"A green arrow gives a protected turn in that direction; oncoming traffic is held."},
-{q:"Diamond-shaped white pavement markings on a lane usually indicate:",o:["A passing lane","A reserved lane (e.g. HOV / bus / bike)","A parking lane","A turning lane"],a:1,t:"signs",r:"guide",e:"Diamond markings indicate a reserved lane, such as HOV, bus, or bike use."},
-{q:"When two vehicles reach an uncontrolled intersection at the same time, who yields?",o:["The faster vehicle","The vehicle on the left yields to the one on the right","The larger vehicle","Whoever honks first"],a:1,t:"row",r:"guide",e:"Yield to the vehicle on your right when you arrive together with no signs or lights."},
-{q:"You want to make a left turn at a plain green light. You should:",o:["Turn immediately, you have right of way","Yield to oncoming traffic and pedestrians, then turn when clear","Speed up before oncoming cars arrive","Wait for a red light"],a:1,t:"row",r:"guide",e:"On a plain green, a left turn must yield to oncoming traffic and pedestrians first."},
-{q:"A pedestrian is waiting at a marked crosswalk. You should:",o:["Continue — cars have right of way","Stop and let them cross","Honk so they wait","Slow only if they've stepped out"],a:1,t:"row",r:"guide",e:"Yield and stop for pedestrians at a crosswalk."},
-{q:"At a four-way stop, right of way goes to:",o:["The biggest vehicle","Whoever arrived and stopped first","The vehicle turning left","The fastest to react"],a:1,t:"row",r:"guide",e:"The vehicle that stops first goes first; if tied, yield to the right."},
-{q:"In a roundabout (traffic circle), you should:",o:["Enter fast to merge","Yield to traffic already in the circle, then enter","Always stop first","Drive clockwise"],a:1,t:"row",r:"guide",e:"Yield to vehicles already in the roundabout, then enter on a safe gap."},
-{q:"You're turning left into a driveway across oncoming traffic. You must yield to:",o:["Nobody","Oncoming traffic and any pedestrians","Only large trucks","Only cyclists"],a:1,t:"row",r:"guide",e:"A left turn must yield to oncoming traffic and to pedestrians where you're turning."},
-{q:"When entering a highway from an on-ramp, you should:",o:["Stop at the end of the ramp","Match the speed of traffic and merge into a safe gap","Force your way in","Drive on the shoulder"],a:1,t:"row",r:"guide",e:"Use the ramp to reach traffic speed, then merge smoothly into a gap."},
-{q:"A funeral procession is passing through an intersection. You should:",o:["Cut through a gap","Wait and let the procession continue","Honk","Follow closely behind"],a:1,t:"row",r:"guide",e:"Yield to a funeral procession and don't break into it."},
-{q:"You reach a stop sign at the same time as a pedestrian starting to cross. You should:",o:["Go first","Let the pedestrian cross","Wave them back","Edge forward"],a:1,t:"row",r:"guide",e:"Pedestrians in or entering the crosswalk have the right of way."},
-{q:"When a vehicle ahead is stopped to let a pedestrian cross, drivers behind should:",o:["Pass it","Also stop and not pass","Honk","Change lanes and speed up"],a:1,t:"row",r:"guide",e:"Never pass a vehicle stopped for a pedestrian — someone may be crossing you can't see."},
-{q:"A school bus ahead has its RED lights flashing. You must:",o:["Slow down and pass carefully","Stop, whether approaching or following it","Honk to warn children","Keep going if no kids are visible"],a:1,t:"bus",r:"guide",e:"Stop for flashing red lights from either direction. Exception: the bus is across a physically divided (median) highway."},
-{q:"A school bus ahead turns on its flashing AMBER (yellow) lights. This means:",o:["The bus is speeding up","Be prepared to stop — red lights are coming","You may pass now","Ignore it"],a:1,t:"bus",r:"guide",e:"Amber flashing lights are a warning: get ready to stop. Red lights come next as it stops."},
-{q:"When do you NOT have to stop for a school bus with flashing red lights?",o:["Never — always stop","When it's across a physically divided (median) highway from you","When you're in a hurry","When it's raining"],a:1,t:"bus",r:"guide",e:"The only exception is when the bus is on the opposite side of a highway divided by a physical median."},
-{q:"The penalty for illegally passing a school bus with red lights flashing includes:",o:["A warning only","A fine plus demerit points","1 demerit point only","Loss of licence for a year"],a:1,t:"bus",r:"guide",e:"It's a serious offence carrying a fine plus demerit points."},
-{q:"After a school bus's red lights stop flashing, you may:",o:["Only reverse","Proceed with caution","Never move","Pass at high speed"],a:1,t:"bus",r:"guide",e:"Proceed only once the red lights stop flashing, watching for children still nearby."},
-{q:"Even when a school bus has no lights flashing, you should:",o:["Ignore it","Watch for children who may be crossing","Always pass immediately","Tailgate it"],a:1,t:"bus",r:"guide",e:"Stay alert for children loading, unloading, or crossing even if lights aren't flashing."},
-{q:"An emergency vehicle approaches with lights and siren on a two-way road. You should:",o:["Speed up to clear the area","Pull as far right as possible and stop","Stop immediately in your lane","Turn left to get out of the way"],a:1,t:"emerg",r:"guide",e:"Pull to the right and stop, clearing a path — no matter which direction it comes from."},
-{q:"How closely may you follow an emergency vehicle running its lights and siren?",o:["No closer than 60 m","No closer than 150 m","No closer than 500 m","You may follow directly behind"],a:1,t:"emerg",r:"guide",e:"Stay at least 150 metres back from a responding emergency vehicle."},
-{q:"You approach a stopped emergency vehicle with flashing lights on the roadside. You should:",o:["Maintain speed","Slow down and, if safe, move over to give it room","Stop in the lane","Speed past quickly"],a:1,t:"emerg",r:"guide",e:"Slow down and move over a lane if you safely can, to protect responders."},
-{q:"If an emergency vehicle approaches while you're stopped in an intersection, you should:",o:["Stay put and block it","Clear the intersection when safe, then pull right and stop","Reverse into traffic","Speed through the red light"],a:1,t:"emerg",r:"guide",e:"Clear the intersection safely, then pull to the right and stop to let it pass."},
-{q:"How far from a fire hydrant must you park (Alberta rules of the road)?",o:["1 metre","At least 5 metres","At least 15 metres","No restriction"],a:1,t:"park",r:"guide",e:"Do not park within 5 metres of a fire hydrant."},
-{q:"How close to a marked crosswalk may you park?",o:["Right up to it","No nearer than 5 metres","Anywhere","Only 1 metre"],a:1,t:"park",r:"guide",e:"Do not park within 5 metres of the near side of a marked crosswalk."},
-{q:"You may not park within how far of a stop sign or the corner of an intersection?",o:["1 metre","5 metres","20 metres","No limit"],a:1,t:"park",r:"guide",e:"Keep at least 5 metres from a stop/yield sign and from the corner at an intersection."},
-{q:"Parking on a bridge or in an underpass/subway is:",o:["Allowed if brief","Not permitted","Fine at night","Allowed with flashers"],a:1,t:"park",r:"guide",e:"You may not park on a bridge or in a subway/underpass or on their approaches."},
-{q:"Before opening your car door into traffic, you should:",o:["Open quickly","Check for cyclists, traffic and pedestrians first","Rely on your mirror only","Honk"],a:1,t:"park",r:"guide",e:"Always check that it's safe — watch for cyclists and passing traffic — before opening a door."},
-{q:"You may not park within about how far of an access to a driveway or private road?",o:["1.5 metres","10 metres","25 metres","No restriction"],a:0,t:"park",r:"guide",e:"Do not park within 1.5 metres of a driveway or private road access."},
-{q:"When parking facing downhill with a curb, you should turn your front wheels:",o:["Toward the curb","Away from the curb","Straight ahead","It doesn't matter"],a:0,t:"park",r:"guide",e:"Downhill, turn wheels toward the curb so the car rolls into it if the brakes slip."},
-{q:"When you leave your parked vehicle, you should:",o:["Leave it running","Set the parking brake and remove the key","Leave the door open","Leave it in neutral"],a:1,t:"park",r:"guide",e:"Set the parking brake, shift to park, remove the key, and lock up."},
-{q:"What is a safe following distance in good conditions?",o:["Half a car length","At least a 2-second gap","One car length at any speed","5 metres"],a:1,t:"safe",r:"guide",e:"Keep at least a 2-second gap — more in poor weather — so you have time to react."},
-{q:"In rain, snow, or fog you should increase your following distance to:",o:["Still 2 seconds","3 to 4 seconds or more","1 second","Half a second"],a:1,t:"safe",r:"guide",e:"Bad conditions need a larger gap — 3 to 4 seconds or more."},
-{q:"When must you turn your headlights on?",o:["Only in full darkness","One hour before sunset until one hour after sunrise, or in poor visibility","Only during rain","Never in the city"],a:1,t:"safe",r:"guide",e:"Use headlights from one hour before sunset to one hour after sunrise, plus any low-visibility time. Daytime running lights leave your rear dark."},
-{q:"If your vehicle starts to skid, you should:",o:["Brake hard and steer away","Ease off the gas and steer where you want to go","Accelerate through it","Close your eyes and hold on"],a:1,t:"safe",r:"guide",e:"Ease off the accelerator and steer where you want the front to go; avoid slamming the brakes."},
-{q:"On a slippery or icy road, you should:",o:["Brake hard to stop quickly","Slow down and increase your following distance","Drive at the normal speed limit","Follow closely to see better"],a:1,t:"safe",r:"guide",e:"Slow down and leave extra distance — stopping takes much longer on ice."},
-{q:"'Hydroplaning' happens when:",o:["Your engine overheats","Tires ride up on water and lose grip","You brake too gently","You use high beams"],a:1,t:"safe",r:"guide",e:"Hydroplaning is when tires lose contact by riding on a film of water; ease off the gas and don't brake hard."},
-{q:"To reduce the chance of hydroplaning, you should:",o:["Speed up","Slow down and keep tires properly inflated","Brake hard often","Turn sharply"],a:1,t:"safe",r:"guide",e:"Lower speed and good tires reduce hydroplaning risk."},
-{q:"What should you check before changing lanes?",o:["Just your mirrors","Mirrors, signal, and shoulder-check the blind spot","Only the vehicle ahead","Nothing if it looks empty"],a:1,t:"safe",r:"guide",e:"Mirror, signal, then shoulder-check your blind spot before moving over."},
-{q:"Large trucks and buses have big blind spots. The safest approach is:",o:["Drive in the blind spot to stay close","Avoid lingering beside them; if you can't see their mirrors, they can't see you","Pass on the right only","Tailgate so they see you"],a:1,t:"safe",r:"guide",e:"Stay out of the 'No-Zones'. If you can't see the driver in their mirror, they can't see you."},
-{q:"If you feel drowsy while driving, the safest thing is to:",o:["Open a window and push on","Pull over somewhere safe and rest","Drive faster to arrive sooner","Turn up the music"],a:1,t:"safe",r:"guide",e:"Fatigue impairs driving — pull over and rest; music and air don't fix drowsiness."},
-{q:"Using a hand-held cellphone while driving in Alberta is:",o:["Allowed at red lights","Illegal (distracted driving)","Fine for learners","Only illegal on highways"],a:1,t:"safe",r:"distracted",e:"Hand-held phone use is distracted driving — illegal, with a fine and demerit points."},
-{q:"When approaching a railway crossing with flashing red lights, you must:",o:["Speed across before the train","Stop and wait until the lights stop and it's safe","Slow to 30 and continue","Stop only if you see a train"],a:1,t:"safe",r:"guide",e:"Stop and wait until the lights stop flashing and the way is clear — never try to beat a train."},
-{q:"Before starting to drive, your first actions should be to:",o:["Turn up the music","Fasten your seatbelt and adjust your seat and mirrors","Rev the engine","Check your phone"],a:1,t:"safe",r:"guide",e:"Buckle up and adjust your seat and mirrors before you move."},
-{q:"The safest way to handle a tailgater behind you is to:",o:["Brake-check them","Move over when safe and let them pass","Speed up a lot","Ignore your mirrors"],a:1,t:"safe",r:"guide",e:"Let a tailgater pass when you safely can; don't brake-check or race."},
-{q:"When driving in fog, you should use:",o:["High beams","Low beams","No lights","Hazard lights while moving normally"],a:1,t:"safe",r:"guide",e:"Low beams work better in fog; high beams reflect back and reduce visibility."},
-{q:"The recommended way to steer in normal driving is:",o:["One finger","Both hands, around the 9 and 3 (or 8 and 4) positions","One hand at the top","With your knees"],a:1,t:"safe",r:"guide",e:"Keep both hands on the wheel at balanced positions for control."},
-{q:"'Nighttime' in the Alberta Basic Licence Driver's Guide is defined as:",o:["Sunset to sunrise","One hour after sunset to one hour before sunrise","9 p.m. to 6 a.m.","When streetlights are on"],a:1,t:"safe",r:"guide",e:"Officially, nighttime is one hour after sunset to one hour before sunrise."},
-{q:"You're being passed by another vehicle. You should:",o:["Speed up","Keep a steady speed and let them complete the pass","Brake suddenly","Move left"],a:1,t:"safe",r:"guide",e:"Hold your speed (or ease off slightly) so they can pass safely."},
-{q:"Cruise control is best avoided on:",o:["Dry highways","Wet, icy, or slippery roads","Long straight roads","Flat ground"],a:1,t:"safe",r:"guide",e:"Avoid cruise control on slippery roads where you may need full control."},
-{q:"When you plan to turn, you should signal:",o:["As you turn","Well before the turn to warn others","Only if cars are near","Never"],a:1,t:"safe",r:"guide",e:"Signal early, before slowing, to give others time to react."},
-{q:"If your brakes suddenly fail, one thing you can try is:",o:["Turn off the engine at speed","Pump the pedal and downshift to slow down","Steer into oncoming traffic","Close your eyes"],a:1,t:"safe",r:"guide",e:"Pump the pedal, shift to a lower gear, and use the parking brake gently; steer to a safe spot."},
-{q:"Your right wheels drift onto a soft shoulder. You should:",o:["Yank the wheel back hard","Ease off the gas and steer back gently once slowed","Brake hard immediately","Speed up"],a:1,t:"safe",r:"guide",e:"Don't jerk the wheel — slow down, then ease back onto the road smoothly."},
-{q:"When you approach a curve, you should:",o:["Speed up through it","Slow down before the curve, then accelerate gently through","Brake hard mid-curve","Coast in neutral"],a:1,t:"safe",r:"guide",e:"Reduce speed before the curve, then power gently through for control."},
-{q:"The best defence against another driver's mistake is to:",o:["Drive faster","Stay alert and keep space around your vehicle","Follow closely","Use your horn often"],a:1,t:"safe",r:"guide",e:"Defensive driving — space, attention, anticipating others — prevents most collisions."},
-{q:"On a multi-lane road, slower traffic should generally keep:",o:["Left","Right","Centre","Any lane"],a:1,t:"safe",r:"guide",e:"Keep right except to pass; leave the left lane for passing."},
-{q:"When you're the first to arrive at a collision scene, you should:",o:["Drive away","Stop if safe, call for help, and warn oncoming traffic","Move injured people immediately","Take photos and leave"],a:1,t:"safe",r:"guide",e:"Stop if safe, call 911, and warn traffic; don't move the injured unless there's danger."},
-{q:"How many passengers may a Class 7 learner carry?",o:["No passengers at all","Only family members","No more than the number of seatbelts","Up to 4 friends"],a:2,t:"restr",r:"restraint",e:"No more passengers than there are working seatbelts in the vehicle."},
-{q:"Who must wear a seatbelt in the vehicle?",o:["Only the driver","Only front-seat riders","The driver and every passenger","Only passengers under 16"],a:2,t:"restr",r:"restraint",e:"The driver and all passengers must be properly buckled up."},
-{q:"Who is legally responsible for making sure passengers under 16 are buckled up?",o:["The passengers themselves","The driver","The parents at home","No one"],a:1,t:"restr",r:"restraint",e:"The driver is responsible for ensuring passengers under 16 are properly secured."},
-{q:"In Alberta, a child must ride rear-facing until at least:",o:["6 months","2 years of age (or the seat's limit)","5 years","They can walk"],a:1,t:"restr",r:"child",e:"Children ride rear-facing until at least age 2 or the seat's stated height/weight limit."},
-{q:"A forward-facing child car seat is required for children who are:",o:["Any age","Under 6 years and under 18 kg (40 lb)","Over 10","Taller than an adult"],a:1,t:"restr",r:"child",e:"Children under 6 and under 18 kg (40 lb) must use a proper child car seat."},
-{q:"Booster seats in Alberta are:",o:["Required by law for all kids","Strongly recommended but not legally required","Illegal","Only for infants"],a:1,t:"restr",r:"child",e:"Booster seats aren't legally required in Alberta but are strongly recommended until the belt fits properly."},
-{q:"The safest place for children under 13 to ride is:",o:["Front seat","Back seat","The trunk","On a lap"],a:1,t:"restr",r:"child",e:"Children are safest in the back seat, especially with front airbags."},
-{q:"A seatbelt should be worn:",o:["Under the arm","Across the chest and low across the hips","Behind the back","Loosely"],a:1,t:"restr",r:"restraint",e:"Wear the shoulder belt across the chest and the lap belt low and snug across the hips."}
+  {
+    "q": "What is the minimum score needed to pass the Alberta Class 7 knowledge test?",
+    "o": [
+      "20 out of 30",
+      "23 out of 30",
+      "25 out of 30",
+      "28 out of 30"
+    ],
+    "a": 2,
+    "t": "gdl",
+    "r": "test",
+    "e": "You need 25 out of 30 (83%) correct."
+  },
+  {
+    "q": "As a Class 7 learner, what blood alcohol level are you allowed while driving?",
+    "o": [
+      "Under 0.05",
+      "Under 0.08",
+      "0.00 — zero",
+      "One drink is fine"
+    ],
+    "a": 2,
+    "t": "gdl",
+    "r": "class7",
+    "e": "Class 7 learners must be at zero (0.00). The same zero rule covers cannabis and other drugs."
+  },
+  {
+    "q": "A Class 7 learner must be accompanied by a supervising driver who is:",
+    "o": [
+      "Any licensed driver",
+      "Fully licensed, 18 or older, in the front passenger seat",
+      "A GDL driver in the back seat",
+      "At least 16 years old"
+    ],
+    "a": 1,
+    "t": "gdl",
+    "r": "class7",
+    "e": "Your supervisor must be a fully licensed (non-GDL) driver, 18+, seated beside you in front."
+  },
+  {
+    "q": "At how many demerit points is a Class 7 learner's licence suspended?",
+    "o": [
+      "6 points",
+      "8 points",
+      "12 points",
+      "15 points"
+    ],
+    "a": 1,
+    "t": "gdl",
+    "r": "demerit",
+    "e": "GDL drivers are suspended at 8 demerit points — lower than the 15 for fully licensed drivers."
+  },
+  {
+    "q": "A Class 7 learner is NOT permitted to drive between:",
+    "o": [
+      "10 p.m. and 6 a.m.",
+      "Midnight and 5 a.m.",
+      "11 p.m. and 4 a.m.",
+      "Sunset and sunrise"
+    ],
+    "a": 1,
+    "t": "gdl",
+    "r": "class7",
+    "e": "Learners may not drive between midnight and 5 a.m."
+  },
+  {
+    "q": "How often may you attempt the Alberta driver knowledge test?",
+    "o": [
+      "Twice in a 24-hour period",
+      "Once per day",
+      "Once every 7 days",
+      "Three times per calendar month"
+    ],
+    "a": 1,
+    "t": "gdl",
+    "r": "test",
+    "e": "The knowledge test may be taken once per day, and the fee must be paid for each attempt."
+  },
+  {
+    "q": "Can a Class 7 learner upgrade to a commercial licence (Class 1, 2, 3 or 4)?",
+    "o": [
+      "Yes, anytime",
+      "No — not while in GDL",
+      "Yes, after passing a test",
+      "Only Class 4"
+    ],
+    "a": 1,
+    "t": "gdl",
+    "r": "class7",
+    "e": "GDL drivers cannot hold or upgrade to a commercial licence."
+  },
+  {
+    "q": "When can a Class 7 learner drive alone?",
+    "o": [
+      "After holding the licence for 6 months",
+      "Never — a qualified supervising driver is required",
+      "After turning 16, but only during daylight hours",
+      "After completing an approved driver-training course"
+    ],
+    "a": 1,
+    "t": "gdl",
+    "r": "class7",
+    "e": "A Class 7 learner can never drive alone; a qualified supervisor must always be beside you."
+  },
+  {
+    "q": "To exit the GDL program and get a full Class 5 licence, you must first:",
+    "o": [
+      "Be at least 18, complete the required probationary period, and be suspension- and demerit-free for the last 12 months",
+      "Pass an advanced road test after holding a Class 5-GDL licence for one year",
+      "Hold a Class 7 licence for 24 months without taking a Class 5 road test",
+      "Complete a commercial driver-training course and turn 18"
+    ],
+    "a": 0,
+    "t": "gdl",
+    "r": "class7",
+    "e": "To exit GDL, you must be at least 18, complete the required probationary period, and be suspension- and demerit-free for the last 12 months. An advanced road test is no longer required."
+  },
+  {
+    "q": "What is the minimum age to get a Class 7 learner's licence in Alberta?",
+    "o": [
+      "12",
+      "14",
+      "16",
+      "18"
+    ],
+    "a": 1,
+    "t": "gdl",
+    "r": "class7",
+    "e": "You can get a Class 7 licence at 14 (with parent/guardian consent if under 18)."
+  },
+  {
+    "q": "If you are under 18, what else do you need to apply for a Class 7 licence?",
+    "o": [
+      "A job",
+      "Parent or guardian consent",
+      "A vehicle of your own",
+      "Two references"
+    ],
+    "a": 1,
+    "t": "gdl",
+    "r": "class7",
+    "e": "Applicants under 18 need written parental or guardian consent."
+  },
+  {
+    "q": "Can a Class 7 learner act as the supervising driver for another learner?",
+    "o": [
+      "Yes",
+      "No",
+      "Only a family member",
+      "Only in daytime"
+    ],
+    "a": 1,
+    "t": "gdl",
+    "r": "class7",
+    "e": "A GDL driver cannot supervise another learner — the supervisor must be fully licensed."
+  },
+  {
+    "q": "The Class 7 knowledge test also requires you to pass a:",
+    "o": [
+      "Hearing test",
+      "Vision test",
+      "Physical fitness test",
+      "Written essay"
+    ],
+    "a": 1,
+    "t": "gdl",
+    "r": "class7",
+    "e": "You must pass a vision test along with the knowledge test."
+  },
+  {
+    "q": "Besides alcohol, the zero-tolerance rule for Class 7 learners also covers:",
+    "o": [
+      "Coffee",
+      "Cannabis and other impairing drugs",
+      "Energy drinks",
+      "Prescription vitamins"
+    ],
+    "a": 1,
+    "t": "gdl",
+    "r": "class7",
+    "e": "Zero tolerance applies to cannabis and other impairing drugs too, not just alcohol."
+  },
+  {
+    "q": "What is the speed limit in a school zone unless otherwise posted?",
+    "o": [
+      "20 km/h",
+      "30 km/h",
+      "40 km/h",
+      "50 km/h"
+    ],
+    "a": 1,
+    "t": "zones",
+    "r": "zones",
+    "e": "School zones are 30 km/h (urban and rural) unless a sign posts otherwise."
+  },
+  {
+    "q": "What is the speed limit in a playground zone when in effect?",
+    "o": [
+      "25 km/h",
+      "30 km/h",
+      "40 km/h",
+      "50 km/h"
+    ],
+    "a": 1,
+    "t": "zones",
+    "r": "zones",
+    "e": "Playground zones are 30 km/h unless otherwise posted."
+  },
+  {
+    "q": "When are playground zone speed limits in effect?",
+    "o": [
+      "Only on school days during the hours posted below the sign",
+      "Every day from 8:30 a.m. until one hour after sunset, unless local signs state different hours",
+      "Every day from 7:30 a.m. until 9:00 p.m. throughout Alberta",
+      "At all times, unless an end-of-zone sign is posted"
+    ],
+    "a": 1,
+    "t": "zones",
+    "r": "zones",
+    "e": "Playground zones apply every day, 8:30 a.m. to one hour after sunset."
+  },
+  {
+    "q": "The default speed limit in an urban area (no posted sign) is:",
+    "o": [
+      "30 km/h",
+      "40 km/h",
+      "50 km/h",
+      "60 km/h"
+    ],
+    "a": 2,
+    "t": "zones",
+    "r": "guide",
+    "e": "Unless posted otherwise, the urban default is 50 km/h."
+  },
+  {
+    "q": "You may pass another vehicle in a school or playground zone when the zone is in effect:",
+    "o": [
+      "Only when both vehicles are below 30 km/h",
+      "Never — passing a vehicle travelling in the same direction is not allowed",
+      "Only when the vehicle ahead is turning right",
+      "Only when there are two marked lanes in your direction"
+    ],
+    "a": 1,
+    "t": "zones",
+    "r": "zones",
+    "e": "You must not pass another vehicle in a school or playground zone while the limit is in effect."
+  },
+  {
+    "q": "A school zone speed limit applies:",
+    "o": [
+      "24 hours a day",
+      "On school days during posted hours",
+      "Only in winter",
+      "Only when a crossing guard is present"
+    ],
+    "a": 1,
+    "t": "zones",
+    "r": "zones",
+    "e": "School zone limits apply on school days during the posted hours."
+  },
+  {
+    "q": "You see a playground sign with no speed limit attached. This means:",
+    "o": [
+      "You are entering a 30 km/h playground zone immediately",
+      "You are entering a playground area — use caution because children may be nearby",
+      "The reduced speed applies only during school hours",
+      "You have reached the end of a playground zone"
+    ],
+    "a": 1,
+    "t": "zones",
+    "r": "zones",
+    "e": "A playground sign without a speed sign warns you're entering a playground area; drive with caution."
+  },
+  {
+    "q": "If you are caught speeding in a construction zone with workers present, penalties are usually:",
+    "o": [
+      "The same as elsewhere unless a flag person is present",
+      "Doubled or otherwise increased",
+      "Reduced when traffic is light",
+      "Applied only if the temporary speed is below 50 km/h"
+    ],
+    "a": 1,
+    "t": "zones",
+    "r": "guide",
+    "e": "Fines are typically increased in construction zones when workers are present."
+  },
+  {
+    "q": "On most open rural highways in Alberta, the speed limit is commonly:",
+    "o": [
+      "50 km/h",
+      "60 km/h",
+      "80–100 km/h",
+      "120 km/h"
+    ],
+    "a": 2,
+    "t": "zones",
+    "r": "guide",
+    "e": "Rural highways are commonly 80 to 100 km/h, depending on the road and posted signs."
+  },
+  {
+    "q": "An eight-sided (octagon) red sign always means:",
+    "o": [
+      "Yield",
+      "Stop",
+      "Do not enter",
+      "Construction ahead"
+    ],
+    "a": 1,
+    "t": "signs",
+    "r": "signs",
+    "e": "A red octagon is a STOP sign — the shape belongs to it alone."
+  },
+  {
+    "q": "A downward-pointing triangle sign means:",
+    "o": [
+      "Stop",
+      "Yield",
+      "No passing",
+      "School zone"
+    ],
+    "a": 1,
+    "t": "signs",
+    "r": "signs",
+    "e": "The inverted triangle is a YIELD sign — give the right of way."
+  },
+  {
+    "q": "A yellow diamond-shaped sign is used to:",
+    "o": [
+      "Give an order you must obey",
+      "Warn you of a hazard ahead",
+      "Show route numbers",
+      "Mark parking rules"
+    ],
+    "a": 1,
+    "t": "signs",
+    "r": "signs",
+    "e": "Yellow diamonds are warning signs — a hazard or road change is ahead."
+  },
+  {
+    "q": "Orange signs on a roadway indicate:",
+    "o": [
+      "A hospital",
+      "A construction or work zone",
+      "A rest stop",
+      "A wildlife reserve"
+    ],
+    "a": 1,
+    "t": "signs",
+    "r": "signs",
+    "e": "Orange signs mark construction and work zones."
+  },
+  {
+    "q": "A five-sided (pentagon) sign usually marks:",
+    "o": [
+      "A hospital",
+      "A school zone or crossing",
+      "A no-parking area",
+      "A ferry"
+    ],
+    "a": 1,
+    "t": "signs",
+    "r": "signs",
+    "e": "The pentagon shape marks school zones and crossings."
+  },
+  {
+    "q": "A white rectangular sign with black lettering (like a speed limit) is a:",
+    "o": [
+      "Warning sign describing a possible hazard",
+      "Regulatory sign stating a rule that must be obeyed",
+      "Guide sign showing destinations and distances",
+      "Service sign identifying facilities for drivers"
+    ],
+    "a": 1,
+    "t": "signs",
+    "r": "signs",
+    "e": "White regulatory signs give rules you must obey by law."
+  },
+  {
+    "q": "A green sign on a highway most often gives:",
+    "o": [
+      "Advance warning of a road hazard or curve",
+      "Directions, distances, routes, and destination information",
+      "A regulatory rule such as a maximum speed",
+      "Information about construction and temporary detours"
+    ],
+    "a": 1,
+    "t": "signs",
+    "r": "signs",
+    "e": "Green guide signs show directions, distances and destinations."
+  },
+  {
+    "q": "A blue sign with a white 'H' means:",
+    "o": [
+      "Highway entrance",
+      "Hospital nearby",
+      "Hotel",
+      "Bus stop"
+    ],
+    "a": 1,
+    "t": "signs",
+    "r": "signs",
+    "e": "A blue 'H' sign points to a nearby hospital."
+  },
+  {
+    "q": "A flashing red traffic light means:",
+    "o": [
+      "Yield without stopping when the intersection appears clear",
+      "Come to a full stop, then proceed when safe",
+      "Remain stopped until the signal changes to a steady green",
+      "Stop only when cross traffic is present"
+    ],
+    "a": 1,
+    "t": "signs",
+    "r": "guide",
+    "e": "Treat a flashing red like a stop sign: full stop, then go when safe."
+  },
+  {
+    "q": "A flashing amber (yellow) traffic light means:",
+    "o": [
+      "Stop, then proceed as at a four-way stop",
+      "Slow down and proceed with caution",
+      "Continue at the posted speed because you have priority",
+      "Yield only to vehicles approaching from the right"
+    ],
+    "a": 1,
+    "t": "signs",
+    "r": "guide",
+    "e": "A flashing amber means slow down and proceed carefully."
+  },
+  {
+    "q": "You approach an intersection as the light turns yellow. You should:",
+    "o": [
+      "Accelerate if you believe you can enter before the red light",
+      "Stop if you can do so safely",
+      "Brake immediately even if an abrupt stop may cause a collision",
+      "Continue at the same speed because yellow still gives full right of way"
+    ],
+    "a": 1,
+    "t": "signs",
+    "r": "guide",
+    "e": "A yellow means red is coming — stop if you can do so safely."
+  },
+  {
+    "q": "A solid yellow line on your side of the road centre means:",
+    "o": [
+      "Passing is allowed",
+      "Do not pass",
+      "Two-way traffic ends",
+      "Bike lane"
+    ],
+    "a": 1,
+    "t": "signs",
+    "r": "guide",
+    "e": "A solid yellow line on your side means no passing."
+  },
+  {
+    "q": "A red circle with a red line through a symbol means:",
+    "o": [
+      "The action shown is mandatory",
+      "The action shown is prohibited",
+      "The action is permitted only with caution",
+      "The restriction applies only to commercial vehicles"
+    ],
+    "a": 1,
+    "t": "signs",
+    "r": "signs",
+    "e": "A red circle with a slash means the action shown is not allowed."
+  },
+  {
+    "q": "A 'U-turn' symbol inside a red circle with a slash means:",
+    "o": [
+      "U-turns are permitted after yielding",
+      "U-turns are not permitted at that location",
+      "A divided roadway begins ahead",
+      "Drivers must use the next intersection to turn around"
+    ],
+    "a": 1,
+    "t": "signs",
+    "r": "signs",
+    "e": "That sign prohibits U-turns at that location."
+  },
+  {
+    "q": "A white sign with a red circle and a horizontal white bar means:",
+    "o": [
+      "Traffic may travel in one direction only",
+      "Do not enter from your direction",
+      "Yield before entering the roadway",
+      "Merge with traffic in the adjacent lane"
+    ],
+    "a": 1,
+    "t": "signs",
+    "r": "signs",
+    "e": "A red circle with a white bar means the road ahead is closed to traffic in your direction (do not enter)."
+  },
+  {
+    "q": "A green light means:",
+    "o": [
+      "Proceed when safe, yielding to pedestrians and traffic still lawfully in the intersection",
+      "Proceed immediately because all other road users must stop",
+      "Proceed straight only; turns require a green arrow",
+      "Enter only after stopping and checking both directions"
+    ],
+    "a": 0,
+    "t": "signs",
+    "r": "guide",
+    "e": "On green you may go, but must yield to anyone still lawfully in the intersection and to pedestrians."
+  },
+  {
+    "q": "A steady green arrow pointing left means:",
+    "o": [
+      "Left turn is protected — oncoming traffic is stopped",
+      "Yield to oncoming traffic",
+      "Do not turn",
+      "No entry"
+    ],
+    "a": 0,
+    "t": "signs",
+    "r": "guide",
+    "e": "A green arrow gives a protected turn in that direction; oncoming traffic is held."
+  },
+  {
+    "q": "Diamond-shaped white pavement markings on a lane usually indicate:",
+    "o": [
+      "A lane intended primarily for passing",
+      "A reserved lane, such as an HOV, bus, or bicycle lane",
+      "A lane where curbside parking is permitted",
+      "A lane that must be used by turning vehicles"
+    ],
+    "a": 1,
+    "t": "signs",
+    "r": "guide",
+    "e": "Diamond markings indicate a reserved lane, such as HOV, bus, or bike use."
+  },
+  {
+    "q": "When two vehicles reach an uncontrolled intersection at the same time, who yields?",
+    "o": [
+      "The vehicle on the right yields to the vehicle on the left",
+      "The vehicle on the left yields to the vehicle on the right",
+      "The vehicle turning right yields to the vehicle travelling straight",
+      "The vehicle on the narrower road has the right of way"
+    ],
+    "a": 1,
+    "t": "row",
+    "r": "guide",
+    "e": "Yield to the vehicle on your right when you arrive together with no signs or lights."
+  },
+  {
+    "q": "You want to make a left turn at a plain green light. You should:",
+    "o": [
+      "Begin the turn before oncoming traffic enters the intersection",
+      "Yield to oncoming traffic and pedestrians, then turn when clear",
+      "Wait in the crosswalk until the signal turns yellow",
+      "Turn at the same time as opposing right-turning traffic"
+    ],
+    "a": 1,
+    "t": "row",
+    "r": "guide",
+    "e": "On a plain green, a left turn must yield to oncoming traffic and pedestrians first."
+  },
+  {
+    "q": "A pedestrian is waiting at a marked crosswalk. You should:",
+    "o": [
+      "Continue if the pedestrian has not stepped off the curb",
+      "Stop and allow the pedestrian to cross",
+      "Slow down but continue if your lane is clear",
+      "Stop only when the pedestrian reaches your half of the roadway"
+    ],
+    "a": 1,
+    "t": "row",
+    "r": "guide",
+    "e": "Yield and stop for pedestrians at a crosswalk."
+  },
+  {
+    "q": "At a four-way stop, right of way goes to:",
+    "o": [
+      "The biggest vehicle",
+      "Whoever arrived and stopped first",
+      "The vehicle turning left",
+      "The fastest to react"
+    ],
+    "a": 1,
+    "t": "row",
+    "r": "guide",
+    "e": "The vehicle that stops first goes first; if tied, yield to the right."
+  },
+  {
+    "q": "In a roundabout (traffic circle), you should:",
+    "o": [
+      "Enter at traffic speed because vehicles inside must yield",
+      "Yield to traffic already circulating, then enter when a safe gap is available",
+      "Come to a full stop before entering, even when the circle is empty",
+      "Enter to the left and travel clockwise around the centre island"
+    ],
+    "a": 1,
+    "t": "row",
+    "r": "guide",
+    "e": "Yield to vehicles already in the roundabout, then enter on a safe gap."
+  },
+  {
+    "q": "You're turning left into a driveway across oncoming traffic. You must yield to:",
+    "o": [
+      "Nobody",
+      "Oncoming traffic and any pedestrians",
+      "Only large trucks",
+      "Only cyclists"
+    ],
+    "a": 1,
+    "t": "row",
+    "r": "guide",
+    "e": "A left turn must yield to oncoming traffic and to pedestrians where you're turning."
+  },
+  {
+    "q": "When entering a highway from an on-ramp, you should:",
+    "o": [
+      "Enter below highway speed and accelerate after changing lanes",
+      "Match the speed of traffic and merge into a safe gap",
+      "Stop near the end of the acceleration lane until both lanes are clear",
+      "Continue along the shoulder until another driver creates a gap"
+    ],
+    "a": 1,
+    "t": "row",
+    "r": "guide",
+    "e": "Use the ramp to reach traffic speed, then merge smoothly into a gap."
+  },
+  {
+    "q": "A funeral procession is passing through an intersection. You should:",
+    "o": [
+      "Enter through a large gap if your light is green",
+      "Wait and allow the procession to continue",
+      "Join the procession briefly to cross the intersection",
+      "Proceed when the lead vehicle has passed, regardless of following vehicles"
+    ],
+    "a": 1,
+    "t": "row",
+    "r": "guide",
+    "e": "Yield to a funeral procession and don't break into it."
+  },
+  {
+    "q": "You reach a stop sign at the same time as a pedestrian starting to cross. You should:",
+    "o": [
+      "Go first",
+      "Let the pedestrian cross",
+      "Wave them back",
+      "Edge forward"
+    ],
+    "a": 1,
+    "t": "row",
+    "r": "guide",
+    "e": "Pedestrians in or entering the crosswalk have the right of way."
+  },
+  {
+    "q": "When a vehicle ahead is stopped to let a pedestrian cross, drivers behind should:",
+    "o": [
+      "Pass only after changing to the lane farthest from the pedestrian",
+      "Also stop and not pass the stopped vehicle",
+      "Proceed slowly if the pedestrian is not visible",
+      "Pass when the stopped driver signals that the lane is clear"
+    ],
+    "a": 1,
+    "t": "row",
+    "r": "guide",
+    "e": "Never pass a vehicle stopped for a pedestrian — someone may be crossing you can't see."
+  },
+  {
+    "q": "A school bus ahead has its RED lights flashing. You must:",
+    "o": [
+      "Stop only when you are travelling behind the bus",
+      "Stop whether approaching or following, unless separated by a physical median",
+      "Slow to 30 km/h and pass when no children are visible",
+      "Stop only while the bus door is open"
+    ],
+    "a": 1,
+    "t": "bus",
+    "r": "guide",
+    "e": "Stop for flashing red lights from either direction. Exception: the bus is across a physically divided (median) highway."
+  },
+  {
+    "q": "A school bus ahead turns on its flashing AMBER (yellow) lights. This means:",
+    "o": [
+      "The bus is about to re-enter traffic",
+      "Be prepared to stop because the red lights will follow",
+      "Pass before the bus reaches its stopping point",
+      "Stop immediately in your lane before reaching the bus"
+    ],
+    "a": 1,
+    "t": "bus",
+    "r": "guide",
+    "e": "Amber flashing lights are a warning: get ready to stop. Red lights come next as it stops."
+  },
+  {
+    "q": "When do you NOT have to stop for a school bus with flashing red lights?",
+    "o": [
+      "When you are approaching from the opposite direction on any four-lane road",
+      "When the bus is on the opposite side of a highway divided by a physical median",
+      "When the bus is stopped at a marked bus bay",
+      "When all children have reached the sidewalk"
+    ],
+    "a": 1,
+    "t": "bus",
+    "r": "guide",
+    "e": "The only exception is when the bus is on the opposite side of a highway divided by a physical median."
+  },
+  {
+    "q": "The penalty for illegally passing a school bus with red lights flashing includes:",
+    "o": [
+      "A warning only",
+      "A fine plus demerit points",
+      "1 demerit point only",
+      "Loss of licence for a year"
+    ],
+    "a": 1,
+    "t": "bus",
+    "r": "guide",
+    "e": "It's a serious offence carrying a fine plus demerit points."
+  },
+  {
+    "q": "After a school bus's red lights stop flashing, you may:",
+    "o": [
+      "Proceed as soon as the stop arm begins retracting",
+      "Proceed with caution after confirming the way is clear",
+      "Pass only after the bus begins moving",
+      "Proceed without checking because children no longer have right of way"
+    ],
+    "a": 1,
+    "t": "bus",
+    "r": "guide",
+    "e": "Proceed only once the red lights stop flashing, watching for children still nearby."
+  },
+  {
+    "q": "Even when a school bus has no lights flashing, you should:",
+    "o": [
+      "Treat it like any other vehicle and maintain normal following distance",
+      "Watch carefully for children who may be loading, unloading, or crossing",
+      "Pass whenever the bus travels below the posted speed",
+      "Remain stopped until the bus driver waves you through"
+    ],
+    "a": 1,
+    "t": "bus",
+    "r": "guide",
+    "e": "Stay alert for children loading, unloading, or crossing even if lights aren't flashing."
+  },
+  {
+    "q": "An emergency vehicle approaches with lights and siren on a two-way road. You should:",
+    "o": [
+      "Continue to the next intersection before stopping",
+      "Pull as far right as practical and stop",
+      "Stop where you are, even if you block the travel lane",
+      "Move left if the emergency vehicle is approaching from behind"
+    ],
+    "a": 1,
+    "t": "emerg",
+    "r": "guide",
+    "e": "Pull to the right and stop, clearing a path — no matter which direction it comes from."
+  },
+  {
+    "q": "How closely may you follow an emergency vehicle running its lights and siren?",
+    "o": [
+      "No closer than 60 m",
+      "No closer than 150 m",
+      "No closer than 500 m",
+      "You may follow directly behind"
+    ],
+    "a": 1,
+    "t": "emerg",
+    "r": "guide",
+    "e": "Stay at least 150 metres back from a responding emergency vehicle."
+  },
+  {
+    "q": "You approach a stopped emergency vehicle with flashing lights on the roadside. You should:",
+    "o": [
+      "Maintain the posted speed if responders are outside your lane",
+      "Slow down and, when safe, move over to provide space",
+      "Stop beside the emergency vehicle and wait for directions",
+      "Move over without reducing speed"
+    ],
+    "a": 1,
+    "t": "emerg",
+    "r": "guide",
+    "e": "Slow down and move over a lane if you safely can, to protect responders."
+  },
+  {
+    "q": "If an emergency vehicle approaches while you're stopped in an intersection, you should:",
+    "o": [
+      "Remain stopped until the emergency vehicle changes direction",
+      "Clear the intersection when safe, then pull right and stop",
+      "Reverse behind the stop line before yielding",
+      "Turn at the intersection even if the turn is not permitted"
+    ],
+    "a": 1,
+    "t": "emerg",
+    "r": "guide",
+    "e": "Clear the intersection safely, then pull to the right and stop to let it pass."
+  },
+  {
+    "q": "How far from a fire hydrant must you park (Alberta rules of the road)?",
+    "o": [
+      "1 metre",
+      "At least 5 metres",
+      "At least 15 metres",
+      "No restriction"
+    ],
+    "a": 1,
+    "t": "park",
+    "r": "guide",
+    "e": "Do not park within 5 metres of a fire hydrant."
+  },
+  {
+    "q": "How close to a marked crosswalk may you park?",
+    "o": [
+      "No nearer than 1 metre",
+      "No nearer than 5 metres",
+      "No nearer than 10 metres",
+      "No nearer than 15 metres"
+    ],
+    "a": 1,
+    "t": "park",
+    "r": "guide",
+    "e": "Do not park within 5 metres of the near side of a marked crosswalk."
+  },
+  {
+    "q": "You may not park within how far of a stop sign or the corner of an intersection?",
+    "o": [
+      "1 metre",
+      "5 metres",
+      "20 metres",
+      "No limit"
+    ],
+    "a": 1,
+    "t": "park",
+    "r": "guide",
+    "e": "Keep at least 5 metres from a stop/yield sign and from the corner at an intersection."
+  },
+  {
+    "q": "Parking on a bridge or in an underpass/subway is:",
+    "o": [
+      "Allowed if brief",
+      "Not permitted",
+      "Fine at night",
+      "Allowed with flashers"
+    ],
+    "a": 1,
+    "t": "park",
+    "r": "guide",
+    "e": "You may not park on a bridge or in a subway/underpass or on their approaches."
+  },
+  {
+    "q": "Before opening your car door into traffic, you should:",
+    "o": [
+      "Check the mirror only because cyclists must avoid parked vehicles",
+      "Check for cyclists, traffic, and pedestrians before opening",
+      "Signal left before opening the door",
+      "Open the door slightly first so approaching traffic can see it"
+    ],
+    "a": 1,
+    "t": "park",
+    "r": "guide",
+    "e": "Always check that it's safe — watch for cyclists and passing traffic — before opening a door."
+  },
+  {
+    "q": "You may not park within about how far of an access to a driveway or private road?",
+    "o": [
+      "1.5 metres",
+      "10 metres",
+      "25 metres",
+      "No restriction"
+    ],
+    "a": 0,
+    "t": "park",
+    "r": "guide",
+    "e": "Do not park within 1.5 metres of a driveway or private road access."
+  },
+  {
+    "q": "When parking facing downhill with a curb, you should turn your front wheels:",
+    "o": [
+      "Toward the curb",
+      "Away from the curb",
+      "Straight ahead",
+      "It doesn't matter"
+    ],
+    "a": 0,
+    "t": "park",
+    "r": "guide",
+    "e": "Downhill, turn wheels toward the curb so the car rolls into it if the brakes slip."
+  },
+  {
+    "q": "When you leave your parked vehicle, you should:",
+    "o": [
+      "Shift to park but leave the parking brake released on level ground",
+      "Set the parking brake, secure the transmission, and remove the key",
+      "Set the parking brake but leave the key in case the vehicle must be moved",
+      "Use the hazard lights instead of the parking brake for short stops"
+    ],
+    "a": 1,
+    "t": "park",
+    "r": "guide",
+    "e": "Set the parking brake, shift to park, remove the key, and lock up."
+  },
+  {
+    "q": "What is a safe following distance in good conditions?",
+    "o": [
+      "Half a car length",
+      "At least a 2-second gap",
+      "One car length at any speed",
+      "5 metres"
+    ],
+    "a": 1,
+    "t": "safe",
+    "r": "guide",
+    "e": "Keep at least a 2-second gap — more in poor weather — so you have time to react."
+  },
+  {
+    "q": "In rain, snow, or fog you should increase your following distance to:",
+    "o": [
+      "Exactly 2 seconds because lower speed provides enough stopping room",
+      "At least 3 to 4 seconds or more, depending on conditions",
+      "Exactly 5 seconds in every type of poor weather",
+      "One additional vehicle length regardless of speed"
+    ],
+    "a": 1,
+    "t": "safe",
+    "r": "guide",
+    "e": "Bad conditions need a larger gap — 3 to 4 seconds or more."
+  },
+  {
+    "q": "When must you turn your headlights on?",
+    "o": [
+      "From sunset until sunrise, but not during poor daytime visibility",
+      "From one hour after sunset until one hour before sunrise, and whenever visibility is poor",
+      "From one hour before sunset until one hour after sunrise in all conditions",
+      "Only when street lighting is not available"
+    ],
+    "a": 1,
+    "t": "safe",
+    "r": "guide",
+    "e": "Headlights are required during nighttime — one hour after sunset to one hour before sunrise — and whenever conditions reduce visibility."
+  },
+  {
+    "q": "If your vehicle starts to skid, you should:",
+    "o": [
+      "Brake firmly and steer opposite the direction you want to travel",
+      "Ease off the accelerator and steer where you want the vehicle to go",
+      "Accelerate gently until the tires regain traction",
+      "Hold the steering wheel straight until the vehicle stops sliding"
+    ],
+    "a": 1,
+    "t": "safe",
+    "r": "guide",
+    "e": "Ease off the accelerator and steer where you want the front to go; avoid slamming the brakes."
+  },
+  {
+    "q": "On a slippery or icy road, you should:",
+    "o": [
+      "Use firm, repeated braking to test available traction",
+      "Slow down and increase your following distance",
+      "Maintain the posted speed but avoid lane changes",
+      "Follow the vehicle ahead more closely so you can copy its path"
+    ],
+    "a": 1,
+    "t": "safe",
+    "r": "guide",
+    "e": "Slow down and leave extra distance — stopping takes much longer on ice."
+  },
+  {
+    "q": "'Hydroplaning' happens when:",
+    "o": [
+      "Your engine overheats",
+      "Tires ride up on water and lose grip",
+      "You brake too gently",
+      "You use high beams"
+    ],
+    "a": 1,
+    "t": "safe",
+    "r": "guide",
+    "e": "Hydroplaning is when tires lose contact by riding on a film of water; ease off the gas and don't brake hard."
+  },
+  {
+    "q": "To reduce the chance of hydroplaning, you should:",
+    "o": [
+      "Maintain speed so the tire tread clears water more quickly",
+      "Slow down and keep your tires properly inflated and in good condition",
+      "Brake lightly whenever you cross standing water",
+      "Steer toward the deepest tire tracks left by other vehicles"
+    ],
+    "a": 1,
+    "t": "safe",
+    "r": "guide",
+    "e": "Lower speed and good tires reduce hydroplaning risk."
+  },
+  {
+    "q": "What should you check before changing lanes?",
+    "o": [
+      "Mirrors only, provided they are adjusted correctly",
+      "Mirrors, signal, and a shoulder check of the blind spot",
+      "The lane ahead and the rear-view mirror only",
+      "The side mirror twice instead of performing a shoulder check"
+    ],
+    "a": 1,
+    "t": "safe",
+    "r": "guide",
+    "e": "Mirror, signal, then shoulder-check your blind spot before moving over."
+  },
+  {
+    "q": "Large trucks and buses have big blind spots. The safest approach is:",
+    "o": [
+      "Remain beside the cab where the driver is most likely to notice you",
+      "Avoid lingering beside them; if you cannot see the driver's mirror, the driver may not see you",
+      "Pass on the right because the driver sits on the left",
+      "Follow closely so your headlights remain visible in the mirrors"
+    ],
+    "a": 1,
+    "t": "safe",
+    "r": "guide",
+    "e": "Stay out of the 'No-Zones'. If you can't see the driver in their mirror, they can't see you."
+  },
+  {
+    "q": "If you feel drowsy while driving, the safest thing is to:",
+    "o": [
+      "Open a window and continue until the next scheduled stop",
+      "Pull over somewhere safe and rest",
+      "Drink caffeine and continue at a reduced speed",
+      "Change lanes frequently to stay mentally engaged"
+    ],
+    "a": 1,
+    "t": "safe",
+    "r": "guide",
+    "e": "Fatigue impairs driving — pull over and rest; music and air don't fix drowsiness."
+  },
+  {
+    "q": "Using a hand-held cellphone while driving in Alberta is:",
+    "o": [
+      "Permitted while fully stopped at a red traffic light",
+      "Illegal under distracted-driving law",
+      "Permitted for Class 5 drivers but not learners",
+      "Illegal only when the vehicle is travelling above 50 km/h"
+    ],
+    "a": 1,
+    "t": "safe",
+    "r": "distracted",
+    "e": "Hand-held phone use is distracted driving — illegal, with a fine and demerit points."
+  },
+  {
+    "q": "When approaching a railway crossing with flashing red lights, you must:",
+    "o": [
+      "Cross if the train is still more than one block away",
+      "Stop and wait until the lights stop flashing and it is safe to proceed",
+      "Slow to 30 km/h and cross after checking both directions",
+      "Stop only when the crossing gate has lowered"
+    ],
+    "a": 1,
+    "t": "safe",
+    "r": "guide",
+    "e": "Stop and wait until the lights stop flashing and the way is clear — never try to beat a train."
+  },
+  {
+    "q": "Before starting to drive, your first actions should be to:",
+    "o": [
+      "Start moving, then adjust the mirrors once traffic is clear",
+      "Fasten your seatbelt and adjust your seat and mirrors",
+      "Check the dashboard after entering the roadway",
+      "Adjust only the rear-view mirror because side mirrors are checked while moving"
+    ],
+    "a": 1,
+    "t": "safe",
+    "r": "guide",
+    "e": "Buckle up and adjust your seat and mirrors before you move."
+  },
+  {
+    "q": "The safest way to handle a tailgater behind you is to:",
+    "o": [
+      "Tap the brakes to show that the following distance is unsafe",
+      "Move over when safe and allow the vehicle to pass",
+      "Increase speed until a larger gap develops behind you",
+      "Maintain position and focus only on traffic ahead"
+    ],
+    "a": 1,
+    "t": "safe",
+    "r": "guide",
+    "e": "Let a tailgater pass when you safely can; don't brake-check or race."
+  },
+  {
+    "q": "When driving in fog, you should use:",
+    "o": [
+      "High-beam headlights to illuminate farther ahead",
+      "Low-beam headlights to reduce reflected glare",
+      "Parking lights so other drivers can see your vehicle",
+      "Hazard lights together with high-beam headlights"
+    ],
+    "a": 1,
+    "t": "safe",
+    "r": "guide",
+    "e": "Low beams work better in fog; high beams reflect back and reduce visibility."
+  },
+  {
+    "q": "The recommended way to steer in normal driving is:",
+    "o": [
+      "One hand near the 12 o’clock position",
+      "Both hands around 9 and 3, or another balanced low position",
+      "One hand low on the wheel while the other rests on the gear selector",
+      "Both hands close together at the top of the wheel"
+    ],
+    "a": 1,
+    "t": "safe",
+    "r": "guide",
+    "e": "Keep both hands on the wheel at balanced positions for control."
+  },
+  {
+    "q": "'Nighttime' in the Alberta Basic Licence Driver's Guide is defined as:",
+    "o": [
+      "Sunset to sunrise",
+      "One hour after sunset to one hour before sunrise",
+      "9 p.m. to 6 a.m.",
+      "When streetlights are on"
+    ],
+    "a": 1,
+    "t": "safe",
+    "r": "guide",
+    "e": "Officially, nighttime is one hour after sunset to one hour before sunrise."
+  },
+  {
+    "q": "You're being passed by another vehicle. You should:",
+    "o": [
+      "Increase speed slightly so the passing vehicle spends less time beside you",
+      "Maintain a steady speed and allow the vehicle to complete the pass",
+      "Move toward the centre line to discourage an unsafe pass",
+      "Brake firmly as soon as the passing vehicle reaches your blind spot"
+    ],
+    "a": 1,
+    "t": "safe",
+    "r": "guide",
+    "e": "Hold your speed (or ease off slightly) so they can pass safely."
+  },
+  {
+    "q": "Cruise control is best avoided on:",
+    "o": [
+      "Dry highways",
+      "Wet, icy, or slippery roads",
+      "Long straight roads",
+      "Flat ground"
+    ],
+    "a": 1,
+    "t": "safe",
+    "r": "guide",
+    "e": "Avoid cruise control on slippery roads where you may need full control."
+  },
+  {
+    "q": "When you plan to turn, you should signal:",
+    "o": [
+      "Only after beginning to slow down",
+      "Well before the turn so other road users have time to react",
+      "Only when another vehicle is close enough to be affected",
+      "At the point where you begin turning the steering wheel"
+    ],
+    "a": 1,
+    "t": "safe",
+    "r": "guide",
+    "e": "Signal early, before slowing, to give others time to react."
+  },
+  {
+    "q": "If your brakes suddenly fail, one thing you can try is:",
+    "o": [
+      "Switch off the ignition immediately while travelling at speed",
+      "Pump the brake pedal and downshift to help reduce speed",
+      "Apply the parking brake fully in one motion",
+      "Shift directly into park while steering to the shoulder"
+    ],
+    "a": 1,
+    "t": "safe",
+    "r": "guide",
+    "e": "Pump the pedal, shift to a lower gear, and use the parking brake gently; steer to a safe spot."
+  },
+  {
+    "q": "Your right wheels drift onto a soft shoulder. You should:",
+    "o": [
+      "Steer sharply back onto the pavement before losing speed",
+      "Ease off the accelerator, slow down, and return gently to the road",
+      "Brake firmly while half of the vehicle remains on the pavement",
+      "Accelerate so the tires climb back over the pavement edge"
+    ],
+    "a": 1,
+    "t": "safe",
+    "r": "guide",
+    "e": "Don't jerk the wheel — slow down, then ease back onto the road smoothly."
+  },
+  {
+    "q": "When you approach a curve, you should:",
+    "o": [
+      "Maintain speed until entering the curve, then brake as needed",
+      "Slow before the curve, then accelerate gently through it",
+      "Coast through the curve with the transmission in neutral",
+      "Move toward the centre line to reduce the sharpness of the curve"
+    ],
+    "a": 1,
+    "t": "safe",
+    "r": "guide",
+    "e": "Reduce speed before the curve, then power gently through for control."
+  },
+  {
+    "q": "The best defence against another driver's mistake is to:",
+    "o": [
+      "Match the speed of surrounding traffic even when conditions are poor",
+      "Stay alert and maintain space around your vehicle",
+      "Follow closely enough to anticipate the other driver’s movement",
+      "Use the horn whenever another vehicle approaches your lane"
+    ],
+    "a": 1,
+    "t": "safe",
+    "r": "guide",
+    "e": "Defensive driving — space, attention, anticipating others — prevents most collisions."
+  },
+  {
+    "q": "On a multi-lane road, slower traffic should generally keep:",
+    "o": [
+      "Left",
+      "Right",
+      "Centre",
+      "Any lane"
+    ],
+    "a": 1,
+    "t": "safe",
+    "r": "guide",
+    "e": "Keep right except to pass; leave the left lane for passing."
+  },
+  {
+    "q": "When you're the first to arrive at a collision scene, you should:",
+    "o": [
+      "Continue driving and report the location at the next safe stop",
+      "Stop if safe, call for help, and warn approaching traffic",
+      "Move injured people away from the vehicles before calling for help",
+      "Park in the travel lane so other drivers are forced to slow down"
+    ],
+    "a": 1,
+    "t": "safe",
+    "r": "guide",
+    "e": "Stop if safe, call 911, and warn traffic; don't move the injured unless there's danger."
+  },
+  {
+    "q": "How many passengers may a Class 7 learner carry?",
+    "o": [
+      "No passengers at all",
+      "Only family members",
+      "No more than the number of seatbelts",
+      "Up to 4 friends"
+    ],
+    "a": 2,
+    "t": "restr",
+    "r": "restraint",
+    "e": "No more passengers than there are working seatbelts in the vehicle."
+  },
+  {
+    "q": "Who must wear a seatbelt in the vehicle?",
+    "o": [
+      "Only the driver",
+      "Only front-seat riders",
+      "The driver and every passenger",
+      "Only passengers under 16"
+    ],
+    "a": 2,
+    "t": "restr",
+    "r": "restraint",
+    "e": "The driver and all passengers must be properly buckled up."
+  },
+  {
+    "q": "Who is legally responsible for making sure passengers under 16 are buckled up?",
+    "o": [
+      "The passenger once they can fasten the belt without help",
+      "The driver of the vehicle",
+      "The registered owner, even when someone else is driving",
+      "The child’s parent or guardian, even when absent"
+    ],
+    "a": 1,
+    "t": "restr",
+    "r": "restraint",
+    "e": "The driver is responsible for ensuring passengers under 16 are properly secured."
+  },
+  {
+    "q": "In Alberta, a child must ride rear-facing until at least:",
+    "o": [
+      "1 year of age, regardless of the seat limits",
+      "2 years of age or until reaching the seat manufacturer's rear-facing limit",
+      "18 kg (40 lb), regardless of age",
+      "6 years of age or until a booster seat fits"
+    ],
+    "a": 1,
+    "t": "restr",
+    "r": "child",
+    "e": "Children ride rear-facing until at least age 2 or the seat's stated height/weight limit."
+  },
+  {
+    "q": "A forward-facing child car seat is required for children who are:",
+    "o": [
+      "Under 6 years old, regardless of weight",
+      "Under 6 years old and 18 kg (40 lb) or less",
+      "Age 6 to 8 and shorter than 145 cm",
+      "Under 18 kg only when seated in the front passenger seat"
+    ],
+    "a": 1,
+    "t": "restr",
+    "r": "child",
+    "e": "Children under 6 and under 18 kg (40 lb) must use a proper child car seat."
+  },
+  {
+    "q": "Booster seats in Alberta are:",
+    "o": [
+      "Required until a child reaches 145 cm",
+      "Strongly recommended until the seatbelt fits properly, but not required by Alberta law",
+      "Required for every child between ages 6 and 12",
+      "Required only when the vehicle has lap-and-shoulder belts"
+    ],
+    "a": 1,
+    "t": "restr",
+    "r": "child",
+    "e": "Booster seats aren't legally required in Alberta but are strongly recommended until the belt fits properly."
+  },
+  {
+    "q": "The safest place for children under 13 to ride is:",
+    "o": [
+      "The front passenger seat with the seat moved fully rearward",
+      "The back seat, using the restraint appropriate for the child",
+      "Either front or back when a booster seat is being used",
+      "The front seat whenever the passenger airbag can be disabled"
+    ],
+    "a": 1,
+    "t": "restr",
+    "r": "child",
+    "e": "Children are safest in the back seat, especially with front airbags."
+  },
+  {
+    "q": "A seatbelt should be worn:",
+    "o": [
+      "With the shoulder belt under the arm if it touches the neck",
+      "Across the chest and low across the hips",
+      "With the lap belt across the stomach and shoulder belt near the neck",
+      "Slightly loose so the body can move during a collision"
+    ],
+    "a": 1,
+    "t": "restr",
+    "r": "restraint",
+    "e": "Wear the shoulder belt across the chest and the lap belt low and snug across the hips."
+  }
 ];
 
 const KEY_TOPIC="jax_topic_stats_v1", KEY_STUDY="jax_study_list_v1";
 let mode='test', order=[], idx=0, answered=false, session=[];
+let optionLayouts={}, skipped=[], reviewingSkipped=false, examTotal=0;
 const EXAM_LEN=30, PASS=25, FAIL_AT=6;
 const $=id=>document.getElementById(id);
 function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a}
@@ -304,6 +1546,27 @@ function load(k,f){try{return JSON.parse(localStorage.getItem(k))||f}catch(e){re
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
 function topicStats(){return load(KEY_TOPIC,{})}
 function studyList(){return load(KEY_STUDY,[])}
+
+function balancedCorrectPositions(count){
+  const positions=[];
+  while(positions.length<count) positions.push(...shuffle([0,1,2,3]));
+  return positions.slice(0,count);
+}
+function buildOptionLayouts(questionOrder){
+  const layouts={};
+  const targetPositions=balancedCorrectPositions(questionOrder.length);
+  questionOrder.forEach((qi,n)=>{
+    const q=BANK[qi];
+    const layout=new Array(q.o.length);
+    const target=targetPositions[n]%q.o.length;
+    layout[target]=q.a;
+    const distractors=shuffle(q.o.map((_,i)=>i).filter(i=>i!==q.a));
+    let d=0;
+    for(let p=0;p<layout.length;p++) if(layout[p]===undefined) layout[p]=distractors[d++];
+    layouts[qi]=layout;
+  });
+  return layouts;
+}
 
 function refreshMenu(){
   $('bankCount').textContent=BANK.length;
@@ -319,14 +1582,16 @@ function refreshMenu(){
 refreshMenu();
 
 function start(m){
-  mode=m; idx=0; answered=false; session=[];
-  if(m==='test'){order=shuffle(BANK.map((q,i)=>i)).slice(0,EXAM_LEN);}
-  else if(m==='practice'){order=shuffle(BANK.map((q,i)=>i));}
+  mode=m; idx=0; answered=false; session=[]; skipped=[]; reviewingSkipped=false;
+  if(m==='test') order=shuffle(BANK.map((q,i)=>i)).slice(0,EXAM_LEN);
+  else if(m==='practice') order=shuffle(BANK.map((q,i)=>i));
   else if(m==='weak'){
     const st=topicStats();const weak=Object.keys(st).filter(t=>st[t].wrong>0);
     order=shuffle(BANK.map((q,i)=>i).filter(i=>weak.includes(BANK[i].t)));
-    if(!order.length){order=shuffle(BANK.map((q,i)=>i)).slice(0,EXAM_LEN);}
+    if(!order.length) order=shuffle(BANK.map((q,i)=>i)).slice(0,EXAM_LEN);
   }
+  examTotal=order.length;
+  optionLayouts=buildOptionLayouts(order);
   $('startScreen').classList.add('hidden');$('resultScreen').classList.add('hidden');
   $('quizScreen').classList.remove('hidden');$('topbar').classList.remove('hidden');
   $('modeTag').textContent = m==='test'?'Full Test':(m==='weak'?'Weak Spots':'Practice');
@@ -335,16 +1600,24 @@ function start(m){
 
 function render(){
   answered=false;
-  const q=BANK[order[idx]];const total=order.length;
-  $('count').textContent=(idx+1)+'/'+total;
-  $('barFill').style.width=(idx/total*100)+'%';
-  $('qtag').textContent='Question '+(idx+1);
-  $('qtopic').textContent=TOPIC[q.t].name;
+  const qi=order[idx], q=BANK[qi], layout=optionLayouts[qi];
+  const answeredCount=session.length;
+  $('count').textContent=mode==='test'?(answeredCount+'/'+examTotal+' answered'):((idx+1)+'/'+order.length);
+  $('barFill').style.width=((mode==='test'?answeredCount:idx)/examTotal*100)+'%';
+  $('qtag').textContent=mode==='test'&&reviewingSkipped?('Skipped question '+(idx+1)+' of '+order.length):('Question '+(idx+1));
+  $('qtopic').innerHTML=(mode==='test'&&reviewingSkipped?'<div class="skip-note">Skipped earlier — answer required</div>':'')+TOPIC[q.t].name;
   $('qtext').textContent=q.q;
   const box=$('opts');box.innerHTML='';const keys=['A','B','C','D'];
-  q.o.forEach((text,i)=>{const b=document.createElement('button');b.className='opt';
-    b.innerHTML='<span class="key">'+keys[i]+'</span><span>'+text+'</span>';b.onclick=()=>choose(i);box.appendChild(b);});
-  $('explain').classList.add('hidden');$('nextBtn').classList.add('hidden');window.scrollTo(0,0);
+  layout.forEach((originalIndex,displayIndex)=>{
+    const b=document.createElement('button');b.className='opt';
+    b.innerHTML='<span class="key">'+keys[displayIndex]+'</span><span>'+q.o[originalIndex]+'</span>';
+    b.onclick=()=>choose(displayIndex);box.appendChild(b);
+  });
+  $('explain').classList.add('hidden');
+  $('nextBtn').classList.add('hidden');
+  const canSkip=mode==='test'&&!reviewingSkipped;
+  $('skipBtn').classList.toggle('hidden',!canSkip);
+  window.scrollTo(0,0);
 }
 
 function recordTopic(topicKey,wasCorrect){
@@ -357,34 +1630,68 @@ function recordTopic(topicKey,wasCorrect){
 }
 function addStudy(qi){const sl=studyList();if(!sl.includes(qi)){sl.push(qi);save(KEY_STUDY,sl);}}
 function removeStudy(qi){let sl=studyList().filter(x=>x!==qi);save(KEY_STUDY,sl);}
+function wrongCount(){return session.filter(s=>!s.correct).length}
+function testFailed(){return mode==='test'&&wrongCount()>=FAIL_AT}
 
-function choose(i){
+function choose(displayIndex){
   if(answered)return;answered=true;
-  const qi=order[idx], q=BANK[qi], wasCorrect=(i===q.a);
-  session.push({qi,chosen:i,correct:wasCorrect});
+  const qi=order[idx], q=BANK[qi], layout=optionLayouts[qi];
+  const chosenOriginal=layout[displayIndex];
+  const wasCorrect=chosenOriginal===q.a;
+  session.push({qi,chosen:chosenOriginal,correct:wasCorrect});
   recordTopic(q.t,wasCorrect);
   if(wasCorrect) removeStudy(qi); else addStudy(qi);
   const buttons=[...$('opts').children];
-  buttons.forEach((b,bi)=>{b.setAttribute('disabled','');
-    if(bi===q.a)b.classList.add('correct');else if(bi===i)b.classList.add('wrong');else b.classList.add('dim');});
-  const ex=$('explain');const ref=REF[q.r];
-  ex.className='explain '+(wasCorrect?'good':'bad');
-  ex.innerHTML='<span class="verdict '+(wasCorrect?'g':'b')+'">'+(wasCorrect?'Correct':'Incorrect')+'</span>'+q.e+
-    '<br><a class="reflink" href="'+ref.u+'" target="_blank" rel="noopener">Read the rule: '+ref.l+'</a>';
-  ex.classList.remove('hidden');
-  const total=order.length;const last=idx>=total-1;
-  const examEnd=mode==='test'&&(session.filter(s=>s.correct).length>=PASS||session.filter(s=>!s.correct).length>=FAIL_AT);
-  $('nextBtn').textContent=(last||examEnd)?'See results':'Next';
+  buttons.forEach((b,bi)=>b.setAttribute('disabled',''));
+  $('skipBtn').classList.add('hidden');
+
+  if(mode==='test'){
+    buttons[displayIndex].classList.add('selected');
+    $('explain').classList.add('hidden');
+  }else{
+    buttons.forEach((b,bi)=>{
+      const originalIndex=layout[bi];
+      if(originalIndex===q.a)b.classList.add('correct');
+      else if(bi===displayIndex)b.classList.add('wrong');
+      else b.classList.add('dim');
+    });
+    const ex=$('explain'), ref=REF[q.r];
+    ex.className='explain '+(wasCorrect?'good':'bad');
+    ex.innerHTML='<span class="verdict '+(wasCorrect?'g':'b')+'">'+(wasCorrect?'Correct':'Incorrect')+'</span>'+q.e+
+      '<br><a class="reflink" href="'+ref.u+'" target="_blank" rel="noopener">Read the rule: '+ref.l+'</a>';
+    ex.classList.remove('hidden');
+  }
+
+  const atEnd=idx>=order.length-1;
+  const goesToSkipped=mode==='test'&&!reviewingSkipped&&atEnd&&skipped.length>0;
+  $('nextBtn').textContent=testFailed()?'See results':(goesToSkipped?'Answer skipped questions':(atEnd?'See results':'Next'));
   $('nextBtn').classList.remove('hidden');
-  $('barFill').style.width=((idx+1)/total*100)+'%';
+  $('barFill').style.width=(session.length/examTotal*100)+'%';
+  $('count').textContent=mode==='test'?(session.length+'/'+examTotal+' answered'):((idx+1)+'/'+order.length);
   refreshMenu();
 }
 
-function next(){
-  const examEnd=mode==='test'&&(session.filter(s=>s.correct).length>=PASS||session.filter(s=>!s.correct).length>=FAIL_AT);
-  if(idx>=order.length-1||examEnd){results();return;}
-  idx++;render();
+function skipQuestion(){
+  if(mode!=='test'||reviewingSkipped||answered)return;
+  const qi=order[idx];
+  if(!skipped.includes(qi))skipped.push(qi);
+  advance();
 }
+
+function advance(){
+  if(testFailed()){results();return;}
+  if(idx<order.length-1){idx++;render();return;}
+  if(mode==='test'&&!reviewingSkipped&&skipped.length){
+    order=skipped.slice();
+    reviewingSkipped=true;
+    idx=0;
+    render();
+    return;
+  }
+  results();
+}
+
+function next(){advance();}
 
 function results(){
   $('quizScreen').classList.add('hidden');$('topbar').classList.add('hidden');
@@ -392,7 +1699,7 @@ function results(){
   const done=session.length;
   const correct=session.filter(s=>s.correct).length;
   const wrong=done-correct;
-  const pct=Math.round(correct/done*100);
+  const pct=done?Math.round(correct/done*100):0;
   const passed = mode==='test' ? correct>=PASS : pct>=83;
   const missTopics=[...new Set(session.filter(s=>!s.correct).map(s=>BANK[s.qi].t))];
   const ringC=passed?'var(--go-bg)':'var(--stop-bg)';
@@ -400,7 +1707,9 @@ function results(){
   const verdict = mode==='test' ? (passed?'Passed, Jax':'Not passed yet') : (passed?'Great score, Jax':'Keep practising');
   const vsub = passed
     ? 'That clears the pass mark. Run it again to stay sharp, or drill weak spots.'
-    : 'You need 25 out of 30. Focus on the topics below, then run it again.';
+    : (mode==='test'&&wrong>=FAIL_AT&&done<examTotal
+      ? 'The test ended after 6 incorrect answers. Review the missed rules before trying again.'
+      : 'You need 25 out of 30. Focus on the topics below, then run it again.');
   let weakHtml='';
   if(missTopics.length){
     weakHtml='<div class="section-h">Focus areas</div><div class="weak">'+
@@ -481,6 +1790,7 @@ function showStudy(){
 function clearStudy(){save(KEY_STUDY,[]);refreshMenu();home();}
 
 function home(){
+  skipped=[];reviewingSkipped=false;
   $('resultScreen').classList.add('hidden');$('quizScreen').classList.add('hidden');
   $('startScreen').classList.remove('hidden');$('topbar').classList.add('hidden');
   refreshMenu();
