@@ -68,6 +68,14 @@
   .foot a{color:#6E7E92}
   .qtag{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
   .qtopic{font-size:11px;font-weight:700;color:var(--muted);margin-bottom:12px}
+
+  .qmedia{margin:2px 0 16px}
+  .signcard{display:flex;align-items:center;justify-content:center;background:#fff;border:1px solid #344158;border-radius:16px;min-height:150px;padding:12px;box-shadow:var(--shadow);overflow:hidden}
+  .signcard img{display:block;max-width:min(230px,62vw);max-height:190px;width:auto;height:auto;object-fit:contain}
+  .signcard img.wide{max-width:min(340px,88vw);max-height:165px}
+  .rev-media{display:flex;justify-content:center;background:#fff;border-radius:10px;padding:8px;margin:4px 0 10px;overflow:hidden}
+  .rev-media img{display:block;max-width:150px;max-height:110px;width:auto;height:auto;object-fit:contain}
+  .rev-media img.wide{max-width:240px;max-height:95px}
   .qtext{font-size:20px;line-height:1.35;font-weight:800;letter-spacing:-.01em;margin-bottom:18px}
   .opts{display:flex;flex-direction:column;gap:10px;flex:1}
   .opt{text-align:left;cursor:pointer;width:100%;background:var(--panel);color:var(--paper);border:2px solid var(--line);
@@ -165,12 +173,13 @@
         <span class="n" id="studyCount"></span>
       </button>
     </div>
-    <p class="foot">Questions based on the Alberta Driver's Guide and GDL rules. Study tool only — the official test is at a registry agent office.</p>
+    <p class="foot">Questions based on the Alberta Driver's Guide and GDL rules. Study tool only — the official test is at a registry agent office.<br>Traffic-sign graphics adapted from Government of Alberta driver-education materials under the Open Government Licence – Alberta.</p>
   </section>
 
   <section class="screen hidden" id="quizScreen">
     <div class="qtag" id="qtag">Question 1</div>
     <div class="qtopic" id="qtopic"></div>
+    <div class="qmedia hidden" id="qmedia"></div>
     <div class="qtext" id="qtext"></div>
     <div class="opts" id="opts"></div>
     <div class="explain hidden" id="explain"></div>
@@ -400,7 +409,9 @@ const BANK = [
     "a": 1,
     "t": "zones",
     "r": "zones",
-    "e": "School zones are 30 km/h (urban and rural) unless a sign posts otherwise."
+    "e": "School zones are 30 km/h (urban and rural) unless a sign posts otherwise.",
+    "img": "assets/signs/school-zone.png",
+    "imgAlt": "Official Alberta school zone sign with maximum 30 km/h"
   },
   {
     "q": "What is the speed limit in a playground zone when in effect?",
@@ -413,7 +424,9 @@ const BANK = [
     "a": 1,
     "t": "zones",
     "r": "zones",
-    "e": "Playground zones are 30 km/h unless otherwise posted."
+    "e": "Playground zones are 30 km/h unless otherwise posted.",
+    "img": "assets/signs/playground-zone.png",
+    "imgAlt": "Official Alberta playground zone sign with maximum 30 km/h"
   },
   {
     "q": "When are playground zone speed limits in effect?",
@@ -426,7 +439,9 @@ const BANK = [
     "a": 1,
     "t": "zones",
     "r": "zones",
-    "e": "Playground zones apply every day, 8:30 a.m. to one hour after sunset."
+    "e": "Playground zones apply every day, 8:30 a.m. to one hour after sunset.",
+    "img": "assets/signs/playground-zone.png",
+    "imgAlt": "Official Alberta playground zone sign with maximum 30 km/h"
   },
   {
     "q": "The default speed limit in an urban area (no posted sign) is:",
@@ -452,7 +467,9 @@ const BANK = [
     "a": 1,
     "t": "zones",
     "r": "zones",
-    "e": "You must not pass another vehicle in a school or playground zone while the limit is in effect."
+    "e": "You must not pass another vehicle in a school or playground zone while the limit is in effect.",
+    "img": "assets/signs/playground-zone.png",
+    "imgAlt": "Official Alberta playground zone sign with maximum 30 km/h"
   },
   {
     "q": "A school zone speed limit applies:",
@@ -465,7 +482,9 @@ const BANK = [
     "a": 1,
     "t": "zones",
     "r": "zones",
-    "e": "School zone limits apply on school days during the posted hours."
+    "e": "School zone limits apply on school days during the posted hours.",
+    "img": "assets/signs/school-zone.png",
+    "imgAlt": "Official Alberta school zone sign with maximum 30 km/h"
   },
   {
     "q": "You see a playground sign with no speed limit attached. This means:",
@@ -478,7 +497,9 @@ const BANK = [
     "a": 1,
     "t": "zones",
     "r": "zones",
-    "e": "A playground sign without a speed sign warns you're entering a playground area; drive with caution."
+    "e": "A playground sign without a speed sign warns you're entering a playground area; drive with caution.",
+    "img": "assets/signs/playground-area.png",
+    "imgAlt": "Official Alberta playground area warning sign"
   },
   {
     "q": "If you are caught speeding in a construction zone with workers present, penalties are usually:",
@@ -491,7 +512,9 @@ const BANK = [
     "a": 1,
     "t": "zones",
     "r": "guide",
-    "e": "Fines are typically increased in construction zones when workers are present."
+    "e": "Fines are typically increased in construction zones when workers are present.",
+    "img": "assets/signs/construction.png",
+    "imgAlt": "Official Alberta road work warning sign"
   },
   {
     "q": "On most open rural highways in Alberta, the speed limit is commonly:",
@@ -507,72 +530,82 @@ const BANK = [
     "e": "Rural highways are commonly 80 to 100 km/h, depending on the road and posted signs."
   },
   {
-    "q": "An eight-sided (octagon) red sign always means:",
+    "q": "What must a driver do at this sign?",
     "o": [
-      "Yield",
-      "Stop",
-      "Do not enter",
-      "Construction ahead"
+      "Slow and yield only when traffic is present",
+      "Come to a complete stop and proceed only when safe",
+      "Stop only if another road user has the right of way",
+      "Reduce speed and continue without stopping if the intersection is clear"
     ],
     "a": 1,
     "t": "signs",
     "r": "signs",
-    "e": "A red octagon is a STOP sign — the shape belongs to it alone."
+    "e": "A STOP sign requires a complete stop. Proceed only after yielding and confirming the way is safe.",
+    "img": "assets/signs/stop.png",
+    "imgAlt": "Official Alberta STOP sign"
   },
   {
-    "q": "A downward-pointing triangle sign means:",
+    "q": "What must a driver do when approaching this sign?",
     "o": [
-      "Stop",
-      "Yield",
-      "No passing",
-      "School zone"
+      "Always come to a complete stop before continuing",
+      "Yield the right-of-way, slowing or stopping when necessary",
+      "Continue because traffic on this approach has priority",
+      "Stop only when a pedestrian is present"
     ],
     "a": 1,
     "t": "signs",
     "r": "signs",
-    "e": "The inverted triangle is a YIELD sign — give the right of way."
+    "e": "A YIELD sign requires you to give the right-of-way. Slow down and stop when necessary before entering.",
+    "img": "assets/signs/yield.png",
+    "imgAlt": "Official Alberta yield sign"
   },
   {
-    "q": "A yellow diamond-shaped sign is used to:",
+    "q": "What category of information does this sign provide?",
     "o": [
-      "Give an order you must obey",
-      "Warn you of a hazard ahead",
-      "Show route numbers",
-      "Mark parking rules"
+      "A regulation that must always be obeyed",
+      "Advance warning of a road condition or hazard",
+      "Directions, routes, or distances to a destination",
+      "The location of a service available to drivers"
     ],
     "a": 1,
     "t": "signs",
     "r": "signs",
-    "e": "Yellow diamonds are warning signs — a hazard or road change is ahead."
+    "e": "Yellow diamond signs warn of road conditions or hazards ahead. This example warns of a sharp right turn.",
+    "img": "assets/signs/warning-diamond.png",
+    "imgAlt": "Official Alberta sharp right turn warning sign"
   },
   {
-    "q": "Orange signs on a roadway indicate:",
+    "q": "What does this orange sign warn drivers about?",
     "o": [
-      "A hospital",
-      "A construction or work zone",
-      "A rest stop",
-      "A wildlife reserve"
+      "A permanent change in the highway alignment",
+      "Construction or maintenance work ahead",
+      "A school or playground crossing",
+      "A route reserved for slow-moving vehicles"
     ],
     "a": 1,
     "t": "signs",
     "r": "signs",
-    "e": "Orange signs mark construction and work zones."
+    "e": "Orange signs are temporary warning signs used for construction, maintenance, and work zones.",
+    "img": "assets/signs/construction.png",
+    "imgAlt": "Official Alberta road work warning sign"
   },
   {
-    "q": "A five-sided (pentagon) sign usually marks:",
+    "q": "What does this five-sided sign warn drivers about?",
     "o": [
-      "A hospital",
-      "A school zone or crossing",
-      "A no-parking area",
-      "A ferry"
+      "A hospital or emergency service entrance",
+      "A school area or school crossing",
+      "A playground zone that is always 30 km/h",
+      "A pedestrian crossing controlled by traffic lights"
     ],
     "a": 1,
     "t": "signs",
     "r": "signs",
-    "e": "The pentagon shape marks school zones and crossings."
+    "e": "The five-sided school sign warns that children may be walking along or crossing the road.",
+    "img": "assets/signs/school-area.png",
+    "imgAlt": "Official Alberta school area sign"
   },
   {
-    "q": "A white rectangular sign with black lettering (like a speed limit) is a:",
+    "q": "What type of sign is shown?",
     "o": [
       "Warning sign describing a possible hazard",
       "Regulatory sign stating a rule that must be obeyed",
@@ -582,49 +615,59 @@ const BANK = [
     "a": 1,
     "t": "signs",
     "r": "signs",
-    "e": "White regulatory signs give rules you must obey by law."
+    "e": "White rectangular signs such as maximum-speed signs are regulatory signs and state rules that drivers must obey.",
+    "img": "assets/signs/regulatory-speed.png",
+    "imgAlt": "Official Alberta maximum speed regulatory sign"
   },
   {
-    "q": "A green sign on a highway most often gives:",
+    "q": "What information does this green highway sign provide?",
     "o": [
       "Advance warning of a road hazard or curve",
-      "Directions, distances, routes, and destination information",
+      "Directions, distances, routes, or destinations",
       "A regulatory rule such as a maximum speed",
       "Information about construction and temporary detours"
     ],
     "a": 1,
     "t": "signs",
     "r": "signs",
-    "e": "Green guide signs show directions, distances and destinations."
+    "e": "Green guide signs provide route, direction, destination, and distance information.",
+    "img": "assets/signs/guide-green.png",
+    "imgAlt": "Official Alberta green destination and distance sign",
+    "imgWide": true
   },
   {
-    "q": "A blue sign with a white 'H' means:",
+    "q": "What service does this green sign indicate?",
     "o": [
-      "Highway entrance",
-      "Hospital nearby",
-      "Hotel",
-      "Bus stop"
+      "A highway information centre",
+      "A hospital",
+      "A hotel or lodging area",
+      "A helicopter landing area"
     ],
     "a": 1,
     "t": "signs",
     "r": "signs",
-    "e": "A blue 'H' sign points to a nearby hospital."
+    "e": "The white H service symbol indicates a hospital. In the Alberta driver's guide, it is shown on a green service sign.",
+    "img": "assets/signs/hospital.png",
+    "imgAlt": "Official Alberta hospital service sign"
   },
   {
-    "q": "A flashing red traffic light means:",
+    "q": "What must a driver do at this flashing signal?",
     "o": [
       "Yield without stopping when the intersection appears clear",
       "Come to a full stop, then proceed when safe",
-      "Remain stopped until the signal changes to a steady green",
+      "Remain stopped until the signal changes to steady green",
       "Stop only when cross traffic is present"
     ],
     "a": 1,
     "t": "signs",
     "r": "guide",
-    "e": "Treat a flashing red like a stop sign: full stop, then go when safe."
+    "e": "Treat a flashing red signal like a stop sign: make a full stop, yield, and proceed only when safe.",
+    "img": "assets/signs/flashing-red.png",
+    "imgAlt": "Official Alberta flashing red traffic signal illustration",
+    "imgWide": true
   },
   {
-    "q": "A flashing amber (yellow) traffic light means:",
+    "q": "What must a driver do at this flashing signal?",
     "o": [
       "Stop, then proceed as at a four-way stop",
       "Slow down and proceed with caution",
@@ -634,101 +677,122 @@ const BANK = [
     "a": 1,
     "t": "signs",
     "r": "guide",
-    "e": "A flashing amber means slow down and proceed carefully."
+    "e": "A flashing amber signal means slow down, check the intersection, and proceed cautiously.",
+    "img": "assets/signs/flashing-amber.png",
+    "imgAlt": "Official Alberta flashing amber traffic signal illustration",
+    "imgWide": true
   },
   {
-    "q": "You approach an intersection as the light turns yellow. You should:",
+    "q": "The traffic signal changes to the steady yellow indication shown. What should you do?",
     "o": [
       "Accelerate if you believe you can enter before the red light",
       "Stop if you can do so safely",
       "Brake immediately even if an abrupt stop may cause a collision",
-      "Continue at the same speed because yellow still gives full right of way"
+      "Continue at the same speed because yellow gives full right-of-way"
     ],
     "a": 1,
     "t": "signs",
     "r": "guide",
-    "e": "A yellow means red is coming — stop if you can do so safely."
+    "e": "A steady yellow signal warns that red is coming. Stop before entering if you can do so safely.",
+    "img": "assets/signs/steady-yellow.png",
+    "imgAlt": "Official Alberta steady yellow traffic signal illustration",
+    "imgWide": true
   },
   {
-    "q": "A solid yellow line on your side of the road centre means:",
+    "q": "What do the solid yellow centre lines shown mean?",
     "o": [
-      "Passing is allowed",
-      "Do not pass",
-      "Two-way traffic ends",
-      "Bike lane"
+      "Passing is permitted in either direction when the road is clear",
+      "Passing is not permitted in either direction",
+      "Traffic on both sides travels in the same direction",
+      "The space between the lines is a two-way left-turn lane"
     ],
     "a": 1,
     "t": "signs",
     "r": "guide",
-    "e": "A solid yellow line on your side means no passing."
+    "e": "Single or double solid yellow centre lines separate opposing traffic and indicate that passing is not permitted.",
+    "img": "assets/signs/solid-yellow-line.png",
+    "imgAlt": "Official Alberta solid yellow centre line illustration",
+    "imgWide": true
   },
   {
-    "q": "A red circle with a red line through a symbol means:",
+    "q": "What does the red circle and diagonal slash on this sign mean?",
     "o": [
-      "The action shown is mandatory",
-      "The action shown is prohibited",
-      "The action is permitted only with caution",
-      "The restriction applies only to commercial vehicles"
+      "The movement shown is mandatory",
+      "The movement shown is prohibited",
+      "The movement is allowed after yielding",
+      "The restriction applies only during posted hours"
     ],
     "a": 1,
     "t": "signs",
     "r": "signs",
-    "e": "A red circle with a slash means the action shown is not allowed."
+    "e": "A red circle and diagonal slash mean the action or movement shown is prohibited.",
+    "img": "assets/signs/prohibited-symbol.png",
+    "imgAlt": "Official Alberta prohibited left turn sign"
   },
   {
-    "q": "A 'U-turn' symbol inside a red circle with a slash means:",
+    "q": "What does this sign prohibit?",
     "o": [
-      "U-turns are permitted after yielding",
-      "U-turns are not permitted at that location",
-      "A divided roadway begins ahead",
-      "Drivers must use the next intersection to turn around"
+      "Turning left at the intersection",
+      "Making a U-turn",
+      "Entering a divided roadway",
+      "Using the intersection to reverse direction only during heavy traffic"
     ],
     "a": 1,
     "t": "signs",
     "r": "signs",
-    "e": "That sign prohibits U-turns at that location."
+    "e": "This sign prohibits U-turns at that location.",
+    "img": "assets/signs/no-u-turn.png",
+    "imgAlt": "Official Alberta no U-turn sign"
   },
   {
-    "q": "A white sign with a red circle and a horizontal white bar means:",
+    "q": "What does this sign mean?",
     "o": [
       "Traffic may travel in one direction only",
       "Do not enter from your direction",
       "Yield before entering the roadway",
-      "Merge with traffic in the adjacent lane"
+      "The road is closed only to commercial vehicles"
     ],
     "a": 1,
     "t": "signs",
     "r": "signs",
-    "e": "A red circle with a white bar means the road ahead is closed to traffic in your direction (do not enter)."
+    "e": "The red circle with the horizontal white bar means do not enter from your direction.",
+    "img": "assets/signs/do-not-enter.png",
+    "imgAlt": "Official Alberta do not enter sign"
   },
   {
-    "q": "A green light means:",
+    "q": "What may a driver do at the steady green signal shown?",
     "o": [
       "Proceed when safe, yielding to pedestrians and traffic still lawfully in the intersection",
       "Proceed immediately because all other road users must stop",
-      "Proceed straight only; turns require a green arrow",
+      "Proceed straight only; every turn requires a green arrow",
       "Enter only after stopping and checking both directions"
     ],
     "a": 0,
     "t": "signs",
     "r": "guide",
-    "e": "On green you may go, but must yield to anyone still lawfully in the intersection and to pedestrians."
+    "e": "A steady green permits you to proceed when safe, but you must still yield to pedestrians and anyone lawfully in the intersection.",
+    "img": "assets/signs/steady-green.png",
+    "imgAlt": "Official Alberta steady green traffic signal illustration",
+    "imgWide": true
   },
   {
-    "q": "A steady green arrow pointing left means:",
+    "q": "What does the green left arrow shown permit?",
     "o": [
-      "Left turn is protected — oncoming traffic is stopped",
-      "Yield to oncoming traffic",
-      "Do not turn",
-      "No entry"
+      "A protected left turn in the arrow's direction",
+      "A left turn after yielding to oncoming traffic",
+      "A left turn only after coming to a full stop",
+      "A U-turn but not a left turn"
     ],
     "a": 0,
     "t": "signs",
     "r": "guide",
-    "e": "A green arrow gives a protected turn in that direction; oncoming traffic is held."
+    "e": "A green arrow permits a protected movement in the arrow's direction. Conflicting traffic is stopped.",
+    "img": "assets/signs/green-left-arrow.png",
+    "imgAlt": "Official Alberta green left arrow traffic signal illustration",
+    "imgWide": true
   },
   {
-    "q": "Diamond-shaped white pavement markings on a lane usually indicate:",
+    "q": "What does the white diamond pavement marking shown usually indicate?",
     "o": [
       "A lane intended primarily for passing",
       "A reserved lane, such as an HOV, bus, or bicycle lane",
@@ -738,7 +802,9 @@ const BANK = [
     "a": 1,
     "t": "signs",
     "r": "guide",
-    "e": "Diamond markings indicate a reserved lane, such as HOV, bus, or bike use."
+    "e": "White diamond pavement markings indicate a reserved lane. Nearby signs specify which vehicles and times apply.",
+    "img": "assets/signs/diamond-lane.png",
+    "imgAlt": "Official Alberta white diamond reserved-lane pavement marking"
   },
   {
     "q": "When two vehicles reach an uncontrolled intersection at the same time, who yields?",
@@ -1580,6 +1646,15 @@ function buildOptionLayouts(questionOrder){
   return layouts;
 }
 
+
+function questionMediaHtml(q,compact=false){
+  if(!q.img)return '';
+  const cls=q.imgWide?' class="wide"':'';
+  const alt=(q.imgAlt||'Traffic sign or signal for this question').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  if(compact)return '<div class="rev-media"><img'+cls+' src="'+q.img+'" alt="'+alt+'"></div>';
+  return '<div class="signcard"><img'+cls+' src="'+q.img+'" alt="'+alt+'"></div>';
+}
+
 function refreshMenu(){
   $('bankCount').textContent=BANK.length;
   const st=topicStats();
@@ -1636,6 +1711,9 @@ function render(){
   updateLiveProgress();
   $('qtag').textContent=mode==='test'&&reviewingSkipped?('Skipped question '+(idx+1)+' of '+order.length):('Question '+(idx+1));
   $('qtopic').innerHTML=(mode==='test'&&reviewingSkipped?'<div class="skip-note">Skipped earlier — answer required</div>':'')+TOPIC[q.t].name;
+  const media=questionMediaHtml(q);
+  $('qmedia').innerHTML=media;
+  $('qmedia').classList.toggle('hidden',!media);
   $('qtext').textContent=q.q;
   const box=$('opts');box.innerHTML='';const keys=['A','B','C','D'];
   layout.forEach((originalIndex,displayIndex)=>{
@@ -1747,7 +1825,7 @@ function results(){
   if(missed.length){
     reviewHtml='<div class="section-h">Review — the ones you missed</div>'+
       missed.map(s=>{const q=BANK[s.qi];const ref=REF[q.r];
-        return '<div class="rev wrong"><div class="rq">'+q.q+'</div>'+
+        return '<div class="rev wrong">'+questionMediaHtml(q,true)+'<div class="rq">'+q.q+'</div>'+
           '<div class="line his">'+q.o[s.chosen]+'</div>'+
           '<div class="line cor">'+q.o[q.a]+'</div>'+
           '<div class="why">'+q.e+'</div>'+
@@ -1800,7 +1878,7 @@ function showStudy(){
     window.scrollTo(0,0);return;
   }
   const items=sl.map(qi=>{const q=BANK[qi];const ref=REF[q.r];
-    return '<div class="rev wrong"><div class="rq">'+q.q+'</div>'+
+    return '<div class="rev wrong">'+questionMediaHtml(q,true)+'<div class="rq">'+q.q+'</div>'+
       '<div class="line cor">'+q.o[q.a]+'</div>'+
       '<div class="why">'+q.e+'</div>'+
       '<a class="reflink" href="'+ref.u+'" target="_blank" rel="noopener">'+ref.l+'</a></div>';
