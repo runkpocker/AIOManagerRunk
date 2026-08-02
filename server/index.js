@@ -157,7 +157,8 @@ const loggerConfig = process.env.LOG_PRETTY_PRINT !== 'false' ? {
                 'Sync': '🔄 SYNC ',
                 'MetaProxy': '🌐 PROXY',
                 'Proxy': '🌐 PROXY',
-                'Security': '🛡️ SEC  '
+                'Security': '🛡️ SEC  ',
+                'Jax': '🎯 JAX  '
             }
             const category = categoryMap[log.category] || (log.category ? `📦 ${log.category.padEnd(6)}` : '🚀 MAIN ')
 
@@ -2186,7 +2187,16 @@ const start = async () => {
             return { success: true, deleted: result?.changes || 0 }
         })
 
-await fastify.register(torboxPlugin)
+        // Jackson's learner app is isolated behind its own Fastify plugin and SQLite file.
+        // A failure here must not prevent AIOManager or TorBox from starting.
+        try {
+            const { default: jaxQualificationPlugin } = await import('./jax-qualification.js')
+            await fastify.register(jaxQualificationPlugin, { dataDir: DATA_DIR })
+        } catch (jaxError) {
+            fastify.log.error({ category: 'Jax', err: jaxError }, `BAXTER-07 qualification module unavailable: ${jaxError.message}`)
+        }
+
+        await fastify.register(torboxPlugin)
 
         // --- Stateless Catalog Sharing removed ---
 
