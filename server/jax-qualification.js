@@ -126,6 +126,7 @@ export default async function jaxQualificationPlugin(fastify, options = {}) {
 
     if (!metadataGet.get('current_cycle')) setMetaInt('current_cycle', 1)
     if (!metadataGet.get('weak_reset_version')) setMetaInt('weak_reset_version', 0)
+    if (!metadataGet.get('min_difficulty')) setMetaInt('min_difficulty', 1)
 
     const selectAttempt = database.prepare('SELECT * FROM jax_attempts WHERE attempt_id = ?')
     const insertAttempt = database.prepare(`
@@ -232,6 +233,7 @@ export default async function jaxQualificationPlugin(fastify, options = {}) {
                 ? Math.round(passingAccuracies.reduce((sum, value) => sum + value, 0) / passingAccuracies.length)
                 : 0,
             weakResetVersion: getMetaInt('weak_reset_version', 0),
+            minDifficulty: getMetaInt('min_difficulty', 1),
             cycle,
             topicPerformance,
             recentRuns: rows.slice(0, 8).map(rowToRun)
@@ -465,6 +467,14 @@ export default async function jaxQualificationPlugin(fastify, options = {}) {
         const nextVersion = getMetaInt('weak_reset_version', 0) + 1
         setMetaInt('weak_reset_version', nextVersion)
         return { success: true, weakResetVersion: nextVersion, qualification: buildSummary() }
+    })
+
+    fastify.post('/api/jax/admin/difficulty', async (request, reply) => {
+        if (!requireParentPin(request, reply)) return
+        const value = boundedInt(request.body?.minDifficulty, getMetaInt('min_difficulty', 1), 1, 3)
+        setMetaInt('min_difficulty', value)
+        fastify.log.info({ category: 'Jax', minDifficulty: value }, 'Jax test difficulty updated')
+        return { success: true, minDifficulty: value, qualification: buildSummary() }
     })
 
     fastify.addHook('onClose', async () => {
