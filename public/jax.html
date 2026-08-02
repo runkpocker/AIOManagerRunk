@@ -289,7 +289,7 @@ const TOPIC = {
 let BANK=[];
 let BANK_INDEX_BY_ID=new Map();
 let bankReady=false;
-const QUESTION_BANK_URL="jax-data/questions.json?v=20260802-1";
+const QUESTION_BANK_URL="jax-data/questions.json?v=20260802-2";
 
 const KEY_TOPIC="jax_topic_stats_v1", KEY_STUDY="jax_study_list_v2", KEY_STUDY_LEGACY="jax_study_list_v1";
 const KEY_QUAL_CACHE="jax_qualification_cache_v1", KEY_PENDING_RESULTS="jax_pending_results_v1", KEY_WEAK_RESET_VERSION="jax_weak_reset_version_v1";
@@ -436,6 +436,9 @@ function groupIndexesByRule(indexes){
 function selectOnePerRule(indexes){
   return shuffle([...groupIndexesByRule(indexes).values()]).map(group=>shuffle(group)[0]);
 }
+function testMinDifficulty(){const v=Number(qualificationData&&qualificationData.minDifficulty);return Number.isInteger(v)&&v>=1&&v<=3?v:1;}
+function diffLabel(v){return v>=3?'Hard':v>=2?'Normal':'Easy';}
+function pickForRule(indexes){const min=testMinDifficulty();if(min<=1)return shuffle(indexes)[0];const pool=shuffle(indexes);const hard=pool.filter(i=>(Number(BANK[i].difficulty)||1)>=min);return hard.length?hard[0]:pool[0];}
 function selectFullTestQuestionIndexes(){
   const selected=[],usedRules=new Set();
   for(const [topic,quota] of Object.entries(EXAM_BLUEPRINT)){
@@ -446,14 +449,14 @@ function selectFullTestQuestionIndexes(){
       const topicSelected=selected.filter(index=>BANK[index].t===topic).length;
       if(topicSelected>=quota)break;
       if(usedRules.has(ruleId))continue;
-      selected.push(shuffle(indexes)[0]);usedRules.add(ruleId);
+      selected.push(pickForRule(indexes));usedRules.add(ruleId);
     }
   }
   const remainingGroups=shuffle([...groupIndexesByRule(BANK.map((_,index)=>index)).entries()]);
   for(const [ruleId,indexes] of remainingGroups){
     if(selected.length>=EXAM_LEN)break;
     if(usedRules.has(ruleId))continue;
-    selected.push(shuffle(indexes)[0]);usedRules.add(ruleId);
+    selected.push(pickForRule(indexes));usedRules.add(ruleId);
   }
   return shuffle(selected).slice(0,EXAM_LEN);
 }
@@ -861,7 +864,7 @@ function renderPerformance(data,offline=false){
     '<div class="telemetry-grid">'+telemetryCard(done+' / '+target,'Qualifying runs')+telemetryCard((data.passRate||0)+'%','Pass rate')+telemetryCard((data.bestAccuracy||0)+'%','Best accuracy')+telemetryCard(data.currentStreak||0,'Current streak')+telemetryCard(data.totalFullTests||0,'Full test attempts')+telemetryCard((data.averagePassingAccuracy||0)+'%','Average pass accuracy')+'</div>'+
     '<div class="section-h">Topic telemetry</div>'+topics+
     '<div class="section-h">Run history</div>'+runs+
-    '<details class="parent-panel"><summary>Parent controls</summary><div class="parent-body"><div class="parent-warning">Actions require the Railway parent PIN. Qualification resets begin a new tracking cycle; prior records remain in the database but no longer count.</div><div class="parent-actions"><button onclick="parentManualCredit()">Add manual credit</button><button onclick="parentResetWeakSpots()">Reset weak spots</button><button class="danger" onclick="parentResetQualification()">Reset qualification</button></div></div></details>'+
+    '<details class="parent-panel"><summary>Parent controls</summary><div class="parent-body"><div class="parent-warning">Actions require the Railway parent PIN. Qualification resets begin a new tracking cycle; prior records remain in the database but no longer count.</div><div class="parent-diff"><div class="parent-diff-label">Test difficulty — current: <b>'+diffLabel(Number(data.minDifficulty)||1)+'</b></div><div class="parent-actions"><button onclick="parentSetDifficulty(1)">Easy</button><button onclick="parentSetDifficulty(2)">Normal</button><button onclick="parentSetDifficulty(3)">Hard</button></div></div><div class="parent-actions"><button onclick="parentManualCredit()">Add manual credit</button><button onclick="parentResetWeakSpots()">Reset weak spots</button><button class="danger" onclick="parentResetQualification()">Reset qualification</button></div></div></details>'+
     '<div class="actions"><button class="btn go" onclick="start(\'test\')">Start qualification run</button><button class="btn ghost" onclick="home()">Back to menu</button></div>';
   renderSegments(done,target,'performanceSegments');window.scrollTo(0,0);
 }
@@ -886,6 +889,9 @@ async function parentInvalidateRun(attemptId){
   if(!window.confirm('Invalidate this run? Any qualification credit from it will be removed.'))return;
   const reason=window.prompt('Reason for invalidating this run','Invalid or accidental result');if(reason===null)return;
   try{const data=await parentRequest('/api/jax/admin/invalidate',{attemptId,reason});if(!data)return;saveQualification(data.qualification);await showQualification()}catch(error){window.alert(error.message)}
+}
+async function parentSetDifficulty(minDifficulty){
+  try{const data=await parentRequest('/api/jax/admin/difficulty',{minDifficulty});if(!data)return;saveQualification(data.qualification);renderPerformance(data.qualification,false);window.alert('Test difficulty set to '+diffLabel(Number(data.minDifficulty)||1)+'. Takes effect on the next Full Test — on any device once it syncs.');}catch(error){window.alert(error.message)}
 }
 async function parentResetWeakSpots(){
   if(!window.confirm('Reset weak-spot history on all devices when they next synchronize? The Study List is not cleared.'))return;
