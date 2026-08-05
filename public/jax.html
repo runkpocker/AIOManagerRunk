@@ -92,6 +92,9 @@
   .explain .verdict{display:block;font-weight:800;font-size:13px;margin-bottom:5px}
   .explain .verdict.g{color:var(--go)}.explain .verdict.b{color:var(--stop)}
   .reflink{display:inline-block;margin-top:9px;font-size:12.5px;font-weight:700;color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(76,154,255,.4);padding-bottom:1px}
+  .chal-btn{display:block;margin-top:11px;width:100%;border:1.5px dashed #4A5568;background:transparent;color:#C6D0DE;border-radius:11px;padding:9px;font-size:12.5px;font-weight:800;cursor:pointer}
+  .chal-btn:active{transform:scale(.99)}
+  .chal-done{margin-top:11px;font-size:12px;font-weight:800;color:var(--gold);letter-spacing:.01em}
   .btn{margin-top:14px;width:100%;border:none;cursor:pointer;font-weight:800;font-size:16px;padding:15px;border-radius:14px;box-shadow:var(--shadow);transition:transform .1s}
   .btn:active{transform:scale(.98)}
   .btn.go{background:var(--accent);color:#04121F}
@@ -161,7 +164,7 @@
   .performance-code{font:850 11px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.15em;color:var(--accent2);text-transform:uppercase}.performance-title{font-size:23px;font-weight:900;margin:5px 0 6px}.performance-sub{font-size:13px;color:var(--muted);line-height:1.45}
   .telemetry-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.telemetry{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px}.telemetry .tv{font:900 22px/1 ui-monospace,SFMono-Regular,Menlo,monospace}.telemetry .tl{font-size:10px;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.06em;margin-top:6px}
   .topic-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:11px 12px;margin-bottom:8px}.topic-name{font-size:13px;font-weight:750}.topic-sample{font-size:10px;color:var(--muted);margin-top:3px}.topic-accuracy{font:850 15px/1 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--accent2)}
-  .run-row{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:11px 12px;margin-bottom:8px}.run-top{display:flex;justify-content:space-between;gap:10px;align-items:center}.run-result{font:850 11px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em}.run-result.valid{color:var(--go)}.run-result.fail{color:var(--stop)}.run-result.manual{color:var(--accent)}.run-result.invalid{color:var(--muted)}.run-score{font-size:14px;font-weight:850}.run-meta{font-size:10.5px;color:var(--muted);margin-top:7px;line-height:1.4}.run-note{font-size:11.5px;color:#C9D2DF;margin-top:6px}.run-action{margin-top:9px;border:1px solid #4B3540;background:#24171C;color:#FFACB5;border-radius:8px;padding:7px 9px;font-size:11px;font-weight:800;cursor:pointer}
+  .run-row{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:11px 12px;margin-bottom:8px}.run-top{display:flex;justify-content:space-between;gap:10px;align-items:center}.run-result{font:850 11px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.06em}.run-result.valid{color:var(--go)}.run-result.fail{color:var(--stop)}.run-result.manual{color:var(--accent)}.run-result.invalid{color:var(--muted)}.run-score{font-size:14px;font-weight:850}.run-meta{font-size:10.5px;color:var(--muted);margin-top:7px;line-height:1.4}.run-note{font-size:11.5px;color:#C9D2DF;margin-top:6px}.run-action{margin-top:9px;border:1px solid #4B3540;background:#24171C;color:#FFACB5;border-radius:8px;padding:7px 9px;font-size:11px;font-weight:800;cursor:pointer}.chal-qtext{font-size:13px;font-weight:700;color:#E4E9F0;margin:7px 0 6px;line-height:1.4}.chal-resolved{opacity:.55}.run-row .line{font-size:12.5px;line-height:1.4;margin:3px 0}.run-row .his{color:var(--stop)}.run-row .cor{color:var(--go)}.miss-count{font-size:10.5px;font-weight:850;color:var(--gold);font-family:ui-monospace,Menlo,monospace}
   details.parent-panel{margin-top:18px;background:#111720;border:1px solid var(--line);border-radius:13px;padding:0 13px}details.parent-panel summary{cursor:pointer;list-style:none;padding:14px 0;font-size:12px;font-weight:850;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)}details.parent-panel summary::-webkit-details-marker{display:none}.parent-body{border-top:1px solid var(--line);padding:12px 0 14px}.parent-warning{font-size:11.5px;color:var(--muted);line-height:1.45;margin-bottom:10px}.parent-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}.parent-actions button{border:1px solid var(--line);background:var(--panel);color:var(--paper);border-radius:9px;padding:10px 8px;font-size:11px;font-weight:800;cursor:pointer}.parent-actions button.danger{border-color:#54313A;color:#FFABB4;background:#211419}
   .sync-note{text-align:center;font-size:11px;color:var(--muted);margin:8px 0 2px}
   @media(max-width:390px){.qual-actions{grid-template-columns:1fr}.qual-metrics{grid-template-columns:repeat(3,1fr)}.qual-metric{padding:8px 5px}.qual-metric .number{font-size:14px}.parent-actions{grid-template-columns:1fr}}
@@ -291,6 +294,19 @@
   </div>
 </div>
 
+<div class="modal-overlay" id="challengeModal">
+  <div class="modal-card">
+    <div class="modal-icon">🚩</div>
+    <div class="modal-title">Flag this answer for review</div>
+    <div class="modal-body">Think you actually got this right, Jax? Send it to the parent panel and it'll get looked at. This won't change your score.<div id="challengeQ" style="margin-top:10px;color:#fff;font-weight:700"></div></div>
+    <textarea id="challengeNote" rows="3" placeholder="Optional: why do you think your answer was right?" style="width:100%;box-sizing:border-box;background:var(--bg2);border:1px solid var(--line);border-radius:12px;color:var(--paper);padding:11px;font-size:14px;font-family:inherit;resize:vertical;margin-bottom:14px"></textarea>
+    <div class="modal-actions">
+      <button class="btn go" onclick="submitChallenge()">Flag for review</button>
+      <button class="btn ghost" onclick="closeChallenge()">Cancel</button>
+    </div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="cancelConfirm">
   <div class="modal-card">
     <div class="modal-icon">🚪</div>
@@ -347,7 +363,7 @@ let bankReady=false;
 const QUESTION_BANK_URL="jax-data/questions.json?v=20260802-2";
 
 const KEY_TOPIC="jax_topic_stats_v1", KEY_STUDY="jax_study_list_v2", KEY_STUDY_LEGACY="jax_study_list_v1";
-const KEY_QUAL_CACHE="jax_qualification_cache_v1", KEY_PENDING_RESULTS="jax_pending_results_v1", KEY_WEAK_RESET_VERSION="jax_weak_reset_version_v1";
+const KEY_QUAL_CACHE="jax_qualification_cache_v1", KEY_PENDING_RESULTS="jax_pending_results_v1", KEY_PENDING_CHALLENGES="jax_pending_challenges_v1", KEY_WEAK_RESET_VERSION="jax_weak_reset_version_v1";
 let mode='test', order=[], idx=0, answered=false, session=[];
 let optionLayouts={}, skipped=[], reviewingSkipped=false, examTotal=0;
 let practiceMaxIdx=0, studyPos=0;
@@ -486,6 +502,44 @@ async function flushPendingResults(){
   savePendingResults(remaining);
 }
 
+// ===== Challenge a wrong answer (flag for parent review) =====
+let challengedQ=new Set(), pendingChallenge=null;
+function pendingChallenges(){return load(KEY_PENDING_CHALLENGES,[])}
+function savePendingChallenges(items){save(KEY_PENDING_CHALLENGES,items)}
+function queuePendingChallenge(payload){const items=pendingChallenges();items.push(payload);savePendingChallenges(items)}
+async function flushPendingChallenges(){
+  let items=pendingChallenges();if(!items.length)return;const remaining=[];
+  for(const payload of items){
+    try{await apiJson('/api/jax/challenge',{method:'POST',body:JSON.stringify(payload)})}
+    catch(error){if(!error.status||error.status>=500)remaining.push(payload)}
+  }
+  savePendingChallenges(remaining);
+}
+function challengeChip(qi,chosen){
+  if(challengedQ.has(qi))return '<div class="chal-done" data-cq="'+qi+'">Flagged for parent review \u2713</div>';
+  return '<button class="chal-btn" data-cq="'+qi+'" onclick="openChallenge('+qi+','+(chosen==null?'null':chosen)+')">Think you got this right? Flag it for review \u2691</button>';
+}
+function openChallenge(qi,chosen){
+  pendingChallenge={qi:qi,chosen:chosen};
+  const q=BANK[qi];
+  $('challengeQ').textContent=q.q;
+  $('challengeNote').value='';
+  $('challengeModal').classList.add('show');
+}
+function closeChallenge(){$('challengeModal').classList.remove('show');pendingChallenge=null;}
+function submitChallenge(){
+  if(!pendingChallenge){closeChallenge();return;}
+  const qi=pendingChallenge.qi, chosen=pendingChallenge.chosen, q=BANK[qi];
+  const payload={questionId:q.id,ruleId:q.ruleId,topic:(TOPIC[q.t]&&TOPIC[q.t].name)||q.t,question:q.q,
+    chosen:(chosen!=null?q.o[chosen]:null),correctAnswer:q.o[q.a],mode:mode,note:($('challengeNote').value||'').slice(0,600)};
+  challengedQ.add(qi);
+  apiJson('/api/jax/challenge',{method:'POST',body:JSON.stringify(payload)}).catch(()=>queuePendingChallenge(payload));
+  $('challengeModal').classList.remove('show');pendingChallenge=null;
+  document.querySelectorAll('[data-cq="'+qi+'"]').forEach(el=>{
+    el.outerHTML='<div class="chal-done" data-cq="'+qi+'">Flagged for parent review \u2713</div>';
+  });
+}
+
 const EXAM_BLUEPRINT={gdl:3,zones:3,signs:4,row:5,bus:2,emerg:2,park:3,safe:6,restr:2};
 function groupIndexesByRule(indexes){
   const groups=new Map();
@@ -605,7 +659,7 @@ function sendCancelledResult(correct,answeredCount){
     correct,wrong:answeredCount-correct,percent:answeredCount?Math.round(correct/answeredCount*100):0,passed:false,
     startedAt:currentStartedAt,completedAt:new Date().toISOString(),weakTopics:[],
     questionResults:session.map(item=>({questionIndex:item.qi,questionId:BANK[item.qi].id,ruleId:BANK[item.qi].ruleId,topic:TOPIC[BANK[item.qi].t].name,correct:item.correct})),
-    missedQuestions:[]
+    missedQuestions:session.filter(item=>!item.correct).map(item=>({questionIndex:item.qi,questionId:BANK[item.qi].id,ruleId:BANK[item.qi].ruleId,question:BANK[item.qi].q,topic:TOPIC[BANK[item.qi].t].name,chosen:BANK[item.qi].o[item.chosen],correct:BANK[item.qi].o[BANK[item.qi].a]}))
   };
   submitResultPayload(payload).catch(()=>queuePendingResult(payload));
 }
@@ -716,7 +770,8 @@ function renderPractice(){
     const ref=refFor(q);
     ex.className='explain '+(response.correct?'good':'bad');
     ex.innerHTML='<span class="verdict '+(response.correct?'g':'b')+'">'+(response.correct?'Correct':'Incorrect')+'</span>'+q.e+
-      '<br><a class="reflink" href="'+ref.u+'" target="_blank" rel="noopener">Read the rule: '+ref.l+'</a>';
+      '<br><a class="reflink" href="'+ref.u+'" target="_blank" rel="noopener">Read the rule: '+ref.l+'</a>'+
+      (response.correct?'':challengeChip(qi,response.chosen));
     ex.classList.remove('hidden');
   }else{
     ex.className='explain hidden';
@@ -775,7 +830,8 @@ function chooseTest(displayIndex){
   const ex=$('explain'), ref=refFor(q);
   ex.className='explain '+(wasCorrect?'good':'bad');
   ex.innerHTML='<span class="verdict '+(wasCorrect?'g':'b')+'">'+(wasCorrect?'Correct':'Incorrect')+'</span>'+q.e+
-    '<br><a class="reflink" href="'+ref.u+'" target="_blank" rel="noopener">Read the rule: '+ref.l+'</a>';
+    '<br><a class="reflink" href="'+ref.u+'" target="_blank" rel="noopener">Read the rule: '+ref.l+'</a>'+
+    (wasCorrect?'':challengeChip(qi,chosenOriginal));
   ex.classList.remove('hidden');
 
   const atEnd=idx>=order.length-1;
@@ -881,7 +937,8 @@ function results(){
           '<div class="line his">'+q.o[s.chosen]+'</div>'+
           '<div class="line cor">'+q.o[q.a]+'</div>'+
           '<div class="why">'+q.e+'</div>'+
-          '<a class="reflink" href="'+ref.u+'" target="_blank" rel="noopener">'+ref.l+'</a></div>';
+          '<a class="reflink" href="'+ref.u+'" target="_blank" rel="noopener">'+ref.l+'</a>'+
+          challengeChip(s.qi,s.chosen)+'</div>';
       }).join('');
   }
   scr.innerHTML=
@@ -973,10 +1030,35 @@ function renderPerformance(data,offline=false){
     const invalidate=!run.invalidated?'<button class="run-action" onclick="parentInvalidateRun(\''+escapeHtml(run.attemptId)+'\')">Invalidate run</button>':'';
     return '<div class="run-row"><div class="run-top"><span class="run-result '+status.cls+'">'+status.label+'</span><span class="run-score">'+escapeHtml(score)+'</span></div><div class="run-meta">'+escapeHtml(formatRunDate(run.completedAt))+(reason?' · '+escapeHtml(reason):'')+'</div>'+(run.note?'<div class="run-note">'+escapeHtml(run.note)+'</div>':'')+invalidate+'</div>';
   }).join('')||'<div class="verdict-sub">No Full Test runs recorded yet.</div>';
+  const openCh=(data.challenges||[]).filter(c=>!c.resolved);
+  const chHtml=(data.challenges&&data.challenges.length)?('<div class="section-h">Flagged for review'+(openCh.length?' ('+openCh.length+' open)':'')+'</div>'+
+    data.challenges.map(c=>'<div class="run-row'+(c.resolved?' chal-resolved':'')+'">'+
+      '<div class="run-top"><span class="run-result '+(c.resolved?'valid':'manual')+'">'+(c.resolved?'REVIEWED':'NEEDS REVIEW')+'</span><span class="run-score">'+escapeHtml(c.topic||'')+'</span></div>'+
+      '<div class="chal-qtext">'+escapeHtml(c.question||'')+'</div>'+
+      (c.chosen?'<div class="line his">His answer: '+escapeHtml(c.chosen)+'</div>':'')+
+      (c.correctAnswer?'<div class="line cor">Marked correct: '+escapeHtml(c.correctAnswer)+'</div>':'')+
+      (c.note?'<div class="run-note">"'+escapeHtml(c.note)+'"</div>':'')+
+      '<div class="run-meta">'+escapeHtml(formatRunDate(c.createdAt))+'</div>'+
+      (c.resolved?'':'<button class="run-action" onclick="parentResolveChallenge(\''+escapeHtml(c.id)+'\')">Mark reviewed</button>')+
+      '</div>').join('')):'';
+  const bankById={};if(typeof BANK!=='undefined'&&BANK)BANK.forEach(q=>{bankById[q.id]=q});
+  const wq=data.wrongQuestions;
+  const wrongHtml=(wq===undefined)?'':(wq.length?('<div class="section-h">Missed questions ('+wq.length+')</div>'+
+    wq.map(w=>{const q=w.questionId?bankById[w.questionId]:null;const ref=q?refFor(q):REF.guide;
+      const times=w.timesMissed>1?'<span class="miss-count">missed '+w.timesMissed+'\u00D7</span>':'';
+      const modes=(w.modes||[]).filter(m=>m!=='test').length?' · '+(w.modes||[]).map(m=>m==='test'?'full test':m).join(', '):'';
+      return '<div class="run-row"><div class="run-top"><span class="run-score" style="font-size:12.5px">'+escapeHtml(w.topic||(q&&TOPIC[q.t]?TOPIC[q.t].name:''))+'</span>'+times+'</div>'+
+        '<div class="chal-qtext">'+escapeHtml(w.question||(q?q.q:'')||'')+'</div>'+
+        (w.lastChosen?'<div class="line his">His answer: '+escapeHtml(w.lastChosen)+'</div>':'')+
+        (w.correctAnswer?'<div class="line cor">Correct: '+escapeHtml(w.correctAnswer)+'</div>':'')+
+        '<div class="run-meta">Last missed '+escapeHtml(formatRunDate(w.lastMissedAt))+escapeHtml(modes)+'</div>'+
+        '<a class="reflink" href="'+ref.u+'" target="_blank" rel="noopener">'+ref.l+'</a></div>';
+    }).join('')):'<div class="verdict-sub">No missed questions recorded yet.</div>');
   scr.innerHTML='<div class="performance-head"><div class="performance-code">BAXTER-07</div><div class="performance-title">Performance Data</div><div class="performance-sub">Server-validated qualification telemetry for Jackson.'+(offline?' Last synchronized data is shown.':'')+'</div><div class="qual-segments" id="performanceSegments"></div></div>'+
     '<div class="telemetry-grid">'+telemetryCard(done+' / '+target,'Qualifying runs')+telemetryCard((data.passRate||0)+'%','Pass rate')+telemetryCard((data.bestAccuracy||0)+'%','Best accuracy')+telemetryCard(data.currentStreak||0,'Current streak')+telemetryCard(data.totalFullTests||0,'Full test attempts')+telemetryCard((data.averagePassingAccuracy||0)+'%','Average pass accuracy')+'</div>'+
     '<div class="section-h">Topic telemetry</div>'+topics+
-    '<div class="section-h">Run history</div>'+runs+
+    wrongHtml+
+    '<div class="section-h">Run history</div>'+runs+chHtml+
     '<details class="parent-panel"><summary>Parent controls</summary><div class="parent-body"><div class="parent-warning">Actions require the Railway parent PIN. Qualification resets begin a new tracking cycle; prior records remain in the database but no longer count.</div><div class="parent-diff"><div class="parent-diff-label">Test difficulty — current: <b>'+diffLabel(Number(data.minDifficulty)||1)+'</b></div><div class="parent-actions"><button onclick="parentSetDifficulty(1)">Easy</button><button onclick="parentSetDifficulty(2)">Normal</button><button onclick="parentSetDifficulty(3)">Hard</button></div></div><div class="parent-actions"><button onclick="parentManualCredit()">Add manual credit</button><button onclick="parentResetWeakSpots()">Reset weak spots</button><button class="danger" onclick="parentResetQualification()">Reset qualification</button></div></div></details>'+
     '<div class="actions"><button class="btn go" onclick="confirmQualStart()">Start qualification run</button><button class="btn ghost" onclick="home()">Back to menu</button></div>';
   renderSegments(done,target,'performanceSegments');window.scrollTo(0,0);
@@ -984,7 +1066,7 @@ function renderPerformance(data,offline=false){
 async function showQualification(){
   $('startScreen').classList.add('hidden');$('quizScreen').classList.add('hidden');$('topbar').classList.add('hidden');
   const scr=$('resultScreen');scr.classList.remove('hidden');scr.innerHTML='<div class="performance-head"><div class="performance-code">BAXTER-07</div><div class="performance-title">Loading performance data…</div></div>';
-  await flushPendingResults();
+  await flushPendingResults();await flushPendingChallenges();
   try{const data=await apiJson('/api/jax/history');saveQualification(data);applyWeakResetVersion(data.weakResetVersion);renderPerformance(data,false)}
   catch(error){const cached=qualificationData||cachedQualification();if(cached)renderPerformance(cached,true);else scr.innerHTML='<div class="performance-head"><div class="performance-code">BAXTER-07</div><div class="performance-title">Performance data unavailable</div><div class="performance-sub">The qualification service could not be reached.</div></div><div class="actions"><button class="btn ghost" onclick="home()">Back to menu</button></div>';}
 }
@@ -1002,6 +1084,10 @@ async function parentInvalidateRun(attemptId){
   if(!window.confirm('Invalidate this run? Any qualification credit from it will be removed.'))return;
   const reason=window.prompt('Reason for invalidating this run','Invalid or accidental result');if(reason===null)return;
   try{const data=await parentRequest('/api/jax/admin/invalidate',{attemptId,reason});if(!data)return;saveQualification(data.qualification);await showQualification()}catch(error){window.alert(error.message)}
+}
+async function parentResolveChallenge(id){
+  const note=window.prompt('Optional note on this review (e.g. "valid — will re-mark" or "answer is correct")','');if(note===null)return;
+  try{const data=await parentRequest('/api/jax/admin/resolve-challenge',{id,note});if(!data)return;await showQualification()}catch(error){window.alert(error.message)}
 }
 async function parentSetDifficulty(minDifficulty){
   try{const data=await parentRequest('/api/jax/admin/difficulty',{minDifficulty});if(!data)return;saveQualification(data.qualification);renderPerformance(data.qualification,false);window.alert('Test difficulty set to '+diffLabel(Number(data.minDifficulty)||1)+'. Takes effect on the next Full Test — on any device once it syncs.');}catch(error){window.alert(error.message)}
@@ -1054,14 +1140,14 @@ function home(){
   $('cancelConfirm').classList.remove('show');$('startConfirm').classList.remove('show');
   $('resultScreen').classList.add('hidden');$('quizScreen').classList.add('hidden');
   $('startScreen').classList.remove('hidden');$('topbar').classList.add('hidden');
-  refreshMenu();loadQualificationSummary(true);flushPendingResults();
+  refreshMenu();loadQualificationSummary(true);flushPendingResults();flushPendingChallenges();
   if(window.jrnOnHome)jrnOnHome();
 }
-window.addEventListener('online',()=>{flushPendingResults().then(()=>loadQualificationSummary(true))});
+window.addEventListener('online',()=>{flushPendingChallenges();flushPendingResults().then(()=>loadQualificationSummary(true))});
 async function initializeApp(){
   try{await loadQuestionBank()}catch(error){showQuestionBankError(error)}
   loadQualificationSummary();
-  flushPendingResults().then(()=>loadQualificationSummary(true));
+  flushPendingChallenges();flushPendingResults().then(()=>loadQualificationSummary(true));
   if(window.jrnOnHome)jrnOnHome();
 }
 initializeApp();
