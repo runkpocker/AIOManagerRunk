@@ -109,6 +109,26 @@ export default async function jaxQualificationPlugin(fastify, options = {}) {
             ON jax_attempts(cycle, local_date, counted, invalidated);
         CREATE INDEX IF NOT EXISTS idx_jax_attempts_cycle_time
             ON jax_attempts(cycle, server_completed_at DESC);
+
+        CREATE TABLE IF NOT EXISTS jax_challenges (
+            id TEXT PRIMARY KEY,
+            cycle INTEGER NOT NULL,
+            question_id TEXT,
+            rule_id TEXT,
+            topic TEXT,
+            question_text TEXT,
+            chosen_answer TEXT,
+            correct_answer TEXT,
+            mode TEXT,
+            note TEXT,
+            created_at TEXT NOT NULL,
+            resolved INTEGER NOT NULL DEFAULT 0,
+            resolved_at TEXT,
+            resolved_note TEXT
+        );
+
+        CREATE INDEX IF NOT EXISTS idx_jax_challenges_cycle
+            ON jax_challenges(cycle, resolved, created_at DESC);
     `)
 
     const metadataGet = database.prepare('SELECT value FROM jax_metadata WHERE key = ?')
@@ -149,6 +169,49 @@ export default async function jaxQualificationPlugin(fastify, options = {}) {
         return getMetaInt('current_cycle', 1)
     }
 
+    const insertChallenge = database.prepare(`
+        INSERT INTO jax_challenges (
+            id, cycle, question_id, rule_id, topic, question_text,
+            chosen_answer, correct_answer, mode, note, created_at
+        ) VALUES (
+            @id, @cycle, @question_id, @rule_id, @topic, @question_text,
+            @chosen_answer, @correct_answer, @mode, @note, @created_at
+        )
+    `)
+    const selectChallenge = database.prepare('SELECT * FROM jax_challenges WHERE id = ?')
+
+    function challengeRow(row) {
+        return {
+            id: row.id,
+            questionId: row.question_id || null,
+            ruleId: row.rule_id || null,
+            topic: row.topic || null,
+            question: row.question_text || null,
+            chosen: row.chosen_answer || null,
+            correctAnswer: row.correct_answer || null,
+            mode: row.mode || null,
+            note: row.note || null,
+            createdAt: row.created_at,
+            resolved: Boolean(row.resolved),
+            resolvedAt: row.resolved_at || null,
+            resolvedNote: row.resolved_note || null
+        }
+    }
+
+    function listChallenges(cycle = currentCycle()) {
+        return database.prepare(`
+            SELECT * FROM jax_challenges
+            WHERE cycle = ?
+            ORDER BY resolved ASC, created_at DESC
+        `).all(cycle).map(challengeRow)
+    }
+
+    function openChallengeCount(cycle = currentCycle()) {
+        return database.prepare(
+            'SELECT COUNT(*) AS count FROM jax_challenges WHERE cycle = ? AND resolved = 0'
+        ).get(cycle).count
+    }
+
     function rowToRun(row) {
         const accuracy = accuracyFor(row)
         return {
@@ -177,6 +240,45 @@ export default async function jaxQualificationPlugin(fastify, options = {}) {
             WHERE cycle = ?
             ORDER BY server_completed_at DESC, rowid DESC
         `).all(cycle)
+    }
+
+    // Aggregate every question Jax has answered wrong this cycle (across all
+    // non-invalidated runs), de-duplicated per question with a miss count.
+    function wrongQuestionsSummary(cycle = currentCycle()) {
+        const rows = getRows(cycle).filter(row => !row.invalidated)
+        const map = new Map()
+        for (const row of rows) {
+            const missed = safeJson(row.missed_questions_json, [])
+            for (const m of missed) {
+                if (!m) continue
+                const key = (m.questionId || m.question || '').toString()
+                if (!key) continue
+                const entry = map.get(key) || {
+                    questionId: m.questionId || null,
+                    ruleId: m.ruleId || null,
+                    topic: m.topic || null,
+                    question: m.question || null,
+                    correctAnswer: m.correct || null,
+                    lastChosen: m.chosen || null,
+                    timesMissed: 0,
+                    lastMissedAt: null,
+                    modes: []
+                }
+                entry.timesMissed += 1
+                if (!entry.question && m.question) entry.question = m.question
+                if (!entry.correctAnswer && m.correct) entry.correctAnswer = m.correct
+                const at = row.server_completed_at
+                if (!entry.lastMissedAt || at > entry.lastMissedAt) {
+                    entry.lastMissedAt = at
+                    if (m.chosen) entry.lastChosen = m.chosen
+                }
+                if (row.mode && !entry.modes.includes(row.mode)) entry.modes.push(row.mode)
+                map.set(key, entry)
+            }
+        }
+        return [...map.values()].sort(
+            (a, b) => b.timesMissed - a.timesMissed || (a.topic || '').localeCompare(b.topic || '')
+        )
     }
 
     function buildSummary(cycle = currentCycle()) {
@@ -236,6 +338,7 @@ export default async function jaxQualificationPlugin(fastify, options = {}) {
             minDifficulty: getMetaInt('min_difficulty', 1),
             cycle,
             topicPerformance,
+            openChallenges: openChallengeCount(cycle),
             recentRuns: rows.slice(0, 8).map(rowToRun)
         }
     }
@@ -259,8 +362,36 @@ export default async function jaxQualificationPlugin(fastify, options = {}) {
         const summary = buildSummary()
         return {
             ...summary,
-            runs: getRows().map(rowToRun)
+            runs: getRows().map(rowToRun),
+            challenges: listChallenges(),
+            wrongQuestions: wrongQuestionsSummary()
         }
+    })
+
+    fastify.post('/api/jax/challenge', async (request, reply) => {
+        const body = request.body || {}
+        const str = (v, max) => typeof v === 'string' && v.trim() ? v.trim().slice(0, max) : null
+        const questionText = str(body.question, 600)
+        if (!questionText && !str(body.questionId, 120)) {
+            reply.code(400)
+            return { error: 'A challenge must reference a question.' }
+        }
+        const row = {
+            id: `challenge-${crypto.randomUUID()}`,
+            cycle: currentCycle(),
+            question_id: str(body.questionId, 120),
+            rule_id: str(body.ruleId, 120),
+            topic: str(body.topic, 120),
+            question_text: questionText,
+            chosen_answer: str(body.chosen, 400),
+            correct_answer: str(body.correctAnswer, 400),
+            mode: ['test', 'practice', 'weak'].includes(body.mode) ? body.mode : null,
+            note: str(body.note, 600),
+            created_at: new Date().toISOString()
+        }
+        insertChallenge.run(row)
+        fastify.log.info({ category: 'Jax', questionId: row.question_id }, 'Jackson challenged an answer')
+        return { saved: true, openChallenges: openChallengeCount() }
     })
 
     fastify.post('/api/jax/results', async (request, reply) => {
@@ -477,6 +608,26 @@ export default async function jaxQualificationPlugin(fastify, options = {}) {
         setMetaInt('min_difficulty', value)
         fastify.log.info({ category: 'Jax', minDifficulty: value }, 'Jax test difficulty updated')
         return { success: true, minDifficulty: value, qualification: buildSummary() }
+    })
+
+    fastify.post('/api/jax/admin/resolve-challenge', async (request, reply) => {
+        if (!requireParentPin(request, reply)) return
+        const id = request.body?.id
+        const row = typeof id === 'string' ? selectChallenge.get(id) : null
+        if (!row) {
+            reply.code(404)
+            return { error: 'Challenge not found.' }
+        }
+        database.prepare(`
+            UPDATE jax_challenges
+            SET resolved = 1, resolved_at = ?, resolved_note = ?
+            WHERE id = ?
+        `).run(
+            new Date().toISOString(),
+            typeof request.body?.note === 'string' ? request.body.note.trim().slice(0, 300) : null,
+            id
+        )
+        return { success: true, challenges: listChallenges(), openChallenges: openChallengeCount() }
     })
 
     fastify.addHook('onClose', async () => {
